@@ -1,0 +1,49 @@
+// Функція для завантаження зображень, відео та PDF
+  import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+  const handleFileUpload = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await axios.post('http://localhost:3000/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      return response.data.url;  // Отримуємо URL файлу
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  };
+  const handleContentChange = (value) => {
+    setNewPost((prevPost) => ({
+      ...prevPost,
+      content: value,
+    }));
+  };
+  const modules = {
+    toolbar: [
+      [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      ['bold', 'italic', 'underline'],
+      ['link'],
+      [{ 'align': [] }],
+      ['image', 'video', 'pdf'],
+    ],
+  };
+
+
+<ReactQuill
+              ref={quillRef}
+              value={newPost.content}
+              onChange={handleContentChange}
+              modules={{
+                toolbar: [
+                  [{ 'header': '1' }, { 'header': '2' }],
+                  [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                  ['bold', 'italic', 'underline'],
+                  ['link', 'image'],
+                  [{ 'align': [] }],
+                  ['clean'],
+                ],
+              }}
+            />

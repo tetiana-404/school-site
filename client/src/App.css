@@ -1,0 +1,124 @@
+/* Загальні стилі */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+/* Шапка */
+.header {
+  background: #0073e6;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  height: 60px;
+  margin-right: 15px;
+}
+
+.slogan {
+  font-size: 20px;
+}
+
+/* Навігація */
+.navbar {
+  position: sticky;
+  top: 0;
+  background: #004a99;
+  padding: 10px 0;
+  text-align: center;
+  z-index: 1000;
+}
+
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-list li {
+  margin: 5px 10px;
+}
+
+.nav-list a {
+  text-decoration: none;
+  color: white;
+  font-size: 16px;
+  padding: 8px 12px;
+  transition: 0.3s;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Відступ між іконкою та текстом */
+  font-size: 18px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.nav-list a:hover, .logout-btn:hover {
+  background: #005bb5;
+  border-radius: 5px;
+}
+
+/* Іконка бургер-меню */
+.menu-icon {
+  display: none;
+  cursor: pointer;
+  color: white;
+  position: absolute;
+  right: 20px;
+  top: 15px;
+}
+
+/* Підвал */
+.footer {
+  background: #222;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Адаптація під мобільні пристрої */
+@media (max-width: 768px) {
+  .menu-icon {
+    display: block;
+  }
+
+  .nav-list {
+    display: none;
+    flex-direction: column;
+    background: #004a99;
+    position: absolute;
+    top: 50px;
+    width: 100%;
+    left: 0;
+    padding: 10px 0;
+  }
+
+  .nav-list.open {
+    display: flex;
+  }
+
+  .nav-list li {
+    margin: 10px 0;
+  }
+}

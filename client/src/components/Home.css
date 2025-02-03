@@ -1,0 +1,34 @@
+/* Стилі для головної сторінки */
+.main-content {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  text-align: center;
+}
+
+.main-content h2 {
+  font-size: 28px;
+  color: #004a99;
+  margin-bottom: 15px;
+}
+
+.main-content p {
+  font-size: 18px;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Додаткові стилі для адаптації */
+@media (max-width: 768px) {
+  .main-content {
+    padding: 15px;
+  }
+
+  .main-content h2 {
+    font-size: 24px;
+  }
+
+  .main-content p {
+    font-size: 16px;
+  }
+}
