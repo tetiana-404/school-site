@@ -1,5 +1,8 @@
 require('dotenv').config({ path: '../.env' });
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
@@ -9,9 +12,60 @@ const { sequelize, User, Post, Document, Comment } = require("./models");
 const app = express();
 app.use(express.json({ limit: "10mb" })); // Default is 100kb, now increased to 50MB
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+const upload = multer({ dest: "uploads/" }); 
 
 // Enable CORS for all origins (you can specify specific origins if needed)
 app.use(cors());
+
+// Створення відповідних директорій для медіа
+const createFolderIfNotExist = (folder) => {
+  if (!fs.existsSync(folder)) {
+    fs.mkdirSync(folder);
+  }
+};
+
+// Налаштування роута для завантаження файлів
+app.post("/api/upload", upload.single("file"), (req, res) => {
+  const { type, postId } = req.body;  // Отримуємо тип файлу та постId (якщо є)
+  const file = req.file;
+
+  if (!file) {
+    return res.status(400).send("No file uploaded");
+  }
+
+  // Визначаємо директорію для збереження файлу
+  let folder;
+  if (type === "image") {
+    folder = "uploads/images";
+  } else if (type === "video") {
+    folder = "uploads/videos";
+  } else if (type === "document") {
+    folder = "uploads/documents";
+  }
+
+  createFolderIfNotExist(folder); // Переконуємось, що папка існує
+
+  // Створюємо нове ім'я файлу з поточною датою та ID посту
+  const timestamp = Date.now();  // Поточна дата у мілісекундах
+  const uniqueId = postId || timestamp;  // Використовуємо postId, якщо він є, або timestamp
+  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
+  const newFileName = `${uniqueId}-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+
+  // Шлях для збереженого файлу
+  const filePath = path.join(folder, newFileName);
+
+  // Переміщаємо файл у відповідну папку
+  fs.renameSync(file.path, filePath);
+
+  // Повертаємо URL файлу
+  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/${type}s/${newFileName}`;
+  console.log("File uploaded:", fileUrl);
+
+  res.json({ url: fileUrl });
+});
+
+// Статичний доступ до файлів
+app.use("/uploads", express.static("uploads"));
 
 // 🟢 User Registration
 app.post("/register", async (req, res) => {

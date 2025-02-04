@@ -68,7 +68,7 @@ const Posts = () => {
     } catch (err) {
       console.error("Error adding post:", err.response ? err.response.data : err);
     }
-  };  
+  };
 
   return (
     <div>
