@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import TextEditor from "./TextEditor";
+import TextEditor from "./TextEditorNew";
 //import { useNavigate } from "react-router-dom";
 
 
@@ -64,12 +64,20 @@ const Posts = () => {
       setPosts((prevPosts) => [response.data, ...prevPosts]);
   
       setNewPost({ title: "", content: "" }); // Очищення форми після додавання
-  
+      setNewPost((prev) => ({ ...prev, content: "" }));  
     } catch (err) {
       console.error("Error adding post:", err.response ? err.response.data : err);
     }
   };
 
+const clearEditor = () => {
+    setNewPost((prev) => ({ ...prev, content: '' })); // Очищає textarea та Output
+};
+  const decodeHTML = (html) => {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+};
   return (
     <div>
       <h1>Новини</h1>
@@ -97,6 +105,7 @@ const Posts = () => {
             <TextEditor
               content={newPost.content}
               setContent={(value) => setNewPost((prev) => ({ ...prev, content: value }))}
+              clearEditor={clearEditor}
             />
 
             <button type="submit">Додати новину</button>
@@ -113,8 +122,9 @@ const Posts = () => {
             {posts.map((post) => (
               <li key={post.id}>
                 <h3>{post.title}</h3>
-                <p>{post.content}</p>
-                <p dangerouslySetInnerHTML={{ __html: post.content }}></p>
+                {/*<p>{post.content}</p>
+                <p dangerouslySetInnerHTML={{ __html: post.content }}></p>*/}
+                <p dangerouslySetInnerHTML={{ __html: decodeHTML(post.content) }}></p>
                 <p>Дата:  {new Date(post.createdAt).toLocaleDateString()}</p>
               </li>
             ))}

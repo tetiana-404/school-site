@@ -1,0 +1,175 @@
+/* Контейнер для редактора */
+.editor-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Панель інструментів */
+  .editor-controls {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  /* Стилі для кнопок */
+  .editor-button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 12px;
+    font-size: 14px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  /* Ефект при наведенні */
+  .editor-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .tiptap {
+    min-height: 200px; /* Мінімальна висота */
+    max-height: 500px; /* Максимальна висота */
+    overflow-y: auto;  /* Прокрутка, якщо багато тексту */
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 8px;
+}
+  .tiptap img {
+    max-width: 100%; /* Автоматично підлаштовуємо ширину */
+    height: auto; /* Зберігаємо пропорції */
+    display: block; /* Центруємо зображення */
+    margin: 10px 0; /* Додаємо відступи */
+}
+
+.removable-image {
+  position: relative;
+  display: inline-block;
+}
+
+.removable-image::after {
+  content: '✖'; /* Символ хрестика */
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: red;
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.removable-image:hover::after {
+  color: darkred;
+}
+
+  /* Стилі для випадаючого списку */
+  select {
+    padding: 5px;
+    font-size: 14px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+  }
+.tiptap table {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  
+  .tiptap th, .tiptap td {
+    border: 1px solid black;
+    padding: 8px;
+  }
+  
+  /* Загальний контейнер редактора */
+.editor-container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Контейнери для кнопок */
+  .table-controls {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  /* Стилі для кнопок */
+  .table-button {
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  
+  /* При наведенні */
+  .table-button:hover {
+    background: #0056b3;
+  }
+  
+  /* Відключені кнопки (disabled) */
+  .table-button:disabled {
+    background: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  /* Сама область редактора */
+  .tiptap-editor {
+    background: white;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    min-height: 200px;
+  }
+  
+  /* Контейнер для кнопки "Додати таблицю" */
+.add-table-container {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  /* Кнопка "Додати таблицю" */
+  .add-table-button {
+    background: #28a745; /* Зелений колір */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+  
+  /* Ефект при наведенні */
+  .add-table-button:hover {
+    background: #218838;
+  }
+  
+  /* Ефект при натисканні */
+  .add-table-button:active {
+    transform: scale(0.95);
+  }
+  
+  /* Контейнер для кнопок управління таблицею */
+  .table-controls {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  
