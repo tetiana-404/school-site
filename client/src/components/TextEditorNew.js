@@ -1,27 +1,39 @@
-import React, { useCallback, useMemo, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import "./TextEditor.css";
 import axios from "axios";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import TextAlign from '@tiptap/extension-text-align';
+import UnderlineExtension from '@tiptap/extension-underline';
+import ImageExtension from "@tiptap/extension-image";
+import LinkExtension from '@tiptap/extension-link';
 import Table from "@tiptap/extension-table";
 import TableRow from "@tiptap/extension-table-row";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
-import { Bold, Italic, Underline, List, ListOrdered, AlignLeft, AlignCenter, AlignRight,  Image, Video, Link, FileText, Trash2 } from "lucide-react";
+import {
+    Bold, Italic, Underline, List, ListOrdered, AlignLeft, AlignCenter, AlignRight, Image, Video, Link, FileText, Trash2,
+    ChevronLeft, ChevronRight, ChevronUp,
+    ChevronDown, Minus, Plus
+} from "lucide-react";
 
 
 const TextEditor = ({ content, setContent, clearEditor }) => {
+    const [videoUrl, setVideoUrl] = useState('');
+    const [linkUrl, setLinkUrl] = useState("");
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpenLink, setIsModalOpenLink] = useState(false);
 
     const editor = useEditor({
         extensions: [
             StarterKit,
-            Image,
+            ImageExtension,
             Bold,
             Italic,
-            Underline,
+            UnderlineExtension,
             List,
             ListOrdered,
+            LinkExtension,
             Table.configure({ resizable: true }), // Додає таблиці
             TableRow, // Додає рядки
             TableCell, // Додає комірки
@@ -34,6 +46,49 @@ const TextEditor = ({ content, setContent, clearEditor }) => {
             setContent(editor.getHTML());
         },
     });
+
+    // Функція для відкриття модального вікна
+    const handleOpenModal = () => {
+        setIsModalOpen(true);
+    };
+
+    // Функція для закриття модального вікна
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+    };
+
+    // Функція для відкриття модального вікна
+    const handleOpenModalLink = () => {
+        setIsModalOpenLink(true);
+    };
+
+    // Функція для закриття модального вікна
+    const handleCloseModalLink = () => {
+        setIsModalOpenLink(false);
+    };
+
+    // Функція для вставлення відео в редактор
+    const handleInsertVideo = () => {
+        let formattedUrl = videoUrl;
+
+        // Можна додати функцію для перевірки або форматування URL, якщо потрібно
+        formattedUrl = convertYouTubeUrl(formattedUrl);
+
+        if (formattedUrl) {
+            editor.chain().focus().insertContent(`
+        <iframe width="560" height="315" 
+                src="${formattedUrl}" 
+                frameborder="0" 
+                allowfullscreen 
+                style="max-width: 100%; height: auto;">
+        </iframe>
+      `).run();
+        }
+
+        // Закрити модальне вікно після вставлення
+        setIsModalOpen(false);
+        setVideoUrl('');
+    };
 
     // Функція обробника завантаження зображень
     const imageHandler = useCallback(() => {
@@ -50,26 +105,6 @@ const TextEditor = ({ content, setContent, clearEditor }) => {
             }
         };
     }, []);
-
-    const insertVideo = () => {
-        let videoUrl = prompt("Введіть URL відео (YouTube, Vimeo або інший)");
-
-        videoUrl = convertYouTubeUrl(videoUrl);
-
-        if (videoUrl) {
-
-            editor.chain().focus().insertContent(`
-            
-                <iframe width="560" height="315" 
-                        src="${videoUrl}" 
-                        frameborder="0" 
-                        allowfullscreen 
-                        style="max-width: 100%; height: auto;">
-                </iframe>
-            
-        `).run();
-        }
-    };
 
     const convertYouTubeUrl = (url) => {
         url = url.trim(); // Видаляємо зайві пробіли
@@ -88,12 +123,12 @@ const TextEditor = ({ content, setContent, clearEditor }) => {
         return url; // Якщо URL не YouTube, повертаємо як є
     };
 
-
-    const insertLink = () => {
-        const linkUrl = prompt("Введіть URL лінку");
+    const handleInsertLink = () => {
         if (linkUrl) {
             editor.chain().focus().setLink({ href: linkUrl }).run();
         }
+        setIsModalOpenLink(false);  // Закриття модального вікна
+        setLinkUrl('');
     };
 
     const handleFileUpload = async (event) => {
@@ -171,6 +206,9 @@ const TextEditor = ({ content, setContent, clearEditor }) => {
         // Вставляємо ВСІ зображення за один раз
         if (imageBlocks.length > 0) {
             editor.chain().focus().insertContent(imageBlocks).run();
+            console.log("Image blocks inserted.");
+        } else {
+            console.error("❌ No valid image blocks to insert.");
         }
     };
 
@@ -180,101 +218,202 @@ const TextEditor = ({ content, setContent, clearEditor }) => {
             editor.chain().focus().clearContent().run(); // Очищає Tiptap
         }
         clearEditor(); // Викликає функцію з Posts.js для очищення textarea
+    
+        setContent('');
     };
     return (
-        <div className="editor-container">
-            <h2>My Tiptap Editor</h2>
-            <div className="editor-controls">
-                <button className="editor-button" onClick={() => editor.chain().focus().toggleBold().run()}>
-                    <Bold size={20} />
-                </button>
-                <button className="editor-button" onClick={() => editor.chain().focus().toggleItalic().run()}>
-                    <Italic size={20} />
-                </button>
-                <button className="editor-button" onClick={() => editor.chain().focus().toggleUnderline().run()}>
-                    <Underline size={20} />
-                </button>
-                <button className="editor-button" onClick={() => editor.chain().focus().toggleBulletList().run()}>
-                    <List size={20} />
-                </button>
-                <button className="editor-button" onClick={() => editor.chain().focus().toggleOrderedList().run()}>
-                    <ListOrdered size={20} />
-                </button>
+        <div class="container">
+            <div class="editor-section">
+                <div className="editor-controls">
+                    <button className="editor-button" onClick={() => editor.chain().focus().toggleBold().run()}>
+                        <Bold size={20} />
+                    </button>
+                    <button className="editor-button" onClick={() => editor.chain().focus().toggleItalic().run()}>
+                        <Italic size={20} />
+                    </button>
+                    <button className="editor-button" onClick={() => editor.chain().focus().toggleUnderline().run()}>
+                        <Underline size={20} />
+                    </button>
+                    <button className="editor-button" onClick={() => editor.chain().focus().toggleBulletList().run()}>
+                        <List size={20} />
+                    </button>
+                    <button className="editor-button" onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+                        <ListOrdered size={20} />
+                    </button>
 
-                {/* Вирівнювання */}
-                <button className="editor-button" onClick={() => editor.chain().focus().setTextAlign('left').run()}>
-                    <AlignLeft size={20} />
-                </button>
-                <button className="editor-button" onClick={() => editor.chain().focus().setTextAlign('center').run()}>
-                    <AlignCenter size={20} />
-                </button>
-                <button className="editor-button" onClick={() => editor.chain().focus().setTextAlign('right').run()}>
-                    <AlignRight size={20} />
-                </button>
+                    {/* Вирівнювання */}
+                    <button className="editor-button" onClick={() => editor.chain().focus().setTextAlign('left').run()}>
+                        <AlignLeft size={20} />
+                    </button>
+                    <button className="editor-button" onClick={() => editor.chain().focus().setTextAlign('center').run()}>
+                        <AlignCenter size={20} />
+                    </button>
+                    <button className="editor-button" onClick={() => editor.chain().focus().setTextAlign('right').run()}>
+                        <AlignRight size={20} />
+                    </button>
 
 
-                {/* Завантаження зображення */}
-               
-                <button className="editor-button" onClick={(e) => { e.preventDefault(); imageHandler(); }}>
-                    <Image size={20} />
-                </button>
-                <button className="editor-button" onClick={insertVideo}>
-                    <Video size={20} />
-                </button>
-                <button className="editor-button" onClick={insertLink}>
-                    <Link size={20} />
-                </button>
-                <button className="editor-button"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        document.getElementById('pdf-upload').click()
-                    }}>
-                    <FileText size={20} />
-                </button>
-                <input
-                    id="pdf-upload"
-                    type="file"
-                    accept="application/pdf"
-                    style={{ display: 'none' }}
-                    onChange={handleFileUpload}
-                />
-                <button className="editor-button" onClick={handleClear}>
-                    <Trash2 size={20} />
-                </button>
+                    {/* Завантаження зображення */}
+
+                    <button className="editor-button" onClick={(e) => { e.preventDefault(); imageHandler(); }}>
+                        <Image size={20} />
+                    </button>
+                    <button className="editor-button" onClick={handleOpenModal} type="button">
+                        <Video size={20} />
+                    </button>
+                    <button className="editor-button" onClick={handleOpenModalLink} type="button">
+                        <Link size={20} />
+                    </button>
+                    <button className="editor-button"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            document.getElementById('pdf-upload').click()
+                        }}>
+                        <FileText size={20} />
+                    </button>
+                    <input
+                        id="pdf-upload"
+                        type="file"
+                        accept="application/pdf"
+                        style={{ display: 'none' }}
+                        onChange={handleFileUpload}
+                    />
+                    <button className="editor-button" onClick={handleClear}>
+                        <Trash2 size={20} />
+                    </button>
+
+                    {/* Модальне вікно */}
+                    {isModalOpen && (
+                        <div className="modal">
+                            <div className="modal-content">
+                                <h2>Введіть URL відео</h2>
+                                <input
+                                    type="text"
+                                    value={videoUrl}
+                                    onChange={(e) => setVideoUrl(e.target.value)}
+                                    placeholder="URL відео"
+                                />
+                                <button onClick={handleInsertVideo}>Вставити відео</button>
+                                <button onClick={handleCloseModal}>Закрити</button>
+                            </div>
+                        </div>
+                    )}
+                    {isModalOpenLink && (
+                    <div className="modal">
+                        <div className="modal-content">
+                            <h3>Вставити лінк</h3>
+                            <input
+                                type="text"
+                                placeholder="Введіть URL"
+                                value={linkUrl}
+                                onChange={(e) => setLinkUrl(e.target.value)}
+                            />
+                            <button onClick={handleInsertLink}>Вставити</button>
+                            <button onClick={handleCloseModalLink}>Закрити</button>
+                        </div>
+                    </div>
+                    )}
+                </div>
+                <div className="editor-content">
+                    <h2>Створити нову подію</h2>
+
+                    <EditorContent editor={editor} className="tiptap" />
+
+
+
+                </div>
+                <div className="table-toolbar">
+                    <button className="add-table-button" title="Додати таблицю" onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
+                        <Plus size={20} />
+                    </button>
+
+                    <div className="table-controls">
+                        <button className="table-button" title="Додати колонку зліва" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnBefore().run()}>
+                            <ChevronLeft size={20} />
+                        </button>
+                        <button className="table-button" title="Додати колонку справа" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnAfter().run()}>
+                            <ChevronRight size={20} />
+                        </button>
+                        <button className="table-button" title="Додати рядок зверху" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowBefore().run()}>
+                            <ChevronUp size={20} />
+                        </button>
+                        <button className="table-button" title="Додати рядок знизу" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowAfter().run()}>
+                            <ChevronDown size={20} />
+                        </button>
+                        <button className="table-button" title="Видалити колонку" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteColumn().run()}>
+                            <Minus size={20} />
+                        </button>
+                        <button className="table-button" title="Видалити рядок" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteRow().run()}>
+                            <Minus size={20} />
+                        </button>
+                        <button className="table-button" title="Видалити таблицю" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteTable().run()}>
+                            <Trash2 size={20} />
+                        </button>
+                    </div>
+                </div>
+                <div className="editor-controls">
+                    <button className="editor-button" onClick={() => editor.chain().focus().toggleBold().run()}>
+                        <Bold size={20} />
+                    </button>
+                    <button className="editor-button" onClick={() => editor.chain().focus().toggleItalic().run()}>
+                        <Italic size={20} />
+                    </button>
+                    <button className="editor-button" onClick={() => editor.chain().focus().toggleUnderline().run()}>
+                        <Underline size={20} />
+                    </button>
+                    <button className="editor-button" onClick={() => editor.chain().focus().toggleBulletList().run()}>
+                        <List size={20} />
+                    </button>
+                    <button className="editor-button" onClick={() => editor.chain().focus().toggleOrderedList().run()}>
+                        <ListOrdered size={20} />
+                    </button>
+
+                    {/* Вирівнювання */}
+                    <button className="editor-button" onClick={() => editor.chain().focus().setTextAlign('left').run()}>
+                        <AlignLeft size={20} />
+                    </button>
+                    <button className="editor-button" onClick={() => editor.chain().focus().setTextAlign('center').run()}>
+                        <AlignCenter size={20} />
+                    </button>
+                    <button className="editor-button" onClick={() => editor.chain().focus().setTextAlign('right').run()}>
+                        <AlignRight size={20} />
+                    </button>
+
+
+                    {/* Завантаження зображення */}
+
+                    <button className="editor-button" onClick={(e) => { e.preventDefault(); imageHandler(); }}>
+                        <Image size={20} />
+                    </button>
+                    <button className="editor-button" onClick={handleOpenModal} type="button">
+                        <Video size={20} />
+                    </button>
+                    <button className="editor-button" onClick={handleOpenModalLink} type="button">
+                        <Link size={20} />
+                    </button>
+                    <button className="editor-button"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            document.getElementById('pdf-upload').click()
+                        }}>
+                        <FileText size={20} />
+                    </button>
+                    <input
+                        id="pdf-upload"
+                        type="file"
+                        accept="application/pdf"
+                        style={{ display: 'none' }}
+                        onChange={handleFileUpload}
+                    />
+                    <button className="editor-button" onClick={handleClear}>
+                        <Trash2 size={20} />
+                    </button>
+                </div>
             </div>
-            <EditorContent editor={editor} className="tiptap" />
-            <div className="table-controls">
-                <button className="table-button" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnBefore().run()}>
-                    ⬅️ Додати колонку зліва
-                </button>
-                <button className="table-button" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnAfter().run()}>
-                    ➡️ Додати колонку справа
-                </button>
-                <button className="table-button" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowBefore().run()}>
-                    ⬆️ Додати рядок зверху
-                </button>
-                <button className="table-button" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowAfter().run()}>
-                    ⬇️ Додати рядок знизу
-                </button>
-                <button className="table-button" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteColumn().run()}>
-                    ❌ Видалити колонку
-                </button>
-                <button className="table-button" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteRow().run()}>
-                    ❌ Видалити рядок
-                </button>
-                <button className="table-button" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteTable().run()}>
-                    🗑️ Видалити таблицю
-                </button>
+            <div class="output-section">
+                <h2>Попередній перегляд</h2>
+                <div class="output-content" dangerouslySetInnerHTML={{ __html: content }} />
             </div>
-            <button
-                className="add-table-button"
-                onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
-            >
-                ➕ Додати таблицю
-            </button>
-
-            <p>Output:</p>
-            <div dangerouslySetInnerHTML={{ __html: content }} />
         </div>
     );
 };

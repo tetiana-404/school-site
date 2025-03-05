@@ -1,14 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef  } from "react";
 import axios from "axios";
 import TextEditor from "./TextEditorNew";
 //import { useNavigate } from "react-router-dom";
+import './Post.css';
 
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState({ title: "", content: "" });
+  const [previewContent, setPreviewContent] = useState("");
   const [user, setUser] = useState(localStorage.getItem("user") || null); 
-  //const navigate = useNavigate();
+  const contentRef = useRef("");
 
   // Отримання всіх новин при завантаженні сторінки
   useEffect(() => {
@@ -30,6 +32,15 @@ const Posts = () => {
       ...prevPost,
       [name]: value,
     }));
+  };
+
+  const handleEditorChange = (value) => {
+    contentRef.current = value; // Оновлюємо useRef, але не викликаємо ререндер
+  };
+
+  // Оновлення попереднього перегляду
+  const handleUpdatePreview = () => {
+    setPreviewContent(contentRef.current); // Оновлюємо попередній перегляд тільки після натискання кнопки
   };
 
   // Додавання нової новини
@@ -65,6 +76,8 @@ const Posts = () => {
   
       setNewPost({ title: "", content: "" }); // Очищення форми після додавання
       setNewPost((prev) => ({ ...prev, content: "" }));  
+      contentRef.current = "";
+      setPreviewContent("");
     } catch (err) {
       console.error("Error adding post:", err.response ? err.response.data : err);
     }
@@ -72,6 +85,7 @@ const Posts = () => {
 
 const clearEditor = () => {
     setNewPost((prev) => ({ ...prev, content: '' })); // Очищає textarea та Output
+    setPreviewContent("");
 };
   const decodeHTML = (html) => {
     const txt = document.createElement("textarea");
@@ -84,9 +98,9 @@ const clearEditor = () => {
       
       {/* Якщо користувач залогований, показуємо форму для додавання новини */}
       {user && (
-        <div>
-          <h2>Додати новину</h2>
-          <form onSubmit={handleAddPost}>
+        <div class="news-form-container">
+           <h2 class="news-form-title">Додати новину</h2>
+          <form class="news-form" onSubmit={handleAddPost}>
             <input
               type="text"
               name="title"
@@ -94,21 +108,28 @@ const clearEditor = () => {
               value={newPost.title}
               onChange={handleInputChange}
               required
+              class="news-input"
             />
             <textarea
               name="content"
               placeholder="Текст новини"
-              value={newPost.content}
-              onChange={handleInputChange}
+              value={contentRef.current}
+              onChange={(e) => {
+                contentRef.current = e.target.value; // Оновлюємо useRef
+                setNewPost((prevPost) => ({ ...prevPost, content: e.target.value })); // Щоб інші частини форми бачили зміни
+              }}
               required
+              class="news-textarea"
             />
             <TextEditor
-              content={newPost.content}
-              setContent={(value) => setNewPost((prev) => ({ ...prev, content: value }))}
+              content={contentRef.current}
+              setContent={handleEditorChange}
               clearEditor={clearEditor}
             />
-
-            <button type="submit">Додати новину</button>
+            <button type="button" className="news-preview-button" onClick={handleUpdatePreview}>
+              Оновити
+            </button>
+            <button type="submit" class="news-submit-button">Додати новину</button>
           </form>
         </div>
       )}
