@@ -143,10 +143,16 @@
   
   .table-toolbar {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-between; /* Рівномірний розподіл кнопок */
     align-items: center;
-    gap: 10px;
-    padding: 8px 0;
+    flex-wrap: wrap; /* Щоб кнопки переносилися, якщо мало місця */
+    gap: 8px; /* Відступи між кнопками */
+    padding: 10px;
+    margin: 20px 0;
+    background: #f9f9f9; /* Легкий фон */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+   
 }
 
 .add-table-button {
@@ -157,6 +163,7 @@
     border-radius: 5px;
     cursor: pointer;
     transition: 0.2s;
+    line-height: 1.5;
 }
 
 .add-table-button:hover {
@@ -171,7 +178,7 @@
 .table-button {
     background: #f1f1f1;
     border: none;
-    padding: 6px;
+    padding: 5px;
     border-radius: 5px;
     cursor: pointer;
     transition: 0.2s;
@@ -186,11 +193,30 @@
     margin-top: 10px;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 5px;
   }
   
+  /* Стилі для таблиці */
+.add-table {
+  border-collapse: collapse; /* Забезпечує, що межі клітинок будуть об'єднуватися */
+  width: 100%;
+}
+
+/* Стилі для таблиці */
+.add-table th, .add-table td {
+  border: 1px solid #000; /* Чорний бордер для всіх клітинок */
+  padding: 8px; /* Відступи всередині клітинок */
+  text-align: center; /* Вирівнювання тексту по центру */
+}
+
+/* Стилі для заголовка таблиці */
+.add-table th {
+  background-color: #f0f0f0; /* Світло-сірий фон для заголовка таблиці */
+}
+
   /* Стилі для кнопок */
-  .table-button {
+  .news-form-container .table-button {
+    background: #28a745;
     border: none;
     padding: 8px 12px;
     font-size: 14px;
@@ -200,7 +226,7 @@
   }
   
   /* При наведенні */
-  .table-button:hover {
+  .news-form-container .table-button:hover {
     background: #0056b3;
   }
   
@@ -228,7 +254,7 @@
   }
   
   /* Кнопка "Додати таблицю" */
-  .add-table-button {
+  .news-form-container .add-table-button {
     background: #28a745; /* Зелений колір */
     color: white;
     border: none;
@@ -299,14 +325,14 @@ input {
 
 /* Кнопки */
 button {
-  padding: 10px 16px;
-  margin: 5px;
+  padding: 5px 5px;
+  margin: 0px;
   border: none;
   background-color: #007bff;
   color: white;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 12px;
   transition: background-color 0.2s ease;
 }
 

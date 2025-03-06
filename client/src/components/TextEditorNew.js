@@ -224,6 +224,7 @@ const TextEditor = ({ content, setContent, clearEditor }) => {
     return (
         <div class="container">
             <div class="editor-section">
+                <h2>Вміст новини</h2>
                 <div className="editor-controls">
                     <button className="editor-button" onClick={() => editor.chain().focus().toggleBold().run()}>
                         <Bold size={20} />
@@ -315,16 +316,18 @@ const TextEditor = ({ content, setContent, clearEditor }) => {
                     )}
                 </div>
                 <div className="editor-content">
-                    <h2>Створити нову подію</h2>
+                    
 
                     <EditorContent editor={editor} className="tiptap" />
 
 
 
                 </div>
+                
                 <div className="table-toolbar">
-                    <button className="add-table-button" title="Додати таблицю" onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
-                        <Plus size={20} />
+                    
+                    <button className="add-table-button" title="Додати таблицю" onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true, class: 'add-table' }).run()}>
+                        <Plus size={20} /> Додати таблицю
                     </button>
 
                     <div className="table-controls">

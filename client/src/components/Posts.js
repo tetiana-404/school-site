@@ -11,6 +11,7 @@ const Posts = () => {
   const [previewContent, setPreviewContent] = useState("");
   const [user, setUser] = useState(localStorage.getItem("user") || null); 
   const contentRef = useRef("");
+  const titleRef = useRef(newPost.title);
 
   // Отримання всіх новин при завантаженні сторінки
   useEffect(() => {
@@ -25,22 +26,31 @@ const Posts = () => {
     fetchPosts();
   }, []);
 
+  // Затримка оновлення стану (debounce)
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+        if (titleRef.current !== newPost.title) {
+            setNewPost((prev) => ({ ...prev, title: titleRef.current }));
+        }
+    }, 500); // Оновлюємо через 300 мс після останнього введення
+
+    return () => clearTimeout(timeout);
+}, [titleRef.current]); // Викликається лише при зміні titleRef
+
   // Обробка зміни значень у формі для нової новини
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewPost((prevPost) => ({
-      ...prevPost,
-      [name]: value,
-    }));
+    titleRef.current = e.target.value;
   };
 
   const handleEditorChange = (value) => {
     contentRef.current = value; // Оновлюємо useRef, але не викликаємо ререндер
+    
   };
 
   // Оновлення попереднього перегляду
   const handleUpdatePreview = () => {
     setPreviewContent(contentRef.current); // Оновлюємо попередній перегляд тільки після натискання кнопки
+    setNewPost((prevPost) => ({ ...prevPost, content: contentRef.current }));
   };
 
   // Додавання нової новини
@@ -75,9 +85,12 @@ const Posts = () => {
       setPosts((prevPosts) => [response.data, ...prevPosts]);
   
       setNewPost({ title: "", content: "" }); // Очищення форми після додавання
-      setNewPost((prev) => ({ ...prev, content: "" }));  
+      
+      titleRef.current = "";  
       contentRef.current = "";
       setPreviewContent("");
+
+      
     } catch (err) {
       console.error("Error adding post:", err.response ? err.response.data : err);
     }
@@ -105,14 +118,19 @@ const clearEditor = () => {
               type="text"
               name="title"
               placeholder="Заголовок новини"
-              value={newPost.title}
+              defaultValue={newPost.title}
               onChange={handleInputChange}
               required
               class="news-input"
             />
+            <TextEditor
+              content={contentRef.current}
+              setContent={handleEditorChange}
+              clearEditor={clearEditor}
+            />
             <textarea
               name="content"
-              placeholder="Текст новини"
+              placeholder="Код новини"
               value={contentRef.current}
               onChange={(e) => {
                 contentRef.current = e.target.value; // Оновлюємо useRef
@@ -121,11 +139,7 @@ const clearEditor = () => {
               required
               class="news-textarea"
             />
-            <TextEditor
-              content={contentRef.current}
-              setContent={handleEditorChange}
-              clearEditor={clearEditor}
-            />
+            
             <button type="button" className="news-preview-button" onClick={handleUpdatePreview}>
               Оновити
             </button>
