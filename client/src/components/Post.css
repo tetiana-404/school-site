@@ -21,11 +21,16 @@
 }
 
 .news-form-container input,
-.news-form-container textarea {
+.news-form-container textarea,
+.news-form-container button {
     padding: 10px;
-    border: 1px solid #ddd;
     border-radius: 6px;
     font-size: 16px;
+}
+
+.news-form-container input,
+.news-form-container textarea {
+    border: 1px solid #ddd;
 }
 
 .news-form-container textarea {
@@ -36,14 +41,11 @@
 .news-form-container button {
     background: #007bff;
     color: white;
-    padding: 10px;
     border: none;
-    border-radius: 6px;
-    font-size: 16px;
     cursor: pointer;
     transition: background 0.3s;
+}
 
-    &:hover {
-        background: #0056b3;
-    }
+.news-form-container button:hover {
+    background: #0056b3;
 }
