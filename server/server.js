@@ -135,8 +135,9 @@ app.get("/posts", async (req, res) => {
 });
 
 app.post("/posts", authenticateToken, async (req, res) => {
-  const { title, content } = req.body;
-  const post = await Post.create({ title, content, userId: req.user.userId });
+  const { title, content, updatedAt } = req.body;
+
+  const post = await Post.create({ title, content, userId: req.user.id, updatedAt: updatedAt || new Date(), });
   res.status(201).json(post);
 });
 
@@ -158,6 +159,34 @@ app.post("/comments", authenticateToken, async (req, res) => {
   const comment = await Comment.create({ content, userId: req.user.userId, postId });
   res.status(201).json(comment);
 });
+
+app.delete("/posts/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Шукаємо пост за ID
+    const post = await Post.findByPk(id);
+
+    if (!post) {
+      return res.status(404).json({ error: "Пост не знайдено" });
+    }
+
+    // Перевіряємо, чи авторизований користувач є власником поста
+    //if (post.userId !== req.user.userId) {
+      //return res.status(403).json({ error: "Ви не маєте прав видаляти цей пост" });
+    //}
+
+    // Видаляємо пост
+    await post.destroy();
+    console.log('Пост видалено:', post)
+    res.json({ message: "Пост видалено" });
+  } catch (error) {
+    console.error("Помилка видалення поста:", error);
+    res.status(500).json({ error: "Помилка сервера" });
+  }
+});
+
+
 
 // Start the server
 const PORT = process.env.PORT || 5000;

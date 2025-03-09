@@ -29,7 +29,6 @@ const LoginForm = ({ setUser }) => {
         setUser(username);
         navigate("/"); // Redirect after successful login
 
-        console.log("✅ Токен збережено:", response.data.token);
       } else {
         console.error("❌ Токен не отримано з сервера.");
       }

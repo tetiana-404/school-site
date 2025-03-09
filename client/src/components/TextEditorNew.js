@@ -164,8 +164,8 @@ const TextEditor = ({ content, setContent }) => {
     };
     
     return (
-        <div class="container">
-            <div class="editor-section">
+        <div className="container">
+            <div className="editor-section">
                 
                 <EditorToolbar
                     editor={editor}
