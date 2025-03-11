@@ -14,7 +14,7 @@ import TableRow from "@tiptap/extension-table-row";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import {
-    Bold, Italic, Underline, List, ListOrdered, AlignLeft, AlignCenter, AlignRight, Image, Video, Link, FileText, Trash2,
+    Bold, Italic, List, ListOrdered, Link, Trash2,
     ChevronLeft, ChevronRight, ChevronUp,
     ChevronDown, Minus, Plus
 } from "lucide-react";

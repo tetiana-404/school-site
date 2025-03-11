@@ -20,7 +20,7 @@ const LoginForm = ({ setUser }) => {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log(response.data.token)
+      //console.log(response.data.token)
 
       if (response.data.token) {
         //setAuthToken(response.data.token);

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import TextEditor from "./TextEditorNew";
 import DatePicker from "react-datepicker";
-import { FaTrash } from 'react-icons/fa';
+import { FaTrash, FaEdit } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import "react-datepicker/dist/react-datepicker.css";
 import './Post.css';
@@ -13,8 +13,14 @@ const Posts = () => {
   const [user, setUser] = useState(localStorage.getItem("user") || null);
   const [editor, setEditor] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const contentRef = useRef("");  // Використовуємо реф для редактора
-  const titleRef = useRef("");    // Використовуємо реф для назви
+
+  const [editingPost, setEditingPost] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editContent, setEditContent] = useState("");
+  const [editDate, setEditDate] = useState("");
+
+  const contentRef = useRef("");
+  const titleRef = useRef("");
   const dateRef = useRef();
 
   // Отримання всіх новин при завантаженні сторінки
@@ -39,6 +45,12 @@ const Posts = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (editor && editingPost) {
+      editor.commands.setContent(editContent);
+    }
+  }, [editContent, editor, editingPost]);
+
   // Обробка зміни заголовка
   const handleInputChange = (e) => {
     titleRef.current.value = e.target.value;  // Оновлюємо значення titleRef
@@ -46,7 +58,12 @@ const Posts = () => {
 
   // Обробка зміни контенту в редакторі
   const handleEditorChange = (value) => {
-    contentRef.current = value;  // Оновлюємо значення contentRef
+    if (editingPost) {
+      setEditContent(value); // Якщо редагуємо — змінюємо editContent
+    } else {
+      contentRef.current = value;  // Оновлюємо значення contentRef
+    }
+
   };
 
   const handleDateChange = (date) => {
@@ -115,6 +132,71 @@ const Posts = () => {
     }
   };
 
+  const handleEditPost = (post) => {
+    setEditingPost(post);
+    setEditTitle(post.title);
+    setEditContent(post.content);
+    setEditDate(new Date(post.updatedAt));
+    setSelectedDate(new Date(post.updatedAt)); 
+
+    if (titleRef.current) {
+      titleRef.current.value = post.title; // Заповнюємо поле заголовка
+    }
+    setTimeout(() => {
+      if (editor) {
+        editor.commands.setContent(post.content);
+      }
+    }, 100);
+    setSelectedDate(new Date(post.updatedAt)); // Встановлюємо вибрану дату
+  };
+
+
+  const handleUpdatePost = async (e) => {
+    e.preventDefault();
+
+    if (!editingPost) return;
+
+    console.log("🔄 Оновлення поста:", editingPost.id);
+
+    const formattedDate = editDate.toISOString().split("T")[0]; 
+
+    try {
+      const response = await axios.put(
+        `${process.env.REACT_APP_BACKEND_URL}/posts/${editingPost.id}`,
+        {
+          title: titleRef.current.value, 
+          content: editContent,
+          updatedAt: formattedDate,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      console.log("✅ Пост оновлено:", response.data);
+
+      if (!response.data) throw new Error("Помилка оновлення поста");
+
+      setPosts(posts.map((post) => (post.id === editingPost.id ? response.data : post)));
+
+      // Очищаємо редагування
+      setEditingPost(null);
+      setEditTitle("");
+      setEditContent("");
+      setEditDate("");
+      titleRef.current.value = "";
+      contentRef.current = "";
+      setSelectedDate(new Date());
+      handleClear();
+    } catch (error) {
+      console.error("Помилка оновлення поста:", error);
+    }
+  };
+
+
   const handleDeletePost = async (postId) => {
     try {
       const result = await Swal.fire({
@@ -149,6 +231,13 @@ const Posts = () => {
       Swal.fire('Помилка!', 'Не вдалося видалити пост.', 'error');
     }
   };
+
+  const decodeHTML = (html) => {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = html;
+    return txt.value;
+  };
+
   return (
     <div>
       <h1>Новини</h1>
@@ -156,7 +245,7 @@ const Posts = () => {
       {user && (
         <div className="news-form-container">
           <h2 className="news-form-title">Додати новину</h2>
-          <form className="news-form" onSubmit={handleAddPost}>
+          <form className="news-form" onSubmit={editingPost ? handleUpdatePost : handleAddPost}>
             <input
               type="text"
               name="title"
@@ -167,16 +256,46 @@ const Posts = () => {
               required
               className="news-input"
             />
-            <TextEditor content={newPost.content} setContent={handleEditorChange} editor={editor} setEditor={setEditor} />
+            <TextEditor
+              key={editingPost ? editingPost.id : "new"}
+              content={editingPost ? editContent : newPost.content}
+              setContent={handleEditorChange}
+              editor={editor}
+              setEditor={setEditor}
+            />
+
 
             <DatePicker
-              selected={selectedDate}
-              onChange={handleDateChange}
+              selected={editingPost ? editDate : selectedDate}
+              onChange={(date) => {
+                if (editingPost) {
+                  setEditDate(date);
+                } else {
+                  setSelectedDate(date);
+                }
+              }}
               dateFormat="dd/MM/yyyy"  // Формат відображення
               className="news-input"
             />
 
-            <button type="submit" className="news-submit-button">Додати новину</button>
+            <button type="submit" className="news-submit-button">
+              {editingPost ? "Оновити новину" : "Додати новину"}
+            </button>
+
+            {editingPost && (
+              <button
+                type="button"
+                onClick={() => {
+                  setEditingPost(null);
+                  setEditTitle("");
+                  setEditContent("");
+                  setEditDate(null);
+                }}
+                className="cancel-button"
+              >
+                Скасувати редагування
+              </button>
+            )}
           </form>
         </div>
       )}
@@ -190,9 +309,15 @@ const Posts = () => {
             {posts.map((post) => (
               <li key={post.id}>
                 <h3>{post.title}</h3>
-                <p dangerouslySetInnerHTML={{ __html: post.content }}></p>
-                <p>Дата: {new Date(post.createdAt).toLocaleDateString()}</p>
-
+                <div dangerouslySetInnerHTML={{ __html: decodeHTML(post.content) }} />
+                <p>Дата: {new Date(post.updatedAt).toLocaleDateString("uk-UA", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })}</p>
+                <button onClick={() => handleEditPost(post)} className="edit-button">
+                  <FaEdit size={20} />
+                </button>
                 <button onClick={() => handleDeletePost(post.id)} className="delete-button">
                   <FaTrash size={20} /> {/* Іконка для видалення */}
                 </button>

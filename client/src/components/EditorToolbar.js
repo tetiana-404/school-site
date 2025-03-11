@@ -2,8 +2,6 @@ import React from 'react';
 import EditorButton from './EditorButton'
 import {
     Bold, Italic, Underline, List, ListOrdered, AlignLeft, AlignCenter, AlignRight, Image, Video, Link, FileText, Trash2,
-    ChevronLeft, ChevronRight, ChevronUp,
-    ChevronDown, Minus, Plus
 } from "lucide-react";
 
 const EditorToolbar = ({ editor, onInsertImage, onInsertFile, isModal, isClear }) => {

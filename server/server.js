@@ -141,6 +141,36 @@ app.post("/posts", authenticateToken, async (req, res) => {
   res.status(201).json(post);
 });
 
+app.put("/posts/:id", authenticateToken, async (req, res) => {
+  const { id } = req.params;
+  const { title, content, updatedAt } = req.body;
+
+  try {
+    const post = await Post.findByPk(id);
+
+    if (!post) {
+      return res.status(404).json({ error: "Пост не знайдено" });
+    }
+
+    // Перевіряємо, чи користувач має право редагувати
+    if (post.userId !== req.user.id) {
+      return res.status(403).json({ error: "Ви не маєте права редагувати цей пост" });
+    }
+
+    post.title = title;
+    post.content = content;
+    post.updatedAt = updatedAt || new Date();
+
+    await post.save();
+
+    res.json(post);
+  } catch (error) {
+    console.error("❌ Помилка оновлення поста:", error);
+    res.status(500).json({ error: "Помилка сервера" });
+  }
+});
+
+
 // 🟢 CRUD Operations for Documents
 app.get("/documents", async (req, res) => {
   const documents = await Document.findAll({ include: User });
