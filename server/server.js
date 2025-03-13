@@ -97,18 +97,13 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ message: "Password incorrect" });
     }
 
-    console.log(`user: ${JSON.stringify(user)}`);
-    console.log(`isPasswordValid: ${isPasswordValid}`);
-
     // ✅ Generate JWT token
-    const token = jwt.sign({ id: user.id, username: user.username }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
+    const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, process.env.JWT_SECRET, {
+      expiresIn: "3h",
     });
     
-    console.log(`JWT_SECRET: ${process.env.JWT_SECRET}`);
-    console.log(`token: ${token}`);
-
-    res.json({ token }); // Send the token to the client
+    console.log("token: ", token, user, user.role)
+    res.json({ token, user: { id: user.id, username: user.username, role: user.role } }); // Send the token to the client
 
   } catch (error) {
     console.error("Login error:", error);
@@ -132,6 +127,19 @@ const authenticateToken = (req, res, next) => {
 app.get("/posts", async (req, res) => {
   const posts = await Post.findAll({ include: User,  order: [["createdAt", "DESC"]]});
   res.json(posts);
+});
+
+app.get('/posts/:id', (req, res) => {
+  const postId = req.params.id;
+  // Отримання поста за id з бази даних
+  Post.findByPk(postId)
+    .then(post => {
+      if (!post) {
+        return res.status(404).json({ error: "Post not found" });
+      }
+      res.json(post);
+    })
+    .catch(err => res.status(500).json({ error: err.message }));
 });
 
 app.post("/posts", authenticateToken, async (req, res) => {
@@ -170,26 +178,6 @@ app.put("/posts/:id", authenticateToken, async (req, res) => {
   }
 });
 
-
-// 🟢 CRUD Operations for Documents
-app.get("/documents", async (req, res) => {
-  const documents = await Document.findAll({ include: User });
-  res.json(documents);
-});
-
-app.post("/documents", authenticateToken, async (req, res) => {
-  const { name, url } = req.body;
-  const document = await Document.create({ name, url, userId: req.user.userId });
-  res.status(201).json(document);
-});
-
-// 🟢 CRUD Operations for Comments
-app.post("/comments", authenticateToken, async (req, res) => {
-  const { content, postId } = req.body;
-  const comment = await Comment.create({ content, userId: req.user.userId, postId });
-  res.status(201).json(comment);
-});
-
 app.delete("/posts/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
 
@@ -216,7 +204,24 @@ app.delete("/posts/:id", authenticateToken, async (req, res) => {
   }
 });
 
+// 🟢 CRUD Operations for Documents
+app.get("/documents", async (req, res) => {
+  const documents = await Document.findAll({ include: User });
+  res.json(documents);
+});
 
+app.post("/documents", authenticateToken, async (req, res) => {
+  const { name, url } = req.body;
+  const document = await Document.create({ name, url, userId: req.user.userId });
+  res.status(201).json(document);
+});
+
+// 🟢 CRUD Operations for Comments
+app.post("/comments", authenticateToken, async (req, res) => {
+  const { content, postId } = req.body;
+  const comment = await Comment.create({ content, userId: req.user.userId, postId });
+  res.status(201).json(comment);
+});
 
 // Start the server
 const PORT = process.env.PORT || 5000;

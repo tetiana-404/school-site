@@ -49,3 +49,48 @@
 .news-form-container button:hover {
     background: #0056b3;
 }
+
+/*new styles*/
+.news-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .news-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .news-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.3s ease;
+  }
+  
+  .news-link:hover {
+    transform: scale(1.05);
+  }
+  
+  .news-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+  
+  .news-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  .news-header {
+    display: flex;
+    justify-content: space-between; /* Розташовує елементи по краях */
+    align-items: center; /* Вирівнює по вертикалі */
+    margin-bottom: 16px; /* Відступ знизу */
+}

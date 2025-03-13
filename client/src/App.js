@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import Home from "./components/Home";
 import Posts from "./components/Posts"
+import PostDetail from "./components/PostDetail";
+import EditPost from "./components/EditPost";
 import "./App.css"; // Підключаємо стилі
 import { FiMenu, FiX, FiLogIn, FiLogOut } from "react-icons/fi"; // Іконки бургер-меню
 
@@ -61,6 +63,8 @@ const App = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginForm setUser={setUser} />} />
         <Route path="/posts" element={<Posts />} />
+        <Route path="/posts/:id" element={<PostDetail />} /> 
+        <Route path="/edit/:id" element={<EditPost />} />
       </Routes>
 
       {/* Підвал */}
