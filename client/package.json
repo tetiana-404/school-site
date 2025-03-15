@@ -5,6 +5,7 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
+    "@fortawesome/fontawesome-free": "^6.7.2",
     "@mui/icons-material": "^6.4.7",
     "@mui/material": "^6.4.7",
     "@tinymce/tinymce-react": "^5.1.1",
@@ -23,6 +24,8 @@
     "@tiptap/react": "^2.11.5",
     "@tiptap/starter-kit": "^2.11.5",
     "axios": "^1.7.9",
+    "bootstrap": "^5.3.3",
+    "bootstrap-icons": "^1.11.3",
     "lucide-react": "^0.475.0",
     "quill": "^2.0.3",
     "quill-better-table": "^1.2.10",

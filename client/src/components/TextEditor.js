@@ -135,7 +135,10 @@ const TextEditor = ({ content, setContent }) => {
                 if (response.data.url) {
                     imageBlocks.push({
                         type: "image",
-                        attrs: { src: response.data.url },
+                        attrs: { 
+                            src: response.data.url,
+                            style: "max-width: 100%; height: auto;", 
+                         },
                     });
 
                     imageBlocks.push({

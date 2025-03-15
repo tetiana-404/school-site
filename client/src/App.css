@@ -1,16 +1,31 @@
 /* Загальні стилі */
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
+  font-family: "Open Sans", sans-serif
 }
 
-/* Шапка */
+a {
+  text-decoration: none;
+  -webkit-transition: all .3s ease;
+  -o-transition: all .3s ease;
+  transition: all .3s ease;
+}
+
+a, h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
+  color: #54595f;
+}
+
+/* Основний стиль для шапки */
 .header {
-  background: #0073e6;
+  width: 100%;
+  background-color: #333;
   color: white;
   padding: 20px;
   text-align: center;
 }
+
+/* Стилі для верхнього рядка */
+
 
 .logo-container {
   display: flex;
@@ -99,6 +114,19 @@ body {
 
 /* Адаптація під мобільні пристрої */
 @media (max-width: 768px) {
+  .top-bar {
+    flex-direction: column;
+    text-align: center;
+}
+
+.social-icons {
+    margin-top: 10px;
+}
+
+.contact-info {
+    margin-bottom: 10px;
+}
+
   .menu-icon {
     display: block;
   }

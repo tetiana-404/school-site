@@ -1,0 +1,8 @@
+light-yellow  #CCB65F, #DECB6C
+dark-yellow #B7952A, #9F7833
+
+light-grey  #7A6D67
+dark-grey #888888, #636363, #2d394b
+blue #818795, #767C86,rgb(161, 185, 240)
+brown #785643
+green #5A684F

@@ -8,6 +8,7 @@ import {
   Box, IconButton, Button
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
+import { Pagination } from "@mui/material";
 import { Link } from "react-router-dom";
 import { FaTrash, FaEdit } from 'react-icons/fa';
 import Swal from 'sweetalert2';
@@ -21,7 +22,13 @@ const Posts = () => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
   const [postData, setPostData] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate();
+
+  const postsPerPage = 12;
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
   // Отримання всіх новин при завантаженні сторінки
   useEffect(() => {
@@ -83,8 +90,28 @@ const Posts = () => {
     }
   };
 
+  const getMainImage = (content) => {
+    if (!content) return "/placeholder.jpg"; 
+  
+    try {
+      //const decodedContent = JSON.parse(`"${content}"`);
+  
+      const div = document.createElement("div");
+      div.innerHTML = content;
+  
+      const imgElement = div.querySelector("img");
+  
+      return imgElement ? imgElement.src : "/placeholder.jpg"; 
+    } catch (error) {
+      console.error("Помилка під час обробки контенту:", error);
+      return "/placeholder.jpg"; // У разі помилки повертаємо дефолтну картинку
+    }
+  };
+  
+
   return (
     <div>
+     
       <div className="news-container">
         <div className="news-header">
           <h1>Новини</h1>
@@ -99,12 +126,20 @@ const Posts = () => {
             </Button>
           )}
         </div>
+        <Pagination
+                count={Math.ceil(posts.length / postsPerPage)} // Загальна кількість сторінок
+                page={currentPage}
+                onChange={(event, value) => setCurrentPage(value)} // Оновлюємо сторінку
+                color="primary"
+                sx={{ display: "flex", justifyContent: "center", marginBottom: 3 }}
+              />
         {posts.length === 0 ? (
           <p>Немає новин.</p>
         ) : (
-
+          <div>
           <div className="news-grid">
-            {posts.map((post) => (
+
+            {currentPosts.map((post) => (
               <Link to={`/posts/${post.id}`} className="news-link" onClick={() => handleClick(post.id)}>
                 <Card
                   sx={{
@@ -164,7 +199,7 @@ const Posts = () => {
                   <CardMedia
                     component="img"
                     height="200"
-                    image={post.imageUrl || "/placeholder.jpg"}
+                    image={getMainImage(post.content)}
                     alt={post.title}
                   />
                   <CardContent sx={{ flexGrow: 1 }}>
@@ -182,8 +217,16 @@ const Posts = () => {
                 </Card>
               </Link>
             ))}
+              
           </div>
-
+          <Pagination
+                count={Math.ceil(posts.length / postsPerPage)} // Загальна кількість сторінок
+                page={currentPage}
+                onChange={(event, value) => setCurrentPage(value)} // Оновлюємо сторінку
+                color="primary"
+                sx={{ display: "flex", justifyContent: "center", marginTop: 3 }}
+              />
+          </div>
         )}
         
       </div>
