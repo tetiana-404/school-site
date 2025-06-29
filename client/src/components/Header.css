@@ -1,0 +1,144 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Bold&display=swap');
+
+.school-name {
+  font-family: 'Montserrat', serif;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.school-title {
+  font-family: 'Cormorant Bold', serif;
+  font-weight: 900;
+  font-size: 1.8rem;
+  color: #368040;
+  line-height: 1;
+  letter-spacing: 3.8px;
+}
+
+.navbar-gradient {
+  background: linear-gradient(to bottom, #f1f4f5, #c2c7cd); /* світло-сірий градієнт */
+}
+.nav-link {
+  color: #343a40 !important; /* темно-сірий текст */
+  font-weight: 500;
+}
+.nav-link:hover, .nav-link:focus {
+  color: var(--primary-green) !important; /* синій при наведенні */
+}
+
+.nav-item.dropdown .nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.nav-item.dropdown .dropdown-toggle::after {
+  display: none;
+}
+
+.nav-item.dropdown .nav-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  position: relative;
+}
+
+.dropdown-arrow {
+  transition: transform 0.3s ease;
+}
+
+.show > .dropdown-arrow {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  background: linear-gradient(180deg, #c2c7cd, #f1f4f5); /* світло-сірий градієнт */
+  border: 1px solid #dee2e6;
+  border-radius: 0 0 0.3rem 0.3rem;
+  display: block;
+  padding: 0.5rem 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  left:0;
+  top:100%;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  transform: translateY(-10px);
+  min-width: 100%;
+  width: max-content;
+  z-index: 1000;
+}
+
+.dropdown-menu.show {
+  opacity: 1;
+  visibility: visible;
+  display: block;
+  transform: translateY(0);
+  transition: all 0.45s ease;
+  width: max-content;
+}
+
+.navbar-nav > .nav-item {
+  position: relative;
+  flex: 1;
+}
+
+.navbar-nav > .nav-item:not(:last-child) {
+  border-right: 1px solid #f1f4f5;
+}
+
+.carousel-item .overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* синій з прозорістю */
+    z-index: 1;
+  }
+  
+  .carousel-caption {
+    z-index: 2; /* щоб бути поверх overlay */
+  }
+
+  .carousel-control-fix {
+    z-index: 2;
+  }
+
+  .carousel-item img {
+    height: 500px; /* 60% висоти вікна браузера */
+    object-fit: cover;
+  }
+
+  @media (min-width: 768px) {
+    .navbar-nav li.nav-item.dropdown:hover .dropdown-menu {
+      display: block;
+      opacity: 1;
+      visibility: visible;
+      width: max-content;
+      transform: translateY(0);
+      transition: all 0.45s ease;
+    }
+
+    .navbar-nav li.nav-item.dropdown:hover .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    .navbar-nav .dropdown .dropdown-menu {
+      margin-top: 10px;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .navbar-nav li.nav-item.dropdown .dropdown-menu {
+      display: none;
+    }
+    .navbar-nav li.nav-item.dropdown .dropdown-menu.show {
+      display: block;
+    }
+  }
+ 

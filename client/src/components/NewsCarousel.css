@@ -1,0 +1,132 @@
+.news-carousel-section {
+  margin: 40px 0;
+  padding: 0 20px; /* Додає відступи зліва і справа у всього карусельного блоку */
+}
+
+.news-slide {
+  position: relative;
+  height: 450px;
+  overflow: hidden;
+  padding: 0 10px; /* Відступ між слайдами */
+  box-sizing: border-box;
+}
+
+.news-slide-bg {
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px; /* Краще виглядає злегка закругленими краями */
+  overflow: hidden;
+  position: relative;
+}
+
+.news-slide-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+  color: white;
+  text-align: left; /* Вирівнювання тексту по лівому краю */
+}
+
+.news-date {
+  font-size: 14px;
+  margin-bottom: 8px;
+  opacity: 0.9;
+  text-align: left;
+}
+
+.news-title-home {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+  text-align: left;
+}
+
+.slick-slide {
+  padding: 0 10px; /* Простір між слайдами */
+  box-sizing: border-box;
+}
+
+.slick-list {
+  margin: 0 -10px; /* Щоб крайні слайди теж мали відступи */
+}
+
+.slick-dots li button:before {
+  color: white;
+}
+
+.slick-prev,
+.slick-next {
+  z-index: 2;
+}
+.news-slide-bg {
+  position: relative;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  overflow: hidden;
+  transition: filter 0.3s ease; /* Плавний ефект затемнення */
+}
+
+.news-slide-bg::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0);
+  transition: background 0.3s ease;
+}
+
+.news-slide-bg:hover::after {
+  background: rgba(0, 0, 0, 0.3); /* При наведенні з'являється затемнення */
+}
+
+.slick-prev, .slick-next {
+  background-color: rgba(0, 0, 0, 0.5); /* Темно-сірий фон */
+  color: white;                          /* Колір іконки стрілки */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  z-index: 1;
+}
+
+.slick-prev:hover, .slick-next:hover {
+  background-color: rgba(0, 0, 0, 0.7); /* Трохи темніше при наведенні */
+}
+
+.slick-prev:before, .slick-next:before {
+  color: white; /* Колір стандартної іконки стрілки від Slick */
+  font-size: 20px;
+}
+
+.slick-dots li button:before {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.5); /* Темно-сірий для всіх крапок */
+  opacity: 1;                /* Щоб не було прозорим */
+}
+
+.slick-dots li.slick-active button:before {
+  color: rgba(0, 0, 0, 0.9); /* Активна крапка ще темніша */
+}
+.view-more-wrapper {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.view-more-button {
+  display: inline-block;
+  font-size: 20px;
+  padding: 40px 20px;
+  color: var(--primary-green);
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.view-more-button:hover {
+  background-color: #555; /* Темніше при наведенні */
+}
