@@ -25,7 +25,7 @@
 
 .single-service-item:hover .icon-holder .service-item-icon-bg, 
 .single-service-item:hover .icon-holder .service-item-icon-bg i:before {
-  border-color: #0E70C7;
+  border-color: var(--primary-green);
 }
 
 .single-service-item .icon-holder .service-item-icon-bg {
@@ -287,7 +287,7 @@
 }
 
 .single-team-member .single-team-member-content {
-  background: #333;
+  background: #ddd;
   position: absolute;
   bottom: 0;
   left: 0;
@@ -345,19 +345,15 @@
   text-align: center;
 }
 
-.single-team-member .single-team-member-content .single-team-member-social li {
+.single-team-member .single-team-member-content .single-team-member-social p {
   display: inline-block;
 }
 
-.single-team-member .single-team-member-content .single-team-member-social li a {
+.single-team-member .single-team-member-content .single-team-member-social p a {
   color: #fff;
   font-size: 18px;
   display: inline-block;
-  width: 40px;
-  height: 40px;
-  line-height: 40px;
-  border-radius: 50%;
-  border: 2px solid #fff;
+  width: 100%;
   z-index: 1;
 }
 
@@ -371,9 +367,13 @@
 }
 
 .single-team-member .single-team-member-content .single-team-member-text h4 {
-  color: #fff;
+  color: #333;
   line-height: 24px;
   letter-spacing: 0.30px;
+}
+
+.single-team-member:hover .single-team-member-content .single-team-member-text h4{
+  color: #fff;
 }
 
 .single-team-member .single-team-member-content .single-team-member-text p {
@@ -395,6 +395,7 @@
   opacity: 1;
   visibility: visible;
   height: auto;
+  min-height: 100px;
   margin-bottom: 15px;
   -webkit-transition: all .2s linear;
   -o-transition: all .2s linear;

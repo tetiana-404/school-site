@@ -267,21 +267,17 @@ const Home = () => {
                       <div key={index} className="single-team-wrapper p-3 text-center">
                         <div className="single-team-member">
                           <img
-                            className="img-fluid mb-3"
+                            className="img-fluid"
                             src={member.img}
                             alt={member.name}
-                            style={{ width: '100%', borderRadius: '10px' }}
+                            style={{ width: '100%' }}
                           />
                           <div className="single-team-member-content">
-                            <ul className="single-team-member-social list-inline mb-2">
-                              <li className="list-inline-item"><a href="#"><FontAwesomeIcon icon={faFacebook} /></a></li>
-                              <li className="list-inline-item"><a href="#"><FontAwesomeIcon icon={faBlogger} /></a></li>
-                              <li className="list-inline-item"><a href="#"><FontAwesomeIcon icon={faPinterest} /></a></li>
-                              <li className="list-inline-item"><a href="#"><FontAwesomeIcon icon={faYoutube} /></a></li>
-                            </ul>
+                            <div className="single-team-member-social list-inline mb-2">
+                              <p className="list-inline-item"><a href="#">{member.position}</a></p>
+                            </div>
                             <div className="single-team-member-text">
                               <h4>{member.name}</h4>
-                              <p style={{ whiteSpace: 'pre-line' }}>{member.position}</p>
                             </div>
                           </div>
                         </div>
@@ -320,6 +316,20 @@ const Home = () => {
         </div>
       </section>
       {/* END Section blog */}
+
+      {/* START NEWSLETTER SECTION */}
+      <section id="hnewsletter" class="hnewslettr-padding bg-theme">
+         <div class="auto-container">
+            <div class="row">
+               <div class="col-lg-12 col-12 mb-lg-5 mb-4">
+                 &nbsp;
+               
+               </div>
+               
+            </div>
+         </div>
+      </section>
+      {/* END NEWSLETTER SECTION */}
     </div>
   );
 };

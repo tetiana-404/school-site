@@ -1,25 +1,28 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import "./Footer.css"; // Якщо захочеш стилізувати окремо
+import 'bootstrap/dist/css/bootstrap.min.css';
+import "./Footer.css"; 
+
+
 
 const Footer = () => {
   return (
     <footer className="footer-section">
       <div
         id="top-footer"
-        className="overlay-2 section-back-image-2"
-        style={{ backgroundImage: "url('/assets/img/bg/footer-bg.jpg')" }}
+        className="section-back-image-2"
+        
       >
         <div className="auto-container">
           <div className="row">
             {/* Logo and About */}
-            <div className="col-lg-3 col-md-6 mb-5">
+            <div className="col-lg-4 col-md-12 mb-5">
               <div className="footer-widget-title">
                 <div className="logo">
                   <Link to="/">
                     <img
                       className="img-fluid"
-                      src="/assets/img/footer-logo.png"
+                      src="/img/logo.png"
                       alt="Logo"
                     />
                   </Link>
@@ -27,25 +30,23 @@ const Footer = () => {
               </div>
               <div className="footer-widget-inner">
                 <p>
-                  Pellentesque Sed ut perspiciatisd omnis iste natus error sit
-                  voluptatem accusantium doloremque laudantium, totam rem
-                  aperiam.
+                  Ми віримо в кожну дитину та створюємо простір, де таланти розкриваються щодня. Разом будуємо шлях до успіху, знань і натхнення.
                 </p>
                 <div className="footer-social mt-3">
                   <ul>
                     <li>
                       <a href="#">
-                        <i className="icofont-instagram"></i>
+                       <i className="bi bi-facebook"></i>
                       </a>
                     </li>
                     <li>
                       <a href="#">
-                        <i className="icofont-blogger"></i>
+                        <i class="bi bi-instagram"></i>
                       </a>
                     </li>
                     <li>
                       <a href="#">
-                        <i className="icofont-youtube"></i>
+                        <i class="bi bi-youtube"></i>
                       </a>
                     </li>
                     <li>
@@ -59,95 +60,58 @@ const Footer = () => {
             </div>
 
             {/* Useful Links */}
-            <div className="col-lg-3 col-md-6 mb-5">
+            <div className="col-lg-4 col-md-6 mb-5">
               <div className="footer-widget-title">
                 <h4>Корисні посилання</h4>
               </div>
               <div className="footer-widget-inner">
-                <ul>
+                <ul style={{paddingLeft: 0}}>
                   <li>
-                    <Link to="#">
-                      <i className="icofont-circled-right"></i> Наші класи
+                    <Link to="https://mon.gov.ua/" target="blank">
+                      <i class="bi bi-arrow-right-circle-fill"></i> Міністерства освіти і науки України
                     </Link>
                   </li>
                   <li>
-                    <Link to="#">
-                      <i className="icofont-circled-right"></i> Послуги
+                    <Link to="https://osvita.loda.gov.ua/" target="blank">
+                      <i class="bi bi-arrow-right-circle-fill"></i> Освіта Львівщини
                     </Link>
                   </li>
                   <li>
-                    <Link to="#">
-                      <i className="icofont-circled-right"></i> Вчителі
+                    <Link to="https://prometheus.org.ua/" target="blank">
+                      <i class="bi bi-arrow-right-circle-fill"></i> Prometheus
                     </Link>
                   </li>
-                  <li>
-                    <Link to="#">
-                      <i className="icofont-circled-right"></i> Галерея
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="icofont-circled-right"></i> Часті питання
-                    </Link>
-                  </li>
-                  <li>
-                    <Link to="#">
-                      <i className="icofont-circled-right"></i> Відгуки
-                    </Link>
-                  </li>
+                  
                 </ul>
               </div>
             </div>
 
             {/* Contact Info */}
-            <div className="col-lg-3 col-md-6 mb-5">
+            <div className="col-lg-4 col-md-6 mb-5">
               <div className="footer-widget-title">
                 <h4>Контакти</h4>
               </div>
               <div className="footer-widget-inner">
                 <div className="footer-contact-widget">
                   <div className="footer-contact-sin">
-                    <i className="icofont-pin"></i>
-                    <p>Brooklyn, NY 11212</p>
+                    <i class="bi bi-geo-alt-fill"></i>&nbsp;&nbsp;
+                      м.Львів, вул.Любінська, 93а
                   </div>
                   <div className="footer-contact-sin">
-                    <i className="icofont-smart-phone"></i>
-                    <p>123-456-0975</p>
+                    <i class="bi bi-telephone-fill"></i>&nbsp;&nbsp;
+                    <a href="tel:+380322622036"> +38 (032) 262-20-36</a>
                   </div>
                   <div className="footer-contact-sin">
-                    <i className="icofont-envelope"></i>
-                    <p>info@yoursite.com</p>
+                    <i class="bi bi-envelope-fill"></i>&nbsp;&nbsp;
+                    yevshan79@gmail.com
                   </div>
-                  <div className="footer-contact-sin">
-                    <i className="icofont-clock-time"></i>
-                    <p>Mon - Sun : 09:00 - 18:00</p>
-                  </div>
+                  
                 </div>
               </div>
             </div>
 
             {/* Footer Menu */}
-            <div className="col-lg-3 col-md-6 mb-5">
-              <div className="footer-widget-title">
-                <h4>Навігація</h4>
-              </div>
-              <div className="footer-widget-inner">
-                <ul>
-                  <li>
-                    <Link to="/">Головна</Link>
-                  </li>
-                  <li>
-                    <Link to="/about">Про нас</Link>
-                  </li>
-                  <li>
-                    <Link to="/contact">Контакти</Link>
-                  </li>
-                  <li>
-                    <Link to="/privacy">Політика конфіденційності</Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
+           
           </div>
         </div>
       </div>
@@ -156,13 +120,13 @@ const Footer = () => {
       <div id="bottom-footer" className="bg-gray">
         <div className="auto-container">
           <div className="row">
-            <div className="col-lg-6 col-md-12">
+            <div className="col-lg-6 col-md-6">
               <p className="copyright-text">
                 Copyright © {new Date().getFullYear()}{" "}
-                <Link to="#">Kidzton</Link> | All Rights Reserved
+                <Link to="#">Євшан</Link> | All Rights Reserved
               </p>
             </div>
-            <div className="col-lg-6 col-md-12">
+            <div className="col-lg-6 col-md-6 d-none d-md-block d-lg-block">
               <div className="footer-menu">
                 <ul>
                   <li>

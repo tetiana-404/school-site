@@ -1,21 +1,27 @@
 .news-carousel-section {
-  margin: 40px 0;
-  padding: 0 20px; /* Додає відступи зліва і справа у всього карусельного блоку */
+  margin: 0;
+  padding: 0 20px; 
 }
 
 .news-slide {
   position: relative;
   height: 450px;
-  overflow: hidden;
-  padding: 0 10px; /* Відступ між слайдами */
+  overflow: visible;
+  padding: 30px 10px; 
   box-sizing: border-box;
+  transition: transform 0.6s ease, filter 0.3s ease; 
+  will-change: transform;
+}
+
+.news-slide:hover {
+   transform: scale(1.13);
 }
 
 .news-slide-bg {
   height: 100%;
   background-size: cover;
   background-position: center;
-  border-radius: 10px; /* Краще виглядає злегка закругленими краями */
+  border-radius: 10px; 
   overflow: hidden;
   position: relative;
 }
@@ -27,7 +33,13 @@
   padding: 20px;
   background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
   color: white;
-  text-align: left; /* Вирівнювання тексту по лівому краю */
+  text-align: left;
+  transition: transform 0.4s ease;
+  transform: translateY(0);
+}
+
+.news-slide-bg:hover .news-slide-overlay {
+  transform: translateY(-5px);
 }
 
 .news-date {
@@ -61,6 +73,7 @@
 .slick-next {
   z-index: 2;
 }
+
 .news-slide-bg {
   position: relative;
   height: 100%;
@@ -68,7 +81,7 @@
   background-position: center;
   border-radius: 10px;
   overflow: hidden;
-  transition: filter 0.3s ease; /* Плавний ефект затемнення */
+  
 }
 
 .news-slide-bg::after {
@@ -83,7 +96,7 @@
 }
 
 .news-slide-bg:hover::after {
-  background: rgba(0, 0, 0, 0.3); /* При наведенні з'являється затемнення */
+  background: rgba(0, 0, 0, 0.35);
 }
 
 .slick-prev, .slick-next {
@@ -106,12 +119,13 @@
 
 .slick-dots li button:before {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.5); /* Темно-сірий для всіх крапок */
-  opacity: 1;                /* Щоб не було прозорим */
+  color: rgba(0, 0, 0, 0.8); 
+  opacity: 1;                
 }
 
 .slick-dots li.slick-active button:before {
-  color: rgba(0, 0, 0, 0.9); /* Активна крапка ще темніша */
+  color: var(--primary-green); /* Активна крапка ще темніша */
+  font-size: 22px;
 }
 .view-more-wrapper {
   text-align: center;
@@ -119,14 +133,46 @@
 }
 
 .view-more-button {
+  color: #fff;
+  background-color: var(--primary-green);
+  margin: 40px 0;
+  padding: 8px 27px;
+  border-radius: 30px;
+  border: 2px solid var(--primary-green);
+  position: relative;
   display: inline-block;
-  font-size: 20px;
-  padding: 40px 20px;
-  color: var(--primary-green);
-  text-decoration: none;
-  transition: background-color 0.3s ease;
+  vertical-align: middle;
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  -webkit-transition-property: color;
+  transition-property: color;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+}
+.view-more-button:before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  border-radius: 30px;
+  background-color: #fff;
+  -webkit-transform: scaleX(0);
+  transform: scaleX(0);
+  -webkit-transform-origin: 50%;
+  transform-origin: 50%;
+  -webkit-transition-property: transform;
+  transition-property: transform;
+  -webkit-transition-duration: 0.3s;
+  transition-duration: 0.3s;
+  -webkit-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
 }
 
-.view-more-button:hover {
-  background-color: #555; /* Темніше при наведенні */
+.view-more-button:hover, .view-more-button:focus, .view-more-button:active {
+  color: #333;
+  border: 2px solid var(--primary-green);
+  background-color: #fff;
 }

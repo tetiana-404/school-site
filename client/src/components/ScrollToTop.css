@@ -2,9 +2,9 @@
   position: fixed;
   bottom: 40px;
   right: 30px;
-  background-color: #222;
+  background-color: var(--primary-green);
   color: #fff;
-  padding: 10px 12px;
+  padding: 20px 22px;
   border-radius: 50%;
   cursor: pointer;
   opacity: 0;

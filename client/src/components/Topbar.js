@@ -5,7 +5,7 @@ import './Topbar.css';
 const Topbar = () => {
     return (
 
-        <div className="top-bar p-1 bg-dark text-white">
+        <div className="top-bar p-1  text-white">
             <div className="container">
                 <div className="container-fluid">
                     <div className="d-flex align-items-center justify-content-between flex-nowrap">

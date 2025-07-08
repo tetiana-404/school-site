@@ -46,7 +46,7 @@ const ImgSlider = () => {
     autoplaySpeed: 4000,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true,
+    arrows: false,
     fade: true,
     responsive: [
       {

@@ -52,9 +52,7 @@ const NewsCarousel = () => {
 
   return (
     <section className="news-carousel-section">
-      <Typography variant="h4" sx={{ mb: 2 }}>
-        Останні новини
-      </Typography>
+     
       <Slider {...settings}>
         {latestPosts.map((post) => (
           <div key={post.id} className="news-slide">
@@ -81,9 +79,9 @@ const NewsCarousel = () => {
         ))}
       </Slider>
        <div className="view-more-wrapper">
-        <Link to="/posts" className="view-more-button mx-auto text-center wow fadeInDown">
-          Більше новин...  <i className="icofont-plus me-2"></i>
-
+        <Link to="/posts" className="view-more-button btn-sm mx-auto text-center wow fadeInDown">
+          ВСІ НОВИНИ ...  <i className="icofont-plus me-2"></i>
+          
         </Link>
        
       </div>
