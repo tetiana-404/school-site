@@ -7,7 +7,7 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { sequelize, User, Post, Document, Comment } = require("./models");
+const { sequelize, User, Post, Document, Comment, HomeAbout, HomeSlider, HomeCounter, HomeMeta, TeamMember } = require("./models");
 
 const app = express();
 app.use(express.json({ limit: "10mb" })); // Default is 100kb, now increased to 50MB
@@ -221,6 +221,173 @@ app.post("/comments", authenticateToken, async (req, res) => {
   const { content, postId } = req.body;
   const comment = await Comment.create({ content, userId: req.user.userId, postId });
   res.status(201).json(comment);
+});
+
+// 🏫 GET /api/home_about — Отримати дані
+app.get('/api/home_about', async (req, res) => {
+  try {
+    let about = await HomeAbout.findOne();
+    if (!about) {
+      // Якщо запису ще немає — створюємо з порожніми значеннями
+      about = await HomeAbout.create({
+        title: '',
+        content: '',
+        subText: '',
+      });
+    }
+    res.json(about);
+  } catch (err) {
+    console.error('GET /api/home_about error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// ✏️ PUT /api/home_about — Оновити дані
+app.put('/api/home_about', async (req, res) => {
+  const { title, content, subText, image } = req.body;
+  try {
+    let about = await HomeAbout.findOne();
+    if (!about) {
+      about = await HomeAbout.create({ title, content, subText });
+    } else {
+      about.title = title;
+      about.content = content;
+      about.subText = subText;
+      await about.save();
+    }
+    res.json(about);
+  } catch (err) {
+    console.error('PUT /api/home_about error:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.get("/api/home_sliders", async (req, res) => {
+  const sliders = await HomeSlider.findAll({ order: [["createdAt", "ASC"]] });
+  res.json(sliders);
+});
+
+// Додати слайд
+app.post("/api/home_sliders", async (req, res) => {
+  const { image, title, subtitle, text } = req.body;
+  const slider = await HomeSlider.create({ image, title, subtitle, text });
+  res.status(201).json(slider);
+});
+
+// Оновити слайд
+app.put("/api/home_sliders/:id", async (req, res) => {
+  const { id } = req.params;
+  const { image, title, subtitle, text } = req.body;
+  const slider = await HomeSlider.findByPk(id);
+  if (!slider) return res.status(404).json({ error: "Слайд не знайдено" });
+
+  slider.image = image;
+  slider.title = title;
+  slider.subtitle = subtitle;
+  slider.text = text;
+  await slider.save();
+  res.json(slider);
+});
+
+// Видалити слайд
+app.delete("/api/home_sliders/:id", async (req, res) => {
+  const { id } = req.params;
+  const slider = await HomeSlider.findByPk(id);
+  if (!slider) return res.status(404).json({ error: "Слайд не знайдено" });
+
+  await slider.destroy();
+  res.json({ message: "Слайд видалено" });
+});
+
+// GET all counters
+app.get('/api/counters', async (req, res) => {
+  const counters = await HomeCounter.findAll();
+  res.json(counters);
+});
+
+// PUT all counters
+app.put('/api/counters/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const counter = await HomeCounter.findByPk(id);
+    if (!counter) {
+      return res.status(404).json({ error: 'Counter not found' });
+    }
+
+    await counter.update(req.body);
+    res.json(counter);
+  } catch (err) {
+    console.error('❌ Failed to update counter:', err);
+    res.status(500).json({ error: 'Update failed' });
+  }
+});
+
+// GET subtitle
+app.get('/api/home-meta', async (req, res) => {
+  let meta = await HomeMeta.findOne();
+
+  if (!meta) {
+    meta = await HomeMeta.create({
+      subtitle: 'Наші досягнення за 2023 - 2024 навчальний рік'
+    });
+  }
+
+  res.json({ subtitle: meta?.subtitle || '' });
+});
+
+// PUT subtitle
+app.put('/api/home-meta', async (req, res) => {
+  try {
+    const { subtitle } = req.body;
+
+    let meta = await HomeMeta.findOne();
+    if (!meta) {
+      meta = await HomeMeta.create({ subtitle });
+    } else {
+      await meta.update({ subtitle });
+    }
+
+    res.json(meta);
+  } catch (err) {
+    console.error('❌ Failed to save subtitle:', err);
+    res.status(500).json({ error: 'Subtitle save failed' });
+  }
+});
+
+// GET all team members
+app.get('/api/team-members', async (req, res) => {
+  try {
+    const members = await TeamMember.findAll();
+    res.json(members);
+  } catch (err) {
+    console.error('❌ Failed to get team members:', err);
+    res.status(500).json({ error: 'Failed to fetch team members' });
+  }
+});
+
+// PUT update or create team member
+app.put('/api/team-members/:id', async (req, res) => {
+  const { id } = req.params;
+  const { name, position, img } = req.body;
+
+  try {
+    const [member, created] = await TeamMember.upsert({ id, name, position, img }, { returning: true });
+    res.json(member);
+  } catch (err) {
+    console.error('❌ Failed to update team member:', err);
+    res.status(500).json({ error: 'Failed to update team member' });
+  }
+});
+
+// DELETE team member
+app.delete('/api/team-members/:id', async (req, res) => {
+  try {
+    await TeamMember.destroy({ where: { id: req.params.id } });
+    res.json({ message: 'Team member deleted' });
+  } catch (err) {
+    console.error('❌ Failed to delete team member:', err);
+    res.status(500).json({ error: 'Failed to delete team member' });
+  }
 });
 
 // Start the server

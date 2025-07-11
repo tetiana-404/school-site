@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import Topbar from "./components/Topbar";
 import Header from "./components/Header"
-import ImgSlider from "./components/ImgSlider";
 import Home from "./components/Home";
 import Posts from "./components/Posts"
 import PostDetail from "./components/PostDetail";
@@ -27,7 +26,7 @@ const App = () => {
     <Router>
       <Topbar />
       <Header />
-      <ImgSlider /> 
+      
       <main>
       {/* Контент */}
       <Routes>

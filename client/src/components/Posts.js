@@ -13,7 +13,7 @@ import { Link } from "react-router-dom";
 import { FaTrash, FaEdit } from 'react-icons/fa';
 import Swal from 'sweetalert2';
 import "react-datepicker/dist/react-datepicker.css";
-import './Post.css';
+import './Posts.css';
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);

@@ -11,6 +11,12 @@ db.User = require("./user")(sequelize, DataTypes);
 db.Post = require("./post")(sequelize, DataTypes);
 db.Document = require("./document")(sequelize, DataTypes);
 db.Comment = require("./comment")(sequelize, DataTypes);
+db.HomeAbout = require('./homeAbout')(sequelize, DataTypes);
+db.HomeSlider = require("./homeslider")(sequelize, DataTypes);
+db.HomeCounter = require('./homeCounter')(sequelize, DataTypes);
+db.HomeMeta = require('./homemeta')(sequelize, DataTypes);
+db.TeamMember = require('./teamMember')(sequelize, DataTypes);
+
 
 // Define relationships
 db.User.hasMany(db.Post, { foreignKey: "userId" });
