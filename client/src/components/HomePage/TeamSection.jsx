@@ -87,29 +87,30 @@ const TeamSection = ({ user }) => {
     slidesToScroll: 1,
     responsive: [
       { breakpoint: 992, settings: { slidesToShow: 2 } },
-      { breakpoint: 576, settings: { slidesToShow: 1 } },
+      { breakpoint: 768, settings: { slidesToShow: 1 } },
     ],
   };
 
   return (
     <section id="team" className="section-padding py-5 position-relative">
       <div className="auto-container">
-        <div className="row">
+        <div className="row position-relative">
           <div className="col-lg-7 col-md-7 col-12 mx-auto text-center position-relative">
             <div className="section-title">
               <h6 className="text-success mb-2">Навчаємо з любов'ю</h6>
               <h2 className="fw-bold mb-3">Наші вчителі</h2>
               <p className="py-3">Натхненні професіонали, які ведуть дітей до успіху.</p>
             </div>
-            {user?.role === 'admin' && !editMode && (
+            
+          </div>
+          {user?.role === 'admin' && !editMode && (
               <button
-                className="btn btn-outline-dark position-absolute bottom-0 end-0 m-3"
+                className="btn btn-outline-dark position-absolute bottom-0 m-3 w-auto" style={{right:20}}
                 onClick={() => setEditMode(true)}
               >
                 ✏️
               </button>
             )}
-          </div>
         </div>
 
         <div className="row mb-5">
@@ -124,7 +125,7 @@ const TeamSection = ({ user }) => {
                           className="img-fluid"
                           src={member.img || '/img/no-photo.jpg'}
                           alt={member.name}
-                          style={{ height: 200, objectFit: 'cover', width: '100%' }}
+                          style={{ height:'300px', objectFit: 'cover', width: '100%' }}
                         />
                         <div className="single-team-member-content">
                           {editMode ? (

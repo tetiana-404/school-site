@@ -30,32 +30,14 @@ const Footer = () => {
               </div>
               <div className="footer-widget-inner">
                 <p>
-                  Ми віримо в кожну дитину та створюємо простір, де таланти розкриваються щодня. Разом будуємо шлях до успіху, знань і натхнення.
+                  Євшан, чарівне зілля <br />
+                  Росте в степу, не знати, де.<br />
+                  Та хто його добуде,<br />
+                  Далекий Рідний Край знайде<br />
+                  І виб'ється у люди.<br /><br />
+                  <i>Леся Храплива</i>
                 </p>
-                <div className="footer-social mt-3">
-                  <ul>
-                    <li>
-                      <a href="#">
-                       <i className="bi bi-facebook"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="bi bi-instagram"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="bi bi-youtube"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i className="icofont-linkedin"></i>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+                
               </div>
             </div>
 
@@ -106,6 +88,26 @@ const Footer = () => {
                     yevshan79@gmail.com
                   </div>
                   
+                </div>
+                <div className="footer-social mt-3">
+                  <ul>
+                    <li>
+                      <a href="#">
+                       <i className="bi bi-facebook"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <i class="bi bi-instagram"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <i class="bi bi-youtube"></i>
+                      </a>
+                    </li>
+                    
+                  </ul>
                 </div>
               </div>
             </div>

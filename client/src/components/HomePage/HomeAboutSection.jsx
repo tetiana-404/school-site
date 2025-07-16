@@ -13,7 +13,6 @@ const HomeAboutSection = ({ user }) => {
       fetch(`${process.env.REACT_APP_BACKEND_URL}/api/home_about`)
       .then(res => res.json())
       .then(data => {
-        console.log('user:', user);
         setTitle(data.title || '');
         setContent(data.content || '');
         setSubText(data.subText || '');
