@@ -46,12 +46,12 @@ const Header = () => {
       <div className="container py-4">
         <div className="d-flex flex-column flex-md-row align-items-center justify-content-between w-100">
           <div className="mb-3 mb-md-0">
-            <img
+            <Link to="/"> <img
               src="/img/logo.png"
               alt="Євшан"
               className="img-fluid"
               style={{ maxWidth: "250px" }}
-            />
+            /></Link>
           </div>
 
           <div className="contact-info d-flex flex-wrap justify-content-center justify-content-md-end align-items-center text-center text-md-end gap-3">
@@ -77,7 +77,7 @@ const Header = () => {
                 <div className="collapse navbar-collapse" id="navbarNav">
                   <ul className="navbar-nav w-100 d-flex justify-content-between">
                     <li className="nav-item">
-                      <a className="nav-link" href="#">Новини</a>
+                      <Link className="nav-link" to="/posts">Новини</Link>
                     </li>
 
 

@@ -50,22 +50,42 @@ const Footer = () => {
                 <ul style={{paddingLeft: 0}}>
                   <li>
                     <Link to="https://mon.gov.ua/" target="blank">
-                      <i class="bi bi-arrow-right-circle-fill"></i> Міністерства освіти і науки України
+                      <i className="bi bi-arrow-right-circle-fill"></i> Міністерства освіти і науки України
                     </Link>
                   </li>
                   <li>
                     <Link to="https://osvita.loda.gov.ua/" target="blank">
-                      <i class="bi bi-arrow-right-circle-fill"></i> Освіта Львівщини
+                      <i className="bi bi-arrow-right-circle-fill"></i> Освіта Львівщини
                     </Link>
                   </li>
                   <li>
                     <Link to="https://prometheus.org.ua/" target="blank">
-                      <i class="bi bi-arrow-right-circle-fill"></i> Prometheus
+                      <i className="bi bi-arrow-right-circle-fill"></i> Prometheus
                     </Link>
                   </li>
                   
                 </ul>
               </div>
+              <div className="footer-social mt-3">
+                  <ul>
+                    <li>
+                      <a href="#">
+                       <i className="bi bi-facebook"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <i className="bi bi-instagram"></i>
+                      </a>
+                    </li>
+                    <li>
+                      <a href="#">
+                        <i className="bi bi-youtube"></i>
+                      </a>
+                    </li>
+                    
+                  </ul>
+                </div>
             </div>
 
             {/* Contact Info */}
@@ -76,39 +96,24 @@ const Footer = () => {
               <div className="footer-widget-inner">
                 <div className="footer-contact-widget">
                   <div className="footer-contact-sin">
-                    <i class="bi bi-geo-alt-fill"></i>&nbsp;&nbsp;
+                    <i className="bi bi-house-fill"></i>&nbsp;&nbsp;
+                      Львівська гімназія "Євшан"
+                  </div>
+                  <div className="footer-contact-sin">
+                    <i className="bi bi-geo-alt-fill"></i>&nbsp;&nbsp;
                       м.Львів, вул.Любінська, 93а
                   </div>
                   <div className="footer-contact-sin">
-                    <i class="bi bi-telephone-fill"></i>&nbsp;&nbsp;
+                    <i className="bi bi-telephone-fill"></i>&nbsp;&nbsp;
                     <a href="tel:+380322622036"> +38 (032) 262-20-36</a>
                   </div>
                   <div className="footer-contact-sin">
-                    <i class="bi bi-envelope-fill"></i>&nbsp;&nbsp;
+                    <i className="bi bi-envelope-fill"></i>&nbsp;&nbsp;
                     yevshan79@gmail.com
                   </div>
                   
                 </div>
-                <div className="footer-social mt-3">
-                  <ul>
-                    <li>
-                      <a href="#">
-                       <i className="bi bi-facebook"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="bi bi-instagram"></i>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <i class="bi bi-youtube"></i>
-                      </a>
-                    </li>
-                    
-                  </ul>
-                </div>
+                
               </div>
             </div>
 

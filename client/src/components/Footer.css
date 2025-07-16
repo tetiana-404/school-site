@@ -83,6 +83,11 @@
   background-color: #333;
 }
 
+.footer-social ul {
+list-style-type: none;
+text-align: left;
+}
+
 .footer-social ul li {
   float: left;
 }
