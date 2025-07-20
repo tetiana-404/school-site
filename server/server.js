@@ -7,7 +7,8 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { sequelize, User, Post, Document, Comment, HomeAbout, HomeSlider, HomeCounter, HomeMeta, TeamMember } = require("./models");
+const { sequelize, User, Post, Document, Comment, HomeAbout, HomeSlider, HomeCounter, HomeMeta, TeamMember, AboutInfo } = require("./models");
+const { HomeAboutPage, HomeAboutCounter  } = require('./models');
 
 const app = express();
 app.use(express.json({ limit: "10mb" })); // Default is 100kb, now increased to 50MB
@@ -387,6 +388,96 @@ app.delete('/api/team-members/:id', async (req, res) => {
   } catch (err) {
     console.error('❌ Failed to delete team member:', err);
     res.status(500).json({ error: 'Failed to delete team member' });
+  }
+});
+
+// GET — отримати контент "Про школу"
+app.get('/api/home_about_page', async (req, res) => {
+  try {
+    const about = await HomeAboutPage.findOne({ where: { id: 1 } });
+    res.json(about);
+  } catch (error) {
+     console.error('GET /api/home_about_page error:');
+  console.error('Message:', error.message);
+  console.error('Stack:', error.stack);
+  console.error('Full error object:', error);
+  res.status(500).json({ error: 'Помилка при завантаженні розширена.' });
+  }
+});
+
+// PUT — зберегти / оновити контент
+app.put('/api/home_about_page', async (req, res) => {
+  try {
+    const { content } = req.body;
+    let about = await HomeAboutPage.findByPk(1);
+
+    if (about) {
+       await about.update({ content });
+
+      //await about.update({ content });
+    } else {
+      about = await HomeAboutPage.create({ id: 1, content });
+    }
+
+    res.json(about);
+  } catch (error) {
+    console.error('❌ PUT /api/home_about_page error:', error.message, error.stack);
+    res.status(500).json({ error: 'Помилка при збереженні.' });
+  }
+});
+
+// GET
+app.get("/contact", async (req, res) => {
+  const info = await AboutInfo.findOne({ where: { id: 1 } });
+  if (!info) {
+    return res.status(404).json({ message: "No info found" });
+  }
+  res.json(info);
+});
+
+// PUT (update)
+app.put("/contact", async (req, res) => {
+  const { fullName, address, contacts, schedule, image } = req.body;
+  const info = await AboutInfo.findOne({ where: { id: 1 } });
+  if (info) {
+    await info.update({ fullName, address, contacts, schedule, image });
+    res.json(info);
+  } else {
+    const newInfo = await AboutInfo.create({ fullName, address, contacts, schedule, image });
+    res.json(newInfo);
+  }
+});
+
+app.get('/api/home_counter', async (req, res) => {
+  try {
+    const counters = await HomeAboutCounter.findAll();
+    res.json(counters);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch counters' });
+  }
+});
+
+// PUT — оновити всі лічильники
+app.put('/api/home_counter', async (req, res) => {
+  const updates = req.body;
+  try {
+    const updated = [];
+
+    for (const item of updates) {
+      const counter = await HomeAboutCounter.findByPk(item.id);
+      if (counter) {
+        await counter.update({
+          value: item.value,
+          text: item.text,
+        });
+        updated.push(counter);
+      }
+    }
+
+    res.json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update counters' });
   }
 });
 

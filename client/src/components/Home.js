@@ -7,7 +7,6 @@ import WhyChooseUs from "./HomePage/WhyChooseUs"
 import CounterSection from "./HomePage/CounterSection";
 import TeamSection from "./HomePage/TeamSection";
 import NewsSection from "./HomePage/NewsSection";
-import NewsletterSection from "./HomePage/NewsletterSection";
 import Slider from 'react-slick';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook, faPinterest, faYoutube, faBlogger } from '@fortawesome/free-brands-svg-icons';
@@ -80,8 +79,6 @@ const Home = () => {
       <CounterSection user={user} />
       <TeamSection user={user} />
       <NewsSection />
-      <NewsletterSection />
-      
     </div>
   );
 };

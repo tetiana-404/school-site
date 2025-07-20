@@ -130,7 +130,7 @@ const Posts = () => {
                 count={Math.ceil(posts.length / postsPerPage)} // Загальна кількість сторінок
                 page={currentPage}
                 onChange={(event, value) => setCurrentPage(value)} // Оновлюємо сторінку
-                color="primary"
+                className="activePage"
                 sx={{ display: "flex", justifyContent: "center", marginBottom: 3 }}
               />
         {posts.length === 0 ? (

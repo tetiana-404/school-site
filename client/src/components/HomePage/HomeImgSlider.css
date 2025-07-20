@@ -1,7 +1,12 @@
 .home-single-slide {
   height: 90vh;
   position: relative;
-  color: white;
+  color: white !important;
+}
+
+.home-single-slide h2,
+.home-single-slide h4 {
+  color: white !important;
 }
 
 .home-single-slide .container {

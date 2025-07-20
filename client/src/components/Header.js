@@ -80,56 +80,96 @@ const Header = () => {
                       <Link className="nav-link" to="/posts">Новини</Link>
                     </li>
 
+                  <li className="nav-item dropdown">
+                    <a
+                      className="nav-link dropdown-toggle"
+                      href="#"
+                      id="dropdownStudents"
+                      role="button"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      Про <br /> гімназію
+                      <svg
+                        className="dropdown-arrow"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="12"
+                        height="12"
+                        viewBox="0 0 12 12"
+                        fill="none"
+                        stroke="#6c757d"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polyline points="2 4 6 8 10 4" />
+                      </svg>
+                    </a>
+                    <ul className="dropdown-menu" aria-labelledby="dropdownStudents">
+                      <li><Link className="dropdown-item" to="/about">Загальна інформація</Link></li>
+                      <li><Link className="dropdown-item" to="/history">Історія</Link></li>
+                      <li><Link className="dropdown-item" to="/staff">Адміністрація, вчителі</Link></li>
+                      <li><Link className="dropdown-item" to="/documents">Установчі документи</Link></li>
+                      <li><Link className="dropdown-item" to="/strategy">Стратегія розвитку гімназії</Link></li>
+                      <li><Link className="dropdown-item" to="/reports">Звіти директора</Link></li>
+                      <li><Link className="dropdown-item" to="/certifications">Підвищення кваліфікацій. Атестації.</Link></li>
+                      <li><Link className="dropdown-item" to="/vacancies">Вакансії</Link></li>
+                    </ul>
+                  </li>
 
-                    <li className="nav-item dropdown">
-                      <a className="nav-link dropdown-toggle" href="#" id="dropdownStudents" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Для учнів
-                        <svg className="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#6c757d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="2 4 6 8 10 4" />
-                        </svg>
-                      </a>
-                      <ul className="dropdown-menu" aria-labelledby="dropdownStudents">
-                        <li><a className="dropdown-item" href="#">Ресурси для учнів</a></li>
-                        <li><a className="dropdown-item" href="#">Розклад</a></li>
-                        <li><a className="dropdown-item" href="#">Календар подій</a></li>
-                      </ul>
-                    </li>
 
 
                     <li className="nav-item dropdown">
                       <a className="nav-link dropdown-toggle" href="#" id="dropdownParents" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Для батьків
+                        Інформаційна <br /> відкритість
                         <svg className="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#6c757d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="2 4 6 8 10 4" />
                         </svg>
                       </a>
                       <ul className="dropdown-menu" aria-labelledby="dropdownParents">
-                        <li><a className="dropdown-item" href="#">Інформація для батьків</a></li>
-                        <li><a className="dropdown-item" href="#">Контакти вчителів</a></li>
-                        <li><a className="dropdown-item" href="#">Рекомендації</a></li>
+                        <li><a className="dropdown-item" href="#">Нормативні документи</a></li>
+                        <li><a className="dropdown-item" href="#">Територія обслуговування</a></li>
+                        <li><a className="dropdown-item" href="#">Мова освітнього процесу</a></li>
+                        <li><a className="dropdown-item" href="#">Матеріально-технічне забезпечення</a></li>
+                        <li><a className="dropdown-item" href="#">Додаткові освітні послуги</a></li>
+                        <li><a className="dropdown-item" href="#">Правила поведінки ОБЖ</a></li>
+                        <li><a className="dropdown-item" href="#">Протидія булінгу</a></li>
+                        <li><a className="dropdown-item" href="#">Освітні програми</a></li>
+                        <li><a className="dropdown-item" href="#">Сімейна форма здобуття освіти</a></li>
                       </ul>
                     </li>
 
 
                     <li className="nav-item dropdown">
                       <a className="nav-link dropdown-toggle" href="#" id="dropdownTeachers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Для вчителів
+                        Наші <br /> досягнення
                         <svg className="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#6c757d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                           <polyline points="2 4 6 8 10 4" />
                         </svg>
                       </a>
                       <ul className="dropdown-menu" aria-labelledby="dropdownTeachers">
-                        <li><a className="dropdown-item" href="#">Інформація для батьків</a></li>
-                        <li><a className="dropdown-item" href="#">Контакти вчителів</a></li>
-                        <li><a className="dropdown-item" href="#">Рекомендації</a></li>
+                        <li><a className="dropdown-item" href="#">Рейтинг</a></li>
+                        <li><a className="dropdown-item" href="#">Медалісти</a></li>
+                        <li><a className="dropdown-item" href="#">Олімпіади</a></li>
+                        <li><a className="dropdown-item" href="#">Успішний вчитель</a></li>
                       </ul>
                     </li>
 
-                    <li className="nav-item">
-                      <a className="nav-link" href="#">Наші досягнення</a>
+                    <li className="nav-item dropdown">
+                      <a className="nav-link dropdown-toggle" href="#" id="dropdownTeachers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                         Учням <br />та батькам
+                        <svg className="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#6c757d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                          <polyline points="2 4 6 8 10 4" />
+                        </svg>
+                      </a>
+                      <ul className="dropdown-menu" aria-labelledby="dropdownTeachers">
+                        <li><a className="dropdown-item" href="#">Розклад дзвінків</a></li>
+                        <li><a className="dropdown-item" href="#">Графік гуртків</a></li>
+                        <li><a className="dropdown-item" href="#">Благодійні внески</a></li>
+                      </ul>
                     </li>
                     <li className="nav-item">
-                      <a className="nav-link" href="#">Публічна інформація</a>
+                      <a className="nav-link" href="#">Вступ у гімназію</a>
                     </li>
                     <li className="nav-item">
                       <a className="nav-link" href="#">Фінансова прозорість</a>

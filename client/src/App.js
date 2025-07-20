@@ -9,6 +9,9 @@ import PostDetail from "./components/PostDetail";
 import EditPost from "./components/EditPost";
 import Footer from "./components/Footer";
 import ScrollToTop from "./components/ScrollToTop";
+import NewsletterSection from "./components/HomePage/NewsletterSection";
+import AboutPage from './components/Pages/About/AboutPage';
+
 import "./App.css"; 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -17,10 +20,11 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-
-
 const App = () => {
-  const [user, setUser] = useState(localStorage.getItem("user") || null);
+   const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   return (
     <Router>
@@ -35,10 +39,12 @@ const App = () => {
         <Route path="/posts" element={<Posts />} />
         <Route path="/posts/:id" element={<PostDetail />} /> 
         <Route path="/edit/:id" element={<EditPost />} />
+
+        <Route path="/about" element={<AboutPage user={user} />} />
       </Routes>
       
       </main>
-      {/* Підвал */}
+      <NewsletterSection />
       <Footer />
       <ScrollToTop />
      

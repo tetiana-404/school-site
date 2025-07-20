@@ -94,3 +94,7 @@
     align-items: center; /* Вирівнює по вертикалі */
     margin-bottom: 16px; /* Відступ знизу */
 }
+
+.activePage{
+  color: var(--primary-green);
+}

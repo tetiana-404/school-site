@@ -1,7 +1,8 @@
 /* Загальні стилі */
 :root {
   --primary-blue: #0076b6;
-  --primary-green: #076B20;
+  /*--primary-green: #076B20;*/
+  --primary-green: #0B5E2A;
   --light-blue: #cce9f4;
   --dark-gray: #333333;
   --light-gray: #f7f7f7;
@@ -189,6 +190,8 @@ a, h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
   position: absolute;
   top: 0;
   width: 100%;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .overlay-2:before {

@@ -13,10 +13,17 @@ db.Document = require("./document")(sequelize, DataTypes);
 db.Comment = require("./comment")(sequelize, DataTypes);
 db.HomeAbout = require('./homeAbout')(sequelize, DataTypes);
 db.HomeSlider = require("./homeslider")(sequelize, DataTypes);
-db.HomeCounter = require('./homeCounter')(sequelize, DataTypes);
+db.HomeCounter = require('./homecounter')(sequelize, DataTypes);
 db.HomeMeta = require('./homemeta')(sequelize, DataTypes);
 db.TeamMember = require('./teamMember')(sequelize, DataTypes);
+db.HomeAboutPage = require('./pages/about/HomeAboutPage')(sequelize, DataTypes);
+const HomeAboutPageModel = require('./pages/about/HomeAboutPage');
+const HomeAboutPage = HomeAboutPageModel(sequelize, DataTypes);
+db.HomeAboutPage = HomeAboutPage;
 
+db.AboutInfo = require('./aboutInfo')(sequelize, Sequelize.DataTypes);
+const HomeAboutCounter = require('./pages/about/HomeAboutCounter')(sequelize, DataTypes);
+db.HomeAboutCounter = HomeAboutCounter;
 
 // Define relationships
 db.User.hasMany(db.Post, { foreignKey: "userId" });
