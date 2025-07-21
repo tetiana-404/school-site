@@ -50,15 +50,51 @@ const TeamSection = ({ user }) => {
     }
   };
 
-  const addNewMember = () => {
+  const addNewMember_old = () => {
     setTeamMembers([...teamMembers, { id: Date.now(), name: '', position: '', img: '' }]);
   };
 
-  const deleteMember = (index) => {
+  const addNewMember = () => {
+  const maxId = teamMembers.length > 0
+    ? Math.max(...teamMembers.map(member => Number(member.id) || 0))
+    : 0;
+
+  setTeamMembers([
+    ...teamMembers,
+    {
+      id: maxId + 1, // тимчасовий локальний id
+      name: '',
+      position: '',
+      img: '',
+      isActive: true,
+    },
+  ]);
+};
+
+
+  const deleteMember_old = (index) => {
     const updated = [...teamMembers];
     updated.splice(index, 1);
     setTeamMembers(updated);
   };
+
+  const deleteMember = async (index) => {
+  const memberToDelete = teamMembers[index];
+  try {
+    await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/team-members/${memberToDelete.id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...memberToDelete, isActive: false }),
+    });
+
+    const updated = [...teamMembers];
+    updated.splice(index, 1);
+    setTeamMembers(updated);
+  } catch (err) {
+    console.error('❌ Failed to delete member:', err);
+  }
+};
+
 
   const saveChanges = async () => {
     try {
@@ -67,7 +103,10 @@ const TeamSection = ({ user }) => {
           fetch(`${process.env.REACT_APP_BACKEND_URL}/api/team-members/${member.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(member),
+            body: JSON.stringify({
+            ...member,
+            isActive: true, 
+          }),
           })
         )
       );

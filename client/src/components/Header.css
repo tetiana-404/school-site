@@ -83,6 +83,11 @@
   z-index: 1050;
 }
 
+.dropdown-item:hover,
+.dropdown-item:hover{
+  color: #fff;
+}
+
 .navbar-nav > .nav-item {
   position: relative;
   flex: 1;

@@ -124,7 +124,7 @@ const CounterSection = ({ user }) => {
                           placeholder="Значення"
                         />
                         <textarea
-                          value={item.description}
+                          value={item.description || ''}
                           onChange={(e) => handleChange(i, 'description', e.target.value)}
                           rows="2"
                           className="form-control"

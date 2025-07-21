@@ -358,7 +358,9 @@ app.put('/api/home-meta', async (req, res) => {
 // GET all team members
 app.get('/api/team-members', async (req, res) => {
   try {
-    const members = await TeamMember.findAll();
+    const members = await TeamMember.findAll({
+      where: { isActive: true },
+    });
     res.json(members);
   } catch (err) {
     console.error('❌ Failed to get team members:', err);
@@ -368,15 +370,20 @@ app.get('/api/team-members', async (req, res) => {
 
 // PUT update or create team member
 app.put('/api/team-members/:id', async (req, res) => {
-  const { id } = req.params;
-  const { name, position, img } = req.body;
-
   try {
-    const [member, created] = await TeamMember.upsert({ id, name, position, img }, { returning: true });
+    const { id } = req.params;
+    const updateData = req.body;
+
+    const member = await TeamMember.findByPk(id);
+    if (!member) {
+      return res.status(404).json({ error: 'Member not found' });
+    }
+
+    await member.update(updateData);
     res.json(member);
   } catch (err) {
-    console.error('❌ Failed to update team member:', err);
-    res.status(500).json({ error: 'Failed to update team member' });
+    console.error('❌ Error updating team member:', err);
+    res.status(500).json({ error: 'Failed to update member' });
   }
 });
 

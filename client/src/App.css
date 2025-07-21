@@ -54,11 +54,8 @@ a, h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
 
 /* Навігація */
 .navbar {
-  position: sticky;
-  top: 0;
   padding: 10px 0;
   text-align: center;
-  z-index: 1000;
 }
 
 .nav-list {
