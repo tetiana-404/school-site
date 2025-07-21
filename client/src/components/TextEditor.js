@@ -9,6 +9,7 @@ import TextAlign from '@tiptap/extension-text-align';
 import UnderlineExtension from '@tiptap/extension-underline';
 import ImageExtension from "@tiptap/extension-image";
 import LinkExtension from '@tiptap/extension-link';
+import Heading from '@tiptap/extension-heading'
 import Table from "@tiptap/extension-table";
 import TableRow from "@tiptap/extension-table-row";
 import TableCell from "@tiptap/extension-table-cell";
@@ -19,7 +20,6 @@ import {
     ChevronDown, Minus, Plus
 } from "lucide-react";
 
-
 const TextEditor = ({ content, setContent }) => {
     const [videoUrl, setVideoUrl] = useState('');
     const [linkUrl, setLinkUrl] = useState("");
@@ -28,7 +28,11 @@ const TextEditor = ({ content, setContent }) => {
 
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            StarterKit.configure({
+                heading: {
+                    levels: [1, 2, 3], // Ваша конфігурація
+                },
+            }),
             ImageExtension,
             Bold,
             Italic,
@@ -124,8 +128,6 @@ const TextEditor = ({ content, setContent }) => {
             formData.append("type", "image");
 
             try {
-                console.log(`Uploading file: ${file.name}`);
-
                 const response = await axios.post(
                     `${process.env.REACT_APP_BACKEND_URL}/api/upload`,
                     formData,
@@ -177,10 +179,6 @@ const TextEditor = ({ content, setContent }) => {
                     isModal={toggleModal}
                     isClear={handleClear}
                 />
-                <div className="editor-content">
-                    <EditorContent editor={editor} />
-                </div>
-                
                 <div className="table-toolbar">
                     
                     <button className="add-table-button" title="Додати таблицю" 
@@ -212,13 +210,49 @@ const TextEditor = ({ content, setContent }) => {
                         </button>
                     </div>
                 </div>
-                <EditorToolbar
-                    editor={editor}
-                    onInsertImage={handleInsertImage}
-                    onInsertFile={handleFileUpload}
-                    isModal={toggleModal}
-                    isClear={handleClear}
-                />
+                <div className="editor-content">
+                    <EditorContent editor={editor} />
+                </div>
+                <div className="fixed-bottom-toolbar">
+                    <div className="table-toolbar">
+
+                        <button className="add-table-button" title="Додати таблицю"
+                            onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
+                            <Plus size={20} /> Додати таблицю
+                        </button>
+
+                        <div className="table-controls">
+                            <button className="table-button" title="Додати колонку зліва" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnBefore().run()}>
+                                <ChevronLeft size={20} />
+                            </button>
+                            <button className="table-button" title="Додати колонку справа" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnAfter().run()}>
+                                <ChevronRight size={20} />
+                            </button>
+                            <button className="table-button" title="Додати рядок зверху" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowBefore().run()}>
+                                <ChevronUp size={20} />
+                            </button>
+                            <button className="table-button" title="Додати рядок знизу" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowAfter().run()}>
+                                <ChevronDown size={20} />
+                            </button>
+                            <button className="table-button" title="Видалити колонку" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteColumn().run()}>
+                                <Minus size={20} />
+                            </button>
+                            <button className="table-button" title="Видалити рядок" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteRow().run()}>
+                                <Minus size={20} />
+                            </button>
+                            <button className="table-button" title="Видалити таблицю" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteTable().run()}>
+                                <Trash2 size={20} />
+                            </button>
+                        </div>
+                    </div>
+                    <EditorToolbar
+                        editor={editor}
+                        onInsertImage={handleInsertImage}
+                        onInsertFile={handleFileUpload}
+                        isModal={toggleModal}
+                        isClear={handleClear}
+                    />
+                </div>
             </div>
             
             {isModalOpen && (

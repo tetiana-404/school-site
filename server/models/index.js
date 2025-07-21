@@ -25,6 +25,10 @@ db.AboutInfo = require('./aboutInfo')(sequelize, Sequelize.DataTypes);
 const HomeAboutCounter = require('./pages/about/HomeAboutCounter')(sequelize, DataTypes);
 db.HomeAboutCounter = HomeAboutCounter;
 
+const homeHistoryRoutes = require('./pages/about/HomeHistory')(sequelize, DataTypes);
+db.HomeHistory = homeHistoryRoutes;
+
+
 // Define relationships
 db.User.hasMany(db.Post, { foreignKey: "userId" });
 db.Post.belongsTo(db.User, { foreignKey: "userId" });

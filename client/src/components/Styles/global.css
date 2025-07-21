@@ -7072,3 +7072,24 @@ mail ol {
 main p {
   margin-bottom: 1.2em; 
 }
+
+#historyPage img {
+  width: 100%;
+}
+
+#historyPage table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+#historyPage table,
+#historyPage table tr,
+#historyPage table td {
+  border: 0;
+}
+
+#historyPage .editor-content table,
+#historyPage .editor-content table tr,
+#historyPage .editor-content table td{
+  border: 1px solid #999;
+}

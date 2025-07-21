@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sequelize, User, Post, Document, Comment, HomeAbout, HomeSlider, HomeCounter, HomeMeta, TeamMember, AboutInfo } = require("./models");
-const { HomeAboutPage, HomeAboutCounter  } = require('./models');
+const { HomeAboutPage, HomeAboutCounter, HomeHistory  } = require('./models');
 
 const app = express();
 app.use(express.json({ limit: "10mb" })); // Default is 100kb, now increased to 50MB
@@ -480,6 +480,32 @@ app.put('/api/home_counter', async (req, res) => {
     res.status(500).json({ error: 'Failed to update counters' });
   }
 });
+
+app.get('/api/history', async (req, res) => {
+  try {
+    const history = await HomeHistory.findOne();
+    res.json(history);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch history' });
+  }
+});
+
+app.put('/api/history', async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    
+    let history = await HomeHistory.findOne();
+    if (history) {
+      await history.update({ title, content });
+    } else {
+      history = await HomeHistory.create({ title, content });
+    }
+    res.json(history);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update history' });
+  }
+});
+
 
 // Start the server
 const PORT = process.env.PORT || 5000;

@@ -5,11 +5,18 @@ import {
 } from "lucide-react";
 
 const EditorToolbar = ({ editor, onInsertImage, onInsertFile, isModal, isClear }) => {
-    return (
+  const H1Icon = () => <span style={{fontWeight: 'bold'}}>H1</span>;
+  const H2Icon = () => <span style={{fontWeight: 'bold'}}>H2</span>;
+  const H3Icon = () => <span style={{fontWeight: 'bold'}}>H3</span>;
+
+  return (
       <div className="editor-controls">
         <EditorButton action={() => editor.chain().focus().toggleBold().run()} icon={<Bold size={20} />} />
         <EditorButton action={() => editor.chain().focus().toggleItalic().run()} icon={<Italic size={20} />} />
         <EditorButton action={() => editor.chain().focus().toggleUnderline().run()} icon={<Underline size={20} />} />
+        <EditorButton action={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} icon={<H1Icon size={20} />} />
+        <EditorButton action={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} icon={<H2Icon size={20} />} />
+        <EditorButton action={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} icon={<H3Icon size={20} />} />
         <EditorButton action={() => editor.chain().focus().toggleBulletList().run()} icon={<List size={20} />} />
         <EditorButton action={() => editor.chain().focus().toggleOrderedList().run()} icon={<ListOrdered size={20} />} />
         <EditorButton action={() => editor.chain().focus().setTextAlign('left').run()} icon={<AlignLeft size={20} />} />

@@ -19,6 +19,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import HistoryPage from "./components/Pages/About/HistoryPage";
 
 const App = () => {
    const [user, setUser] = useState(() => {
@@ -41,6 +42,7 @@ const App = () => {
         <Route path="/edit/:id" element={<EditPost />} />
 
         <Route path="/about" element={<AboutPage user={user} />} />
+        <Route path="/history" element={<HistoryPage user={user} />} />
       </Routes>
       
       </main>

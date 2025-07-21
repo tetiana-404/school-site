@@ -217,33 +217,33 @@ const AboutPage = ({ user }) => {
 
       <TeamSection />
 
-          <section id="teamInfo" className="section-padding py-5">
-              <div className="auto-container">
-                  <div className='row'>
-                      <div className="col-lg-8 mx-auto col-md-12">
-                          {editTeam ? (
-                              <>
-                                  <RichTextEditor
-                                      content={teamContent}
-                                      setContent={setTeamContent}
-                                      placeholder="Введіть інформацію про команду"
-                                  />
-                                  <div className="text-center mt-3">
-                                      <button className="btn btn-outline-success btn-lg w-50" onClick={() => handleSave('/api/home_about_page', 'PUT', { content: teamContent }, () => setEditTeam(false))}>💾 Зберегти</button>
-                                      <button className="btn btn-outline-warning btn-lg w-50" onClick={() => setEditTeam(false)}>❌ Скасувати</button>
-                                  </div>
-                              </>
-                          ) : (
-                              <div className='position-relative'>
-                                  {user?.role === 'admin' && (
-                                      <button className="btn btn-outline-dark position-absolute top-0 m-3 w-auto" style={{ right: 20 }} onClick={() => setEditTeam(true)}>✏️</button>
-                                  )}
-                                  <div dangerouslySetInnerHTML={{ __html: teamContent }} />
-                              </div>
-                          )}
-                      </div></div>
-              </div>
-          </section>
+      <section id="teamInfo" className="section-padding py-5">
+        <div className="auto-container">
+          <div className='row'>
+            <div className="col-lg-8 mx-auto col-md-12">
+              {editTeam ? (
+                <>
+                  <RichTextEditor
+                    content={teamContent}
+                    setContent={setTeamContent}
+                    placeholder="Введіть інформацію про команду"
+                  />
+                  <div className="text-center mt-3">
+                    <button className="btn btn-outline-success btn-lg w-50" onClick={() => handleSave('/api/home_about_page', 'PUT', { content: teamContent }, () => setEditTeam(false))}>💾 Зберегти</button>
+                    <button className="btn btn-outline-warning btn-lg w-50" onClick={() => setEditTeam(false)}>❌ Скасувати</button>
+                  </div>
+                </>
+              ) : (
+                <div className='position-relative'>
+                  {user?.role === 'admin' && (
+                    <button className="btn btn-outline-dark position-absolute top-0 m-3 w-auto" style={{ right: 20 }} onClick={() => setEditTeam(true)}>✏️</button>
+                  )}
+                  <div dangerouslySetInnerHTML={{ __html: teamContent }} />
+                </div>
+              )}
+            </div></div>
+        </div>
+      </section>
     </>
   );
 };

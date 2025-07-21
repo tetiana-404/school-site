@@ -152,3 +152,15 @@ select, input {
 }
 
 /* Модальне вікно */
+
+.fixed-bottom-toolbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff; /* або інший фон, щоб було видно */
+  border-top: 1px solid #ddd;
+  z-index: 1000;
+  padding: 10px 20px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
+}

@@ -4,14 +4,16 @@ import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
 import Heading from '@tiptap/extension-heading'
+import Image from "@tiptap/extension-image";
 import { Bold, Italic, List, Underline as UnderlineIcon, ListOrdered, AlignLeft, AlignCenter, AlignRight, X } from "lucide-react";
+
 
 const MenuBar = ({ editor }) => {
   if (!editor) return null;
 
-const H1Icon = () => <span style={{fontWeight: 'bold'}}>H1</span>;
-const H2Icon = () => <span style={{fontWeight: 'bold'}}>H2</span>;
-const H3Icon = () => <span style={{fontWeight: 'bold'}}>H3</span>;
+  const H1Icon = () => <span style={{ fontWeight: 'bold' }}>H1</span>;
+  const H2Icon = () => <span style={{ fontWeight: 'bold' }}>H2</span>;
+  const H3Icon = () => <span style={{ fontWeight: 'bold' }}>H3</span>;
 
   return (
     <div className="editor-toolbar">
@@ -40,12 +42,12 @@ const H3Icon = () => <span style={{fontWeight: 'bold'}}>H3</span>;
         <UnderlineIcon size={18} />
       </button>
       <button
-  onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-  className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
-  title="Заголовок 1"
->
-  <H1Icon />
-</button>
+        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+        className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
+        title="Заголовок 1"
+      >
+        <H1Icon />
+      </button>
 
       <button
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
@@ -66,7 +68,8 @@ const H3Icon = () => <span style={{fontWeight: 'bold'}}>H3</span>;
       <button
         onClick={() => {
           console.log("CLICK bullet list");
-          editor.chain().focus().toggleBulletList().run()}}
+          editor.chain().focus().toggleBulletList().run()
+        }}
         className={editor.isActive('bulletList') ? 'is-active' : ''}
         title="Маркований список"
       >
@@ -103,7 +106,17 @@ const H3Icon = () => <span style={{fontWeight: 'bold'}}>H3</span>;
       >
         <AlignRight size={18} />
       </button>
-
+      <button
+        onClick={() => {
+          const url = window.prompt("Вставте URL зображення");
+          if (url) {
+            editor.chain().focus().setImage({ src: url }).run();
+          }
+        }}
+        title="Вставити зображення"
+      >
+        🖼️
+      </button>
       <button
         onClick={() => editor.chain().focus().unsetAllMarks().clearNodes().run()}
         title="Очистити форматування"
@@ -125,11 +138,14 @@ const RichTextEditor = ({
     extensions: [
       StarterKit,
       Heading.configure({
-      levels: [1, 2, 3],  
+        levels: [1, 2, 3],
       }),
       Underline,
       TextAlign.configure({ types: ["heading", "paragraph"] }),
-     
+      Image.configure({
+        inline: false,
+        allowBase64: true,
+      }),
     ],
     content,
     onUpdate: ({ editor }) => {
