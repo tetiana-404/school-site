@@ -78,7 +78,7 @@ a {
 
 a:focus,
 a:hover {
-  color: #034ea2;
+  color: #ffc107;
   text-decoration: none;
 }
 
@@ -7085,23 +7085,45 @@ main p {
   margin-bottom: 1.2em; 
 }
 
-#historyPage img {
+#historyPage img,
+#anthemPage img,
+#strategyPage img,
+#reportsPage img,
+#teachersPage img {
   width: 100%;
 }
 
-#historyPage table {
+#historyPage table,
+#anthemPage table,
+#strategyPage table,
+#reportsPage table {
   width: 100%;
   table-layout: fixed;
 }
 
 #historyPage table,
 #historyPage table tr,
-#historyPage table td {
+#historyPage table td,
+#anthemPage table,
+#anthemPage table tr,
+#anthemPage table td,
+#strategyPage table,
+#strategyPage table tr,
+#strategyPage table td,
+#reportsPage table,
+#reportsPage table tr,
+#reportsPage table td {
   border: 0;
 }
 
 #historyPage .editor-content table,
 #historyPage .editor-content table tr,
-#historyPage .editor-content table td{
+#historyPage .editor-content table td,
+#strategyPage .editor-content table,
+#strategyPage .editor-content table tr,
+#strategyPage .editor-content table td,
+#reportsPage .editor-content table,
+#reportsPage .editor-content table tr,
+#reportsPage .editor-content table td{
   border: 1px solid #999;
 }

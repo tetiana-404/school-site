@@ -8,7 +8,8 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sequelize, User, Post, Document, Comment, HomeAbout, HomeSlider, HomeCounter, HomeMeta, TeamMember, AboutInfo } = require("./models");
-const { HomeAboutPage, HomeAboutCounter, HomeHistory  } = require('./models');
+const { HomeAboutPage, HomeAboutCounter, HomeHistory, HomeDocuments, HomeAnthem, HomeStrategy, HomeReports, HomeTeachers  } = require('./models');
+const {RegDocuments, InternalDocument} = require('./models');
 
 const app = express();
 app.use(express.json({ limit: "10mb" })); // Default is 100kb, now increased to 50MB
@@ -511,6 +512,229 @@ app.put('/api/history', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: 'Failed to update history' });
   }
+});
+
+app.get('/api/documents', async (req, res) => {
+  try {
+    const documents = await HomeDocuments.findOne();
+    res.json(documents);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch documents' });
+  }
+});
+
+app.put('/api/documents', async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    
+    let documents = await HomeDocuments.findOne();
+    if (documents) {
+      await documents.update({ title, content });
+    } else {
+      documents = await HomeDocuments.create({ title, content });
+    }
+    res.json(documents);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update history' });
+  }
+});
+
+app.get('/api/anthem', async (req, res) => {
+  try {
+    const anthem = await HomeAnthem.findOne();
+    res.json(anthem);
+  } catch (err) {
+  console.error('❌ Error updating anthem:', err);
+  res.status(500).json({ error: 'Failed to update anthem' });
+}
+});
+
+app.put('/api/anthem', async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    
+    let anthem = await HomeAnthem.findOne();
+    if (anthem) {
+      await anthem.update({ title, content });
+    } else {
+      anthem = await HomeAnthem.create({ title, content });
+    }
+    res.json(anthem);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update anthem' });
+  }
+});
+
+app.get('/api/strategy', async (req, res) => {
+  try {
+    const strategy = await HomeStrategy.findOne();
+    res.json(strategy);
+  } catch (err) {
+  console.error('❌ Error updating strategy:', err);
+  res.status(500).json({ error: 'Failed to update strategy' });
+}
+});
+
+app.put('/api/strategy', async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    
+    let strategy = await HomeStrategy.findOne();
+    if (strategy) {
+      await strategy.update({ title, content });
+    } else {
+      strategy = await HomeStrategy.create({ title, content });
+    }
+    res.json(strategy);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update strategy' });
+  }
+});
+
+app.get('/api/reports', async (req, res) => {
+  try {
+    const reports = await HomeReports.findOne();
+    res.json(reports);
+  } catch (err) {
+  console.error('❌ Error updating reports:', err);
+  res.status(500).json({ error: 'Failed to update reports' });
+}
+});
+
+app.put('/api/reports', async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    
+    let reports = await HomeReports.findOne();
+    if (reports) {
+      await reports.update({ title, content });
+    } else {
+      reports = await HomeReports.create({ title, content });
+    }
+    res.json(reports);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update reports' });
+  }
+});
+
+app.get('/api/teachers', async (req, res) => {
+  try {
+    const teachers = await HomeTeachers.findOne();
+    res.json(teachers);
+  } catch (err) {
+  console.error('❌ Error updating teachers:', err);
+  res.status(500).json({ error: 'Failed to update teachers' });
+}
+});
+
+app.put('/api/teachers', async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    
+    let teachers = await HomeTeachers.findOne();
+    if (teachers) {
+      await teachers.update({ title, content });
+    } else {
+      teachers = await HomeTeachers.create({ title, content });
+    }
+    res.json(teachers);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update teachers' });
+  }
+});
+
+app.get('/api/reg-documents', async (req, res) => {
+  try {
+    const regdocuments = await RegDocuments.findOne();
+    res.json(regdocuments);
+  } catch (err) {
+  console.error('❌ Error updating regdocuments:', err);
+  res.status(500).json({ error: 'Failed to update regdocuments' });
+}
+});
+
+app.put('/api/reg-documents', async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    
+    let regdocuments = await RegDocuments.findOne();
+    if (regdocuments) {
+      await regdocuments.update({ title, content });
+    } else {
+      regdocuments = await RegDocuments.create({ title, content });
+    }
+    res.json(regdocuments);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update regdocuments' });
+  }
+});
+
+// GET – тільки активні для користувача
+app.get('/api/internal-documents', async (req, res) => {
+  const docs = await InternalDocument.findAll({ where: { isActive: 'true' } });
+  res.json(docs);
+});
+
+app.get('/api/internal-documents/all', async (req, res) => {
+  try {
+    const documents = await InternalDocument.findAll();
+    res.json(documents);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch documents' });
+  }
+});
+
+// POST – додати новий документ
+app.post('/api/internal-documents', upload.single('file'), async (req, res) => {
+  const { title } = req.body;
+  const { type } = req.body;
+  let folder = "uploads/documents";
+  const file = req.file;
+  const isActive = req.body.isActive === 'true';
+ 
+  
+  // Створюємо нове ім'я файлу з поточною датою та ID посту
+  const timestamp = Date.now();  // Поточна дата у мілісекундах
+  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
+  const newFileName = `doc-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+
+  // Шлях для збереженого файлу
+  const filePath = path.join(folder, newFileName);
+
+  // Переміщаємо файл у відповідну папку
+  fs.renameSync(file.path, filePath);
+
+  // Повертаємо URL файлу
+  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+  console.log("File uploaded:", fileUrl);
+
+  const doc = await InternalDocument.create({ title, file: newFileName, isActive });
+  res.json({ url: fileUrl });
+});
+
+// PUT – оновити документ
+app.put('/api/internal-documents/:id', upload.single('file'), async (req, res) => {
+  const { title, isActive } = req.body;
+  const file = req.file?.filename;
+  const doc = await InternalDocument.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  doc.title = title;
+  doc.isActive = isActive === 'true';
+  if (file) doc.file = file;
+
+  await doc.save();
+  res.json(doc);
+});
+
+// DELETE – видалити
+app.delete('/api/internal-documents/:id', async (req, res) => {
+  const doc = await InternalDocument.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  await doc.destroy();
+  res.json({ message: 'Deleted' });
 });
 
 

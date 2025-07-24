@@ -28,6 +28,26 @@ db.HomeAboutCounter = HomeAboutCounter;
 const homeHistoryRoutes = require('./pages/about/HomeHistory')(sequelize, DataTypes);
 db.HomeHistory = homeHistoryRoutes;
 
+const homeDocuments = require('./pages/about/HomeDocuments')(sequelize, DataTypes);
+db.HomeDocuments = homeDocuments;
+
+const homeAnthem = require('./pages/about/HomeAnthem')(sequelize, DataTypes);
+db.HomeAnthem = homeAnthem;
+
+const homeStrategy = require('./pages/about/HomeStrategy')(sequelize, DataTypes);
+db.HomeStrategy = homeStrategy;
+
+const homeReports = require('./pages/about/HomeReports')(sequelize, DataTypes);
+db.HomeReports = homeReports;
+
+const homeTeachers = require('./pages/about/HomeTeachers')(sequelize, DataTypes);
+db.HomeTeachers = homeTeachers;
+
+const regDocuments = require('./pages/info/RegDocuments')(sequelize, DataTypes);
+db.RegDocuments = regDocuments;
+
+const internalDocument = require('./pages/info/InternalDocument')(sequelize, DataTypes);
+db.InternalDocument = internalDocument;
 
 // Define relationships
 db.User.hasMany(db.Post, { foreignKey: "userId" });

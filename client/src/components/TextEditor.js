@@ -1,6 +1,10 @@
 import React, { useState, useCallback } from "react";
 import "./TextEditor.css";
 import EditorToolbar from "./EditorToolbar";
+import Table from "@tiptap/extension-table";
+import TableRow from "@tiptap/extension-table-row";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
 import Modal from "./Modal";
 import axios from "axios";
 import { useEditor, EditorContent } from "@tiptap/react";
@@ -9,11 +13,9 @@ import TextAlign from '@tiptap/extension-text-align';
 import UnderlineExtension from '@tiptap/extension-underline';
 import ImageExtension from "@tiptap/extension-image";
 import LinkExtension from '@tiptap/extension-link';
-import Heading from '@tiptap/extension-heading'
-import Table from "@tiptap/extension-table";
-import TableRow from "@tiptap/extension-table-row";
-import TableCell from "@tiptap/extension-table-cell";
-import TableHeader from "@tiptap/extension-table-header";
+import Heading from '@tiptap/extension-heading';
+import Image from "@tiptap/extension-image";
+
 import {
     Bold, Italic, List, ListOrdered, Link, Trash2,
     ChevronLeft, ChevronRight, ChevronUp,
@@ -34,6 +36,7 @@ const TextEditor = ({ content, setContent }) => {
                 },
             }),
             ImageExtension,
+            Image,
             Bold,
             Italic,
             UnderlineExtension,
@@ -83,7 +86,7 @@ const TextEditor = ({ content, setContent }) => {
     };
 
     const handleFileUpload = async (event) => {
-        const file = event.target.files[0]; // Отримуємо перший (і єдиний) файл
+        const file = event.target.files[0];
         if (!file) return;
 
         const formData = new FormData();
@@ -96,13 +99,20 @@ const TextEditor = ({ content, setContent }) => {
                 formData,
                 { headers: { "Content-Type": "multipart/form-data" } }
             );
-            const fileURL = response.data.url; // URL файлу після завантаження
-            editor.chain().focus().insertContent(`<a href="${fileURL}" target="_blank">${file.name}</a>`).run();
+            const fileURL = response.data.url;
+
+            const icon = '📄'; 
+            
+            const html = `<span style="display: inline-flex; align-items: center;"> <span style="font-size: 1.4em;">
+            ${icon}</span> <a href="${fileURL}" target="_blank" style="margin-left: 4px;">${file.name}</a>
+        </span>`;
+         
+            editor.chain().focus().insertContent(html).run();
         } catch (error) {
             console.error("Помилка завантаження файлу", error);
         }
     };
-
+    
     const handleInsertImage = useCallback(() => {
         const input = document.createElement("input");
         input.type = "file";
@@ -121,7 +131,7 @@ const TextEditor = ({ content, setContent }) => {
 
         console.log("Uploading files...", files);
 
-        const imageBlocks = []; 
+        const imageBlocks = [];
         for (const file of files) {
             const formData = new FormData();
             formData.append("file", file);
@@ -137,17 +147,17 @@ const TextEditor = ({ content, setContent }) => {
                 if (response.data.url) {
                     imageBlocks.push({
                         type: "image",
-                        attrs: { 
+                        attrs: {
                             src: response.data.url,
-                            style: "max-width: 100%; height: auto;", 
-                         },
+                            style: "max-width: 100%; height: auto;",
+                        },
                     });
 
                     imageBlocks.push({
                         type: "paragraph",
                         content: [],
                     });
-                } 
+                }
             } catch (error) {
                 console.error(`❌ Error uploading ${file.name}:`, error);
             }
@@ -167,11 +177,11 @@ const TextEditor = ({ content, setContent }) => {
         }
         setContent('');
     };
-    
+
     return (
         <div className="container">
             <div className="editor-section">
-                
+
                 <EditorToolbar
                     editor={editor}
                     onInsertImage={handleInsertImage}
@@ -180,8 +190,8 @@ const TextEditor = ({ content, setContent }) => {
                     isClear={handleClear}
                 />
                 <div className="table-toolbar">
-                    
-                    <button className="add-table-button" title="Додати таблицю" 
+
+                    <button className="add-table-button" title="Додати таблицю"
                         onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
                         <Plus size={20} /> Додати таблицю
                     </button>
@@ -254,7 +264,7 @@ const TextEditor = ({ content, setContent }) => {
                     />
                 </div>
             </div>
-            
+
             {isModalOpen && (
                 <Modal title="Введіть URL відео" closeModal={() => toggleModal('video')}>
                     <input type="text" value={videoUrl} onChange={(e) => setVideoUrl(e.target.value)} placeholder="URL відео" />

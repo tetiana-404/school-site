@@ -1,32 +1,32 @@
 import React, { useEffect, useState } from "react";
 import TextEditor from "../../TextEditor";
 
-const HistoryPage = ({ user }) => {
+const AnthemPage = ({ user }) => {
     const [editMode, setEditMode] = useState(false);
-    const [history, setHistory] = useState(null);
+    const [anthem, setAnthem] = useState(null);
 
     useEffect(() => {
-        const fetchHistory = async () => {
+        const fetchAnthem = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/history`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/anthem`);
                 const data = await res.json();
-                setHistory(data);
+                setAnthem(data);
             } catch (error) {
-                console.error("Failed to fetch history:", error);
+                console.error("Failed to fetch Anthem:", error);
             }
         };
 
-        fetchHistory();
+        fetchAnthem();
     }, []);
 
     const handleSave = async (endpoint, method, body, callback) => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/history`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/anthem`, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...body,
-                    title: 'Історія гімназії',
+                    title: 'Гімн гімназії',
                 }),
             });
             callback();
@@ -36,13 +36,14 @@ const HistoryPage = ({ user }) => {
     };
 
     return (
-        <section id="historyPage" className="section-padding bg-light py-5">
+        <section id="anthemPage" className="section-padding bg-light py-5">
             <div className="auto-container">
                 <div className="row">
                     <div className='col-lg-12'>
                         <div className="welcome-section-title">
-                            <h6 className="theme-color">1968 - {new Date().getFullYear()}</h6>
-                            <h2>Історія гімназії </h2>
+                            <h6 className="theme-color">Львівська гімназія "Євшан"</h6>
+                            <h2>Гімн гімназії </h2>
+                            <p>Слова і музика вчителя гімназії Дембіцької-Прокопець Ніни Григорівни  </p>
                         </div>
                     </div>
                 </div>
@@ -52,16 +53,16 @@ const HistoryPage = ({ user }) => {
                             <>
 
                                 <TextEditor
-                                    content={history?.content || ""}
-                                    setContent={(newContent) => setHistory(prev => ({ ...prev, content: newContent }))}
-                                    placeholder="Введіть інформацію про команду"
+                                    content={anthem?.content || ""}
+                                    setContent={(newContent) => setAnthem(prev => ({ ...prev, content: newContent }))}
+                                    placeholder="Введіть інформацію установчі документи гімназії"
                                 />
 
                                 <div className="text-center mt-3">
                                     <button
                                         className="btn btn-outline-success btn-lg w-50"
                                         onClick={() =>
-                                            handleSave('/api/history', 'PUT', { content: history?.content }, () => setEditMode(false))
+                                            handleSave('/api/anthem', 'PUT', { content: anthem?.content }, () => setEditMode(false))
                                         }
                                     >
                                         💾 Зберегти
@@ -80,7 +81,7 @@ const HistoryPage = ({ user }) => {
                                             ✏️
                                         </button>
                                     )}
-                                <div dangerouslySetInnerHTML={{ __html: history?.content || "" }} />
+                                <div dangerouslySetInnerHTML={{ __html: anthem?.content || "" }} />
                                 {user?.role === 'admin' && !editMode && (
                                         <button
                                             className="btn btn-outline-dark position-absolute m-0 w-auto"
@@ -102,4 +103,4 @@ const HistoryPage = ({ user }) => {
     );
 };
 
-export default HistoryPage;
+export default AnthemPage;
