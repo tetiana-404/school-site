@@ -7089,7 +7089,9 @@ main p {
 #anthemPage img,
 #strategyPage img,
 #reportsPage img,
-#teachersPage img {
+#teachersPage img,
+#areaPage img,
+#languagePage img {
   width: 100%;
 }
 

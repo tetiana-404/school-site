@@ -128,14 +128,16 @@ const Header = () => {
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownParents">
                       <li><Link className="dropdown-item" to="/internal-documents/all">Нормативні документи</Link></li>
-                      <li><Link className="dropdown-item" to="/territory">Територія обслуговування</Link></li>
+                      <li><Link className="dropdown-item" to="/area">Територія обслуговування</Link></li>
                       <li><Link className="dropdown-item" to="/language">Мова освітнього процесу</Link></li>
                       <li><Link className="dropdown-item" to="/facilities">Матеріально-технічне забезпечення</Link></li>
                       <li><Link className="dropdown-item" to="/services">Додаткові освітні послуги</Link></li>
-                      <li><Link className="dropdown-item" to="/rules">Правила поведінки ОБЖ</Link></li>
+                      <li><Link className="dropdown-item" to="/family-education">Сімейна форма навчання</Link></li>
+                      <li><Link className="dropdown-item" to="/rules">Правила поведінки</Link></li>
+                      <li><Link className="dropdown-item" to="/instructions">Інструкції, пам’ятки</Link></li>                      
                       <li><Link className="dropdown-item" to="/bullying">Протидія булінгу</Link></li>
                       <li><Link className="dropdown-item" to="/programs">Освітні програми</Link></li>
-                      <li><Link className="dropdown-item" to="/family-education">Сімейна форма здобуття освіти</Link></li>
+                      
                       <li><Link className="dropdown-item" to="/certifications">Атестація педагогічних працівників</Link></li>
                     </ul>
                   </li>

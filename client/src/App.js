@@ -19,6 +19,15 @@ import ReportsPage from "./components/Pages/About/ReportsPage";
 import TeachersPage from "./components/Pages/About/TeachersPage";
 import RegDocumentsPage from "./components/Pages/Info/RegularDocuments";
 import InternalDocumentsEditor from "./components/Pages/Info/InternalDocumentsEditor";
+import AreaPage from "./components/Pages/Info/Area";
+import LanguagePage from "./components/Pages/Info/Language";
+import FacilitiesPage from "./components/Pages/Info/Facilities";
+import ServicesPage from "./components/Pages/Info/Services";
+import FamilyEducationEditor from "./components/Pages/Info/FamilyEducation";
+import RulesPage from "./components/Pages/Info/Rules";
+import InstructionsPage from "./components/Pages/Info/Instructions";
+import BullingEditor from "./components/Pages/Info/Bullying";
+import ProgramsEditor from "./components/Pages/Info/Programs";
 
 import "./App.css"; 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -57,6 +66,15 @@ const App = () => {
         <Route path="/teachers" element={<TeachersPage user={user} />} />
         <Route path="/reg-documents" element={<RegDocumentsPage user={user} />} />
         <Route path="/internal-documents/all" element={<InternalDocumentsEditor user={user} />} />
+        <Route path="/area" element={<AreaPage user={user}/>}  />
+        <Route path="/language" element={<LanguagePage user={user}/>}  />
+        <Route path="/facilities" element={<FacilitiesPage user={user} />} />
+        <Route path="/services" element={<ServicesPage user={user} />} />
+        <Route path="/family-education" element={<FamilyEducationEditor user={user} />} />
+        <Route path="/rules" element={<RulesPage user={user} />} />
+        <Route path="/instructions" element={<InstructionsPage user={user} />} />
+        <Route path="/bullying" element={<BullingEditor user={user} />} />
+        <Route path="/programs" element={<ProgramsEditor user={user} />} />
       </Routes>
       
       </main>

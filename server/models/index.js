@@ -49,6 +49,33 @@ db.RegDocuments = regDocuments;
 const internalDocument = require('./pages/info/InternalDocument')(sequelize, DataTypes);
 db.InternalDocument = internalDocument;
 
+const area = require('./pages/info/Area')(sequelize, DataTypes);
+db.Area = area;
+
+const language = require('./pages/info/Language')(sequelize, DataTypes);
+db.Language = language;
+
+const facilities = require('./pages/info/Facilities')(sequelize, DataTypes);
+db.Facilities = facilities;
+
+const services = require('./pages/info/Services')(sequelize, DataTypes);
+db.Services = services;
+
+const familyEducation = require('./pages/info/FamilyEducation')(sequelize, DataTypes);
+db.FamilyEducation = familyEducation;
+
+const rules = require('./pages/info/Rules')(sequelize, DataTypes);
+db.Rules = rules
+
+const instructions = require('./pages/info/Instructions')(sequelize, DataTypes);
+db.Instructions = instructions
+
+const bullying = require('./pages/info/BullyingDocument')(sequelize, DataTypes);
+db.Bullying = bullying
+
+const programs = require('./pages/info/ProgramsDocument')(sequelize, DataTypes);
+db.Programs = programs
+
 // Define relationships
 db.User.hasMany(db.Post, { foreignKey: "userId" });
 db.Post.belongsTo(db.User, { foreignKey: "userId" });
