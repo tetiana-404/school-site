@@ -137,7 +137,6 @@ const Header = () => {
                       <li><Link className="dropdown-item" to="/instructions">Інструкції, пам’ятки</Link></li>                      
                       <li><Link className="dropdown-item" to="/bullying">Протидія булінгу</Link></li>
                       <li><Link className="dropdown-item" to="/programs">Освітні програми</Link></li>
-                      
                       <li><Link className="dropdown-item" to="/certifications">Атестація педагогічних працівників</Link></li>
                     </ul>
                   </li>

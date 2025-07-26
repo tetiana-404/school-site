@@ -28,6 +28,7 @@ import RulesPage from "./components/Pages/Info/Rules";
 import InstructionsPage from "./components/Pages/Info/Instructions";
 import BullingEditor from "./components/Pages/Info/Bullying";
 import ProgramsEditor from "./components/Pages/Info/Programs";
+import CertificationsEditor from "./components/Pages/Info/Certifications";
 
 import "./App.css"; 
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -75,6 +76,7 @@ const App = () => {
         <Route path="/instructions" element={<InstructionsPage user={user} />} />
         <Route path="/bullying" element={<BullingEditor user={user} />} />
         <Route path="/programs" element={<ProgramsEditor user={user} />} />
+        <Route path="/certifications" element={<CertificationsEditor user={user} />} />
       </Routes>
       
       </main>

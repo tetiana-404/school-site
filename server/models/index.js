@@ -76,6 +76,9 @@ db.Bullying = bullying
 const programs = require('./pages/info/ProgramsDocument')(sequelize, DataTypes);
 db.Programs = programs
 
+const certifications = require('./pages/info/CertificationsDocument')(sequelize, DataTypes);
+db.Certifications = certifications; 
+
 // Define relationships
 db.User.hasMany(db.Post, { foreignKey: "userId" });
 db.Post.belongsTo(db.User, { foreignKey: "userId" });

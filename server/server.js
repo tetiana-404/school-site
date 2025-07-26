@@ -9,7 +9,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sequelize, User, Post, Document, Comment, HomeAbout, HomeSlider, HomeCounter, HomeMeta, TeamMember, AboutInfo } = require("./models");
 const { HomeAboutPage, HomeAboutCounter, HomeHistory, HomeDocuments, HomeAnthem, HomeStrategy, HomeReports, HomeTeachers  } = require('./models');
-const {RegDocuments, InternalDocument, Area, Language, Facilities, Services, FamilyEducation, Rules, Instructions, Bullying, Programs} = require('./models');
+const {RegDocuments, InternalDocument, Area, Language, Facilities, Services, FamilyEducation, Rules, Instructions, Bullying, Programs, Certifications} = require('./models');
 
 const app = express();
 app.use(express.json({ limit: "10mb" })); // Default is 100kb, now increased to 50MB
@@ -25,6 +25,22 @@ const createFolderIfNotExist = (folder) => {
     fs.mkdirSync(folder);
   }
 };
+
+const cyrillicToLatin = (str) => {
+  return str
+    .replace(/а/g, "a").replace(/б/g, "b").replace(/в/g, "v").replace(/г/g, "h")
+    .replace(/ґ/g, "g").replace(/д/g, "d").replace(/е/g, "e").replace(/є/g, "ie")
+    .replace(/ж/g, "zh").replace(/з/g, "z").replace(/и/g, "y").replace(/і/g, "i")
+    .replace(/ї/g, "i").replace(/й/g, "i").replace(/к/g, "k").replace(/л/g, "l")
+    .replace(/м/g, "m").replace(/н/g, "n").replace(/о/g, "o").replace(/п/g, "p")
+    .replace(/р/g, "r").replace(/с/g, "s").replace(/т/g, "t").replace(/у/g, "u")
+    .replace(/ф/g, "f").replace(/х/g, "kh").replace(/ц/g, "ts").replace(/ч/g, "ch")
+    .replace(/ш/g, "sh").replace(/щ/g, "shch").replace(/ь/g, "").replace(/ю/g, "iu")
+    .replace(/я/g, "ia")
+    .replace(/[^a-z0-9]/gi, '_')  // пробіли, спецсимволи → _
+    .toLowerCase();
+};
+
 
 // Налаштування роута для завантаження файлів
 app.post("/api/upload", upload.single("file"), (req, res) => {
@@ -1076,6 +1092,7 @@ app.post('/api/programs', upload.single('file'), async (req, res) => {
   const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
   const baseName = path.basename(file.originalname, fileExtension);
+  baseName = cyrillicToLatin(baseName);  // транслітерація
   const newFileName = `${baseName}-${timestamp}${fileExtension}`;
 
   // Шлях для збереженого файлу
@@ -1110,6 +1127,69 @@ app.put('/api/programs/:id', upload.single('file'), async (req, res) => {
 // DELETE – видалити
 app.delete('/api/programs/:id', async (req, res) => {
   const doc = await Programs.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  await doc.destroy();
+  res.json({ message: 'Deleted' });
+});
+
+app.get('/api/certifications', async (req, res) => {
+  try {
+    const certifications = await Certifications.findAll();
+    res.json(certifications);
+  } catch (err) {
+  console.error('❌ Error updating certifications:', err);
+  res.status(500).json({ error: 'Failed to update certifications' });
+}
+});
+
+// POST – додати новий документ
+app.post('/api/certifications', upload.single('file'), async (req, res) => {
+  const { title } = req.body;
+  const { type } = req.body;
+  let folder = "uploads/documents";
+  const file = req.file;
+  const isActive = req.body.isActive === 'true';
+ 
+  
+  // Створюємо нове ім'я файлу з поточною датою та ID посту
+  const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
+  const baseName = path.basename(file.originalname, fileExtension);
+  const newFileName = `${baseName}-${timestamp}${fileExtension}`;
+
+  // Шлях для збереженого файлу
+  const filePath = path.join(folder, newFileName);
+
+  // Переміщаємо файл у відповідну папку
+  fs.renameSync(file.path, filePath);
+
+  // Повертаємо URL файлу
+  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+  console.log("File uploaded:", fileUrl);
+
+  const doc = await Certifications.create({ title, file: newFileName, isActive });
+  res.json({ url: fileUrl });
+});
+
+// PUT – оновити документ
+app.put('/api/certifications/:id', upload.single('file'), async (req, res) => {
+  const { title, isActive } = req.body;
+  const file = req.file?.filename;
+  const doc = await Certifications.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  doc.title = title;
+  doc.isActive = isActive === 'true';
+  if (file) doc.file = file;
+
+  await doc.save();
+  res.json(doc);
+});
+
+// DELETE – видалити
+app.delete('/api/certifications/:id', async (req, res) => {
+  const doc = await Certifications.findByPk(req.params.id);
   if (!doc) return res.status(404).json({ error: 'Not found' });
 
   await doc.destroy();
