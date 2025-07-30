@@ -16,6 +16,7 @@ body {
 }
 
 a {
+  color: var(--primary-green);
   text-decoration: none;
   -webkit-transition: all .3s ease;
   -o-transition: all .3s ease;
@@ -269,3 +270,10 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
   color: #222;
 }
 
+.modal {
+  z-index: 1060 !important;
+}
+
+.modal-backdrop {
+  z-index: 1050 !important;
+}

@@ -8,8 +8,9 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sequelize, User, Post, Document, Comment, HomeAbout, HomeSlider, HomeCounter, HomeMeta, TeamMember, AboutInfo } = require("./models");
-const { HomeAboutPage, HomeAboutCounter, HomeHistory, HomeDocuments, HomeAnthem, HomeStrategy, HomeReports, HomeTeachers  } = require('./models');
-const {RegDocuments, InternalDocument, Area, Language, Facilities, Services, FamilyEducation, Rules, Instructions, Bullying, Programs, Certifications} = require('./models');
+const { HomeAboutPage, HomeAboutCounter, HomeHistory, HomeDocuments, HomeAnthem, HomeStrategy, HomeReports, HomeTeachers, HomeWorkPlan  } = require('./models');
+const {RegDocuments, InternalDocument, Area, Language, Facilities, Services, FamilyEducation, Rules, Instructions, Bullying, Programs, Certifications, Criteria } = require('./models');
+const {SchoolRating, SchoolMedals} = require('./models');
 
 const app = express();
 app.use(express.json({ limit: "10mb" })); // Default is 100kb, now increased to 50MB
@@ -607,6 +608,32 @@ app.put('/api/strategy', async (req, res) => {
   }
 });
 
+app.get('/api/work-plan', async (req, res) => {
+  try {
+    const workPlan = await WorkPlan.findOne();
+    res.json(workPlan);
+  } catch (err) {
+  console.error('❌ Error updating workPlan:', err);
+  res.status(500).json({ error: 'Failed to update workPlan' });
+}
+});
+
+app.put('/api/work-plan', async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    
+    let workPlan = await WorkPlan.findOne();
+    if (workPlan) {
+      await workPlan.update({ title, content });
+    } else {
+      workPlan = await WorkPlan.create({ title, content });
+    }
+    res.json(workPlan);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update workPlan' });
+  }
+});
+
 app.get('/api/reports', async (req, res) => {
   try {
     const reports = await HomeReports.findOne();
@@ -1194,6 +1221,174 @@ app.delete('/api/certifications/:id', async (req, res) => {
 
   await doc.destroy();
   res.json({ message: 'Deleted' });
+});
+
+app.get('/api/criteria', async (req, res) => {
+  try {
+    const criteria = await Criteria.findAll();
+    res.json(criteria);
+  } catch (err) {
+  console.error('❌ Error updating criteria:', err);
+  res.status(500).json({ error: 'Failed to update criteria' });
+}
+});
+
+// POST – додати новий документ
+app.post('/api/criteria', upload.single('file'), async (req, res) => {
+  const { title } = req.body;
+  const { type } = req.body;
+  let folder = "uploads/documents";
+  const file = req.file;
+  const isActive = req.body.isActive === 'true';
+ 
+  
+  // Створюємо нове ім'я файлу з поточною датою та ID посту
+  const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
+  const baseName = path.basename(file.originalname, fileExtension);
+  const newFileName = `${baseName}-${timestamp}${fileExtension}`;
+
+  // Шлях для збереженого файлу
+  const filePath = path.join(folder, newFileName);
+
+  // Переміщаємо файл у відповідну папку
+  fs.renameSync(file.path, filePath);
+
+  // Повертаємо URL файлу
+  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+  console.log("File uploaded:", fileUrl);
+
+  const doc = await Criteria.create({ title, file: newFileName, isActive });
+  res.json({ url: fileUrl });
+});
+
+// PUT – оновити документ
+app.put('/api/criteria/:id', upload.single('file'), async (req, res) => {
+  const { title, isActive } = req.body;
+  const file = req.file?.filename;
+  const doc = await Criteria.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  doc.title = title;
+  doc.isActive = isActive === 'true';
+  if (file) doc.file = file;
+
+  await doc.save();
+  res.json(doc);
+});
+
+// DELETE – видалити
+app.delete('/api/criteria/:id', async (req, res) => {
+  const doc = await Criteria.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  await doc.destroy();
+  res.json({ message: 'Deleted' });
+});
+
+// GET all ratings
+app.get('/api/school-ratings', async (req, res) => {
+  const ratings = await SchoolRating.findAll({ order: [['year', 'DESC']] });
+  res.json(ratings);
+});
+
+// POST new rating
+app.post('/api/school-ratings', async (req, res) => {
+ try {
+    const newRating = await SchoolRating.create(req.body);
+    res.status(201).json(newRating);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to create rating' });
+  }
+});
+
+// PUT update
+app.put('/api/school-ratings/:id', async (req, res) => {
+  try {
+    const rating = await SchoolRating.findByPk(req.params.id);
+    if (!rating) return res.status(404).json({ error: 'Not found' });
+    await rating.update(req.body);
+    res.json(rating);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update rating' });
+  }
+});
+
+app.delete('/api/school-ratings/:id', async (req, res) => {
+  try {
+    const rating = await SchoolRating.findByPk(req.params.id);
+    if (!rating) return res.status(404).json({ error: 'Not found' });
+    await rating.destroy();
+    res.json({ message: 'Deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete rating' });
+  }
+});
+
+// Отримати всі роки в порядку спадання
+app.get('/api/school-medals', async (req, res) => {
+  try {
+    const medals = await SchoolMedals.findAll({
+      order: [['year', 'DESC']],
+    });
+    res.json(medals);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Додати новий запис
+app.post('/api/school-medals', async (req, res) => {
+  try {
+    const { year, gold, silver } = req.body;
+    const newEntry = await SchoolMedals.create({ year, gold, silver });
+    res.status(201).json(newEntry);
+  } catch (err) {
+    res.status(400).json({ error: 'Could not create entry', details: err });
+  }
+});
+
+// Оновити запис
+app.put('/api/school-medals/:id', async (req, res) => {
+  try {
+    const { gold, silver } = req.body;
+    const updated = await SchoolMedals.update(
+      { gold, silver },
+      { where: { id: req.params.id } }
+    );
+    res.json({ message: 'Updated successfully' });
+  } catch (err) {
+    res.status(400).json({ error: 'Could not update', details: err });
+  }
+});
+
+app.put('/api/school-medals/:year', async (req, res) => {
+  const { year } = req.params;
+  const { newYear, gold, silver } = req.body;
+
+  const entry = await SchoolMedals.findOne({ where: { year } });
+  if (!entry) return res.status(404).json({ error: 'Not found' });
+
+  // Оновлюємо поля
+  entry.year = newYear || entry.year;
+  entry.gold = gold || entry.gold;
+  entry.silver = silver || entry.silver;
+  await entry.save();
+
+  res.json(entry);
+});
+
+// Видалити запис
+app.delete('/api/school-medals/:id', async (req, res) => {
+  try {
+    await SchoolMedals.destroy({ where: { id: req.params.id } });
+    res.json({ message: 'Deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Could not delete', details: err });
+  }
 });
 
 // Start the server

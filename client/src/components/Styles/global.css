@@ -673,7 +673,7 @@ fieldset {
   -moz-transition: all 0.4s ease-in-out;
   -o-transition: all 0.4s ease-in-out;
   -ms-transition: all 0.4s ease-in-out;
-  z-index: 1030;
+  z-index: 999;
 }
 
 .mainmenu-area .navbar-form {
@@ -1569,6 +1569,8 @@ fieldset {
 
 .single-featured-item {
   padding: 36px;
+  /*box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);*/
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .single-featured-item h4 {
   margin: 25px 0;
@@ -1577,6 +1579,10 @@ fieldset {
   font-size: 60px;
   font-weight: 800;
   color: var(--primary-green);
+}
+.single-featured-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
 }
 
 /*
@@ -7128,4 +7134,16 @@ main p {
 #reportsPage .editor-content table tr,
 #reportsPage .editor-content table td{
   border: 1px solid #999;
+}
+
+#medalsSection ul,
+#medalsSection li {
+  margin: 0;
+  padding: 0;
+  list-style: decimal;
+  font-size: larger;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #AAE8B8 !important;
 }

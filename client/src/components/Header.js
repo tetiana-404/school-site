@@ -111,6 +111,7 @@ const Header = () => {
                       <li><Link className="dropdown-item" to="/anthem">Гімн гімназії</Link></li>
                       <li><Link className="dropdown-item" to="/documents">Установчі документи</Link></li>
                       <li><Link className="dropdown-item" to="/strategy">Стратегія розвитку гімназії</Link></li>
+                      <li><Link className="dropdown-item" to="/work-plan">План роботи гімназії</Link></li>
                       <li><Link className="dropdown-item" to="/reports">Звіти директора</Link></li>
                       <li><Link className="dropdown-item" to="/teachers">Кадровий склад</Link></li>
                       <li><Link className="dropdown-item" to="/vacancies">Вакансії</Link></li>
@@ -138,6 +139,7 @@ const Header = () => {
                       <li><Link className="dropdown-item" to="/bullying">Протидія булінгу</Link></li>
                       <li><Link className="dropdown-item" to="/programs">Освітні програми</Link></li>
                       <li><Link className="dropdown-item" to="/certifications">Атестація педагогічних працівників</Link></li>
+                      <li><Link className="dropdown-item" to="/criteria">Критерії оцінювання </Link></li>
                     </ul>
                   </li>
 
@@ -150,8 +152,8 @@ const Header = () => {
                       </svg>
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownTeachers">
-                      <li><a className="dropdown-item" href="#">Рейтинг</a></li>
-                      <li><a className="dropdown-item" href="#">Медалісти</a></li>
+                      <li><a className="dropdown-item" href="/school-rating">Рейтинг</a></li>
+                      <li><a className="dropdown-item" href="/school-medals">Медалісти</a></li>
                       <li><a className="dropdown-item" href="#">Олімпіади</a></li>
                       <li><a className="dropdown-item" href="#">Успішний вчитель</a></li>
                     </ul>

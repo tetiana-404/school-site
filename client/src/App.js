@@ -29,14 +29,18 @@ import InstructionsPage from "./components/Pages/Info/Instructions";
 import BullingEditor from "./components/Pages/Info/Bullying";
 import ProgramsEditor from "./components/Pages/Info/Programs";
 import CertificationsEditor from "./components/Pages/Info/Certifications";
+import CriteriaEditor from "./components/Pages/Info/Criteria";
+import WorkPlanPage from "./components/Pages/About/WorkPlanPage";
 
-import "./App.css"; 
+import SchoolRating from "./components/Pages/Achievements/SchoolRating";
+import SchoolMedals from "./components/Pages/Achievements/SchoolMedals";
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-
+import "./App.css"; 
 
 const App = () => {
    const [user, setUser] = useState(() => {
@@ -63,6 +67,7 @@ const App = () => {
         <Route path="/anthem" element={<AnthemPage user={user} />} />
         <Route path="/documents" element={<DocumentsPage user={user} />} />
         <Route path="/strategy" element={<StrategyPage user={user} />} />
+        <Route path="/work-plan" element={<WorkPlanPage user={user} />} />
         <Route path="/reports" element={<ReportsPage user={user} />} />
         <Route path="/teachers" element={<TeachersPage user={user} />} />
         <Route path="/reg-documents" element={<RegDocumentsPage user={user} />} />
@@ -77,6 +82,10 @@ const App = () => {
         <Route path="/bullying" element={<BullingEditor user={user} />} />
         <Route path="/programs" element={<ProgramsEditor user={user} />} />
         <Route path="/certifications" element={<CertificationsEditor user={user} />} />
+        <Route path="/criteria" element={<CriteriaEditor user={user} />} />
+
+        <Route path="/school-rating" element={<SchoolRating user={user} />} />
+        <Route path="/school-medals" element={<SchoolMedals user={user} />} />
       </Routes>
       
       </main>

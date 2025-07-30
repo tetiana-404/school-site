@@ -37,6 +37,9 @@ db.HomeAnthem = homeAnthem;
 const homeStrategy = require('./pages/about/HomeStrategy')(sequelize, DataTypes);
 db.HomeStrategy = homeStrategy;
 
+const homeWorkPlan = require('./pages/about/HomeWorkPlan')(sequelize, DataTypes);
+db.HomeWorkPlan = homeWorkPlan;
+
 const homeReports = require('./pages/about/HomeReports')(sequelize, DataTypes);
 db.HomeReports = homeReports;
 
@@ -78,6 +81,15 @@ db.Programs = programs
 
 const certifications = require('./pages/info/CertificationsDocument')(sequelize, DataTypes);
 db.Certifications = certifications; 
+
+const criteria = require('./pages/info/CriteriaDocument')(sequelize, DataTypes);
+db.Criteria = criteria;
+
+const schoolRating = require('./pages/achievements/SchoolRating')(sequelize, DataTypes);
+db.SchoolRating = schoolRating;
+
+const medals = require('./pages/achievements/SchoolMedals')(sequelize, DataTypes);
+db.SchoolMedals = medals;
 
 // Define relationships
 db.User.hasMany(db.Post, { foreignKey: "userId" });
