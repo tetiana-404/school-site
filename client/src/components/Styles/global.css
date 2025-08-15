@@ -7097,7 +7097,8 @@ main p {
 #reportsPage img,
 #teachersPage img,
 #areaPage img,
-#languagePage img {
+#languagePage img,
+.img-100 img {
   width: 100%;
 }
 

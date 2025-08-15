@@ -154,7 +154,7 @@ const Header = () => {
                     <ul className="dropdown-menu" aria-labelledby="dropdownTeachers">
                       <li><a className="dropdown-item" href="/school-rating">Рейтинг</a></li>
                       <li><a className="dropdown-item" href="/school-medals">Медалісти</a></li>
-                      <li><a className="dropdown-item" href="#">Олімпіади</a></li>
+                      <li><a className="dropdown-item" href="/olympiads">Олімпіади</a></li>
                       <li><a className="dropdown-item" href="#">Успішний вчитель</a></li>
                     </ul>
                   </li>
@@ -167,7 +167,8 @@ const Header = () => {
                       </svg>
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownTeachers">
-                      <li><a className="dropdown-item" href="#">Розклад дзвінків</a></li>
+                      <li><a className="dropdown-item" href="/school-timetable">Розклад уроків</a></li>
+                      <li><a className="dropdown-item" href="/school-bells">Розклад дзвінків</a></li>
                       <li><a className="dropdown-item" href="#">Графік гуртків</a></li>
                       <li><a className="dropdown-item" href="#">Благодійні внески</a></li>
                     </ul>

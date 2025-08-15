@@ -91,6 +91,15 @@ db.SchoolRating = schoolRating;
 const medals = require('./pages/achievements/SchoolMedals')(sequelize, DataTypes);
 db.SchoolMedals = medals;
 
+const olympiads = require('./pages/achievements/OlympiadWinner')(sequelize, DataTypes);
+db.Olympiads = olympiads;
+
+const schoolBells = require('./pages/forparents/schoolbells')(sequelize, DataTypes);
+db.SchoolBells = schoolBells;
+
+const schoolTimetable = require('./pages/forparents/schooltimetable')(sequelize, DataTypes);
+db.SchoolTimetable = schoolTimetable;
+
 // Define relationships
 db.User.hasMany(db.Post, { foreignKey: "userId" });
 db.Post.belongsTo(db.User, { foreignKey: "userId" });

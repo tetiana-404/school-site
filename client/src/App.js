@@ -34,6 +34,9 @@ import WorkPlanPage from "./components/Pages/About/WorkPlanPage";
 
 import SchoolRating from "./components/Pages/Achievements/SchoolRating";
 import SchoolMedals from "./components/Pages/Achievements/SchoolMedals";
+import SchoolWinners from "./components/Pages/Achievements/SchoolWiners";
+import SchoolBells from "./components/Pages/ForParents/SchoolBells";
+import SchoolTimetable from "./components/Pages/ForParents/SchoolTimetable";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -86,6 +89,10 @@ const App = () => {
 
         <Route path="/school-rating" element={<SchoolRating user={user} />} />
         <Route path="/school-medals" element={<SchoolMedals user={user} />} />
+        <Route path="/olympiads" element={<SchoolWinners user={user} />} />
+      
+        <Route path="/school-timetable" element={<SchoolTimetable user={user}  />} />
+        <Route path="/school-bells" element={<SchoolBells user={user}  />} />
       </Routes>
       
       </main>

@@ -58,6 +58,8 @@ const AnthemPage = ({ user }) => {
                                     placeholder="Введіть інформацію установчі документи гімназії"
                                 />
 
+                                
+
                                 <div className="text-center mt-3">
                                     <button
                                         className="btn btn-outline-success btn-lg w-50"

@@ -10,7 +10,8 @@ const jwt = require("jsonwebtoken");
 const { sequelize, User, Post, Document, Comment, HomeAbout, HomeSlider, HomeCounter, HomeMeta, TeamMember, AboutInfo } = require("./models");
 const { HomeAboutPage, HomeAboutCounter, HomeHistory, HomeDocuments, HomeAnthem, HomeStrategy, HomeReports, HomeTeachers, HomeWorkPlan  } = require('./models');
 const {RegDocuments, InternalDocument, Area, Language, Facilities, Services, FamilyEducation, Rules, Instructions, Bullying, Programs, Certifications, Criteria } = require('./models');
-const {SchoolRating, SchoolMedals} = require('./models');
+const {SchoolRating, SchoolMedals, Olympiads} = require('./models');
+const {SchoolBells, SchoolTimetable} = require('./models');
 
 const app = express();
 app.use(express.json({ limit: "10mb" })); // Default is 100kb, now increased to 50MB
@@ -1390,6 +1391,150 @@ app.delete('/api/school-medals/:id', async (req, res) => {
     res.status(500).json({ error: 'Could not delete', details: err });
   }
 });
+
+// Отримати всі роки в порядку спадання
+app.get('/api/olympiads', async (req, res) => {
+  try {
+    const winner = await Olympiads.findAll({
+      order: [['year', 'DESC']],
+    });
+    console.log('✅ Winners found:', winner);
+    res.json(winner);
+  } catch (err) {
+    console.error('❌ Error in /api/olympiads:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Додати новий запис
+app.post('/api/olympiads', async (req, res) => {
+  try {
+    const { year, content } = req.body;
+    const newEntry = await Olympiads.create({ year, content });
+    res.status(201).json(newEntry);
+  } catch (err) {
+    res.status(400).json({ error: 'Could not create entry', details: err });
+  }
+});
+
+// Оновити запис
+app.put('/api/olympiads/:id', async (req, res) => {
+  try {
+    const { content } = req.body;
+    const updated = await Olympiads.update(
+      { content },
+      { where: { id: req.params.id } }
+    );
+    res.json({ message: 'Updated successfully' });
+  } catch (err) {
+    res.status(400).json({ error: 'Could not update', details: err });
+  }
+});
+
+// Видалити запис
+app.delete('/api/olympiads/:id', async (req, res) => {
+  try {
+    await Olympiads.destroy({ where: { id: req.params.id } });
+    res.json({ message: 'Deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'Could not delete', details: err });
+  }
+});
+
+// Отримати розклад дзвінків
+app.get("/api/school-bells", async (req, res) => {
+  try {
+    const bells = await SchoolBells.findOne();
+    res.json(bells);
+  } catch (err) {
+    console.error("❌ Error fetching school bells:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Оновити розклад дзвінків
+app.put("/api/school-bells", async (req, res) => {
+  try {
+    const { content } = req.body;
+    let bells = await SchoolBells.findOne();
+
+    if (!bells) {
+      bells = await SchoolBells.create({ content });
+    } else {
+      bells.content = content;
+      await bells.save();
+    }
+
+    res.json(bells);
+  } catch (err) {
+    console.error("❌ Error updating school bells:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get('/api/school-timetable', async (req, res) => {
+  try {
+    const schoolTimetable = await SchoolTimetable.findAll();
+    res.json(schoolTimetable);
+  } catch (err) {
+  console.error('❌ Error updating services:', err);
+  res.status(500).json({ error: 'Failed to update services' });
+}
+});
+
+// POST – додати новий документ
+app.post('/api/school-timetable', upload.single('file'), async (req, res) => {
+  const { title } = req.body;
+  const { type } = req.body;
+  let folder = "uploads/documents";
+  const file = req.file;
+  const isActive = req.body.isActive === 'true';
+ 
+  
+  // Створюємо нове ім'я файлу з поточною датою та ID посту
+  const timestamp = Date.now();  // Поточна дата у мілісекундах
+  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
+  const newFileName = `doc-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+
+  // Шлях для збереженого файлу
+  const filePath = path.join(folder, newFileName);
+
+  // Переміщаємо файл у відповідну папку
+  fs.renameSync(file.path, filePath);
+
+  // Повертаємо URL файлу
+  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+  console.log("File uploaded:", fileUrl);
+
+  const doc = await SchoolTimetable.create({ title, file: newFileName, isActive });
+  res.json({ url: fileUrl });
+});
+
+// PUT – оновити документ
+app.put('/api/school-timetable/:id', upload.single('file'), async (req, res) => {
+  const { title, isActive } = req.body;
+  const file = req.file?.filename;
+  const doc = await SchoolTimetable.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  doc.title = title;
+  doc.isActive = isActive === 'true';
+  if (file) doc.file = file;
+
+  await doc.save();
+  res.json(doc);
+});
+
+// DELETE – видалити
+app.delete('/api/school-timetable/:id', async (req, res) => {
+  const doc = await SchoolTimetable.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  await doc.destroy();
+  res.json({ message: 'Deleted' });
+});
+
+
 
 // Start the server
 const PORT = process.env.PORT || 5000;
