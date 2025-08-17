@@ -60,7 +60,7 @@ const NewsCarousel = () => {
               <div
                 className="news-slide-bg"
                 style={{
-                  backgroundImage: `url(${getMainImage(post.content)})`,
+                  backgroundImage: `url(${process.env.PUBLIC_URL/getMainImage(post.content)})`,
                 }}
               >
                 <div className="news-slide-overlay">

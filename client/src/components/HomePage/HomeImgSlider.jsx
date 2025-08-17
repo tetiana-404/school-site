@@ -147,7 +147,7 @@ const HomeImgSlider = ({ user }) => {
             <div
               className="home-single-slide d-flex align-items-center"
               style={{
-                backgroundImage: `url(${slide.image})`,
+                backgroundImage: `url(${process.env.PUBLIC_URL/slide.image})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 position: 'relative',

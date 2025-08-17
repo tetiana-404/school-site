@@ -155,7 +155,7 @@ const AboutPage = ({ user }) => {
         </div>
       </section>
 
-      <section id="counter" className="counter-section counter-padding overlay section-back-image" style={{ backgroundImage: "url('/img/bg/counter-bg-2.jpg')" }}>
+      <section id="counter" className="counter-section counter-padding overlay section-back-image" style={{ backgroundImage: `url(${process.env.PUBLIC_URL}/img/bg/counter-bg-2.jpg)` }}>
         {user?.role === 'admin' && !editCounters && (
           <button className="btn btn-outline-dark position-absolute top-0 m-0 w-auto" style={{ right: 20 }} onClick={() => setEditCounters(true)}>✏️</button>
         )}

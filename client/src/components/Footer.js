@@ -21,7 +21,7 @@ const Footer = () => {
                   <Link to="/">
                     <img
                       className="img-fluid"
-                      src="/img/logo.png"
+                      src={process.env.PUBLIC_URL + '/img/logo.png'}
                       alt="Logo"
                     />
                   </Link>
