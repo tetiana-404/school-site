@@ -98,7 +98,7 @@ const InternalDocumentsEditor = ({ user }) => {
         <div className="row">
           <div className="col-lg-12">
             <div className="py-3">
-              <img src='../../img/1210.jpg' className='w-100' />
+              <img src={process.env.PUBLIC_URL + '/img/1210.jpg'} className='w-100' />
             </div>
             <div className="accordion">
               {documents.map((doc) => (

@@ -149,7 +149,7 @@ const AboutPage = ({ user }) => {
             </div>
 
             <div className='col-lg-8 col-md-6 col-sm-12 mb-5'>
-              <img className="img-fluid about-image-hover" src="/img/1.jpg" alt="Про гімназію" />
+              <img className="img-fluid about-image-hover" src={process.env.PUBLIC_URL + '/img/1.jpg'} alt="Про гімназію" />
             </div>
           </div>
         </div>

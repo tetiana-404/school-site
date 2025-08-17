@@ -98,7 +98,7 @@ const BullingEditor = ({ user }) => {
         <div className="row">
           <div className="col-lg-12">
             <div className="py-3">
-              <img src='../../img/Bullying.jpg' className='w-100' />
+              <img src={process.env.PUBLIC_URL + '/img/Bullying.jpg'} className='w-100' />
             </div>
             <div className="accordion">
               {documents.map((doc) => (

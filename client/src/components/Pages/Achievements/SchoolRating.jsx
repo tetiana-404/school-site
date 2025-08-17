@@ -110,7 +110,7 @@ const SchoolRating = ({ user }) => {
                                 <div className='text-holder mb-2'>
 
                                     <h3 className='theme-color mb-3'><b>{r.year}</b></h3>
-                                    <img src="/img/trophy.png" className='w-25' alt="Трофей" />
+                                    <img src={process.env.PUBLIC_URL + '/img/trophy.png'} className='w-25' alt="Трофей" />
                                 </div>
 
 

@@ -125,7 +125,7 @@ const HomeAboutSection = ({ user }) => {
 
           <div className="col-lg-6">
             <div className="position-relative rounded overflow-hidden shadow">
-              <img src='/img/12.jpg' alt="Про нас" className="img-fluid w-100" />
+              <img src={process.env.PUBLIC_URL + "/img/12.jpg"} alt="Про нас" className="img-fluid w-100" />
             </div>
           </div>
         </div>

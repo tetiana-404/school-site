@@ -162,7 +162,7 @@ const TeamSection = ({ user }) => {
                       <div className="single-team-member">
                         <img
                           className="img-fluid"
-                          src={member.img || '/img/no-photo.jpg'}
+                          src={process.env.PUBLIC_URL + member.img || process.env.PUBLIC_URL + '/img/no-photo.jpg'}
                           alt={member.name}
                           style={{ height:'300px', objectFit: 'cover', width: '100%' }}
                         />

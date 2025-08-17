@@ -98,7 +98,7 @@ const FamilyEducationEditor = ({ user }) => {
                 <div className="row">
                     <div className="col-lg-12">
                         <div className="py-3">
-                            <img src='../../img/home-school.jpg' className='w-100' />
+                            <img src={process.env.PUBLIC_URL + '/img/home-school.jpg'} className='w-100' />
 
                         </div>
 

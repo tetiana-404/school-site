@@ -47,7 +47,7 @@ const Header = () => {
         <div className="d-flex flex-column flex-md-row align-items-center justify-content-between w-100">
           <div className="mb-3 mb-md-0">
             <Link to="/"> <img
-              src="/img/logo.png"
+              src={process.env.PUBLIC_URL + "/img/logo.png"}
               alt="Євшан"
               className="img-fluid"
               style={{ maxWidth: "250px" }}
