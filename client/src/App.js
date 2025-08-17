@@ -52,7 +52,7 @@ const App = () => {
   });
 
   return (
-    <Router>
+    <Router basename="/school-site">
       <Topbar />
       <Header />
       
