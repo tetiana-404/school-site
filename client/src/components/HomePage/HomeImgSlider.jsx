@@ -131,6 +131,23 @@ const HomeImgSlider = ({ user }) => {
       .catch((err) => console.error('❌ Fetching slides failed:', err));
   }, []);
 
+  const isLocalhost = window.location.hostname === "localhost";
+
+  const getImageUrl = (path) => {
+    if (!path) return "";
+
+  // Якщо це повний URL (http/https) — повертаємо як є
+    if (path.startsWith("http")) return path;
+
+  // Якщо локально — підтягуємо з бекенду
+    if (isLocalhost) {
+      return `http://localhost:5000${path}`;
+    }
+
+  // Якщо GitHub Pages — використовуємо PUBLIC_URL (/school-site)
+    return `${process.env.PUBLIC_URL}${path}`;
+  };
+
   return (
     <section className="slider-section position-relative">
       {user?.role === 'admin' && !editMode && (
@@ -147,7 +164,7 @@ const HomeImgSlider = ({ user }) => {
             <div
               className="home-single-slide d-flex align-items-center"
               style={{
-                backgroundImage: `url(${process.env.PUBLIC_URL/slide.image})`,
+                backgroundImage: `url(${getImageUrl(slide.image)})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 position: 'relative',
