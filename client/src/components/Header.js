@@ -152,10 +152,10 @@ const Header = () => {
                       </svg>
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownTeachers">
-                      <li><a className="dropdown-item" href="/school-rating">Рейтинг</a></li>
-                      <li><a className="dropdown-item" href="/school-medals">Медалісти</a></li>
-                      <li><a className="dropdown-item" href="/olympiads">Олімпіади</a></li>
-                      <li><a className="dropdown-item" href="#">Успішний вчитель</a></li>
+                      <li><Link className="dropdown-item" to="/school-rating">Рейтинг</Link></li>
+                      <li><Link className="dropdown-item" to="/school-medals">Медалісти</Link></li>
+                      <li><Link className="dropdown-item" to="/olympiads">Олімпіади</Link></li>
+                      <li><Link className="dropdown-item" to="#">Успішний вчитель</Link></li>
                     </ul>
                   </li>
 
@@ -167,10 +167,10 @@ const Header = () => {
                       </svg>
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownTeachers">
-                      <li><a className="dropdown-item" href="/school-timetable">Розклад уроків</a></li>
-                      <li><a className="dropdown-item" href="/school-bells">Розклад дзвінків</a></li>
-                      <li><a className="dropdown-item" href="#">Графік гуртків</a></li>
-                      <li><a className="dropdown-item" href="#">Благодійні внески</a></li>
+                      <li><Link className="dropdown-item" to="/school-timetable">Розклад уроків</Link></li>
+                      <li><Link className="dropdown-item" to="/school-bells">Розклад дзвінків</Link></li>
+                      <li><Link className="dropdown-item" to="#">Графік гуртків</Link></li>
+                      <li><Link className="dropdown-item" to="#">Благодійні внески</Link></li>
                     </ul>
                   </li>
                   <li className="nav-item">

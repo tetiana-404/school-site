@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import Topbar from "./components/Topbar";
 import Header from "./components/Header"
@@ -52,7 +52,7 @@ const App = () => {
   });
 
   return (
-    <Router basename="/school-site">
+    <BrowserRouter basename="/school-site">
       <Topbar />
       <Header />
       
@@ -100,7 +100,7 @@ const App = () => {
       <Footer />
       <ScrollToTop />
      
-    </Router>
+    </BrowserRouter>
   );
 };
 
