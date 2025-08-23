@@ -11,7 +11,8 @@ const { sequelize, User, Post, Document, Comment, HomeAbout, HomeSlider, HomeCou
 const { HomeAboutPage, HomeAboutCounter, HomeHistory, HomeDocuments, HomeAnthem, HomeStrategy, HomeReports, HomeTeachers, HomeWorkPlan  } = require('./models');
 const {RegDocuments, InternalDocument, Area, Language, Facilities, Services, FamilyEducation, Rules, Instructions, Bullying, Programs, Certifications, Criteria } = require('./models');
 const {SchoolRating, SchoolMedals, Olympiads} = require('./models');
-const {SchoolBells, SchoolTimetable} = require('./models');
+const {SchoolBells, SchoolTimetable, SchoolClubsTimetable, Donations} = require('./models');
+const {Admission, Finance, Contact} = require('./models');
 
 const app = express();
 app.use(express.json({ limit: "10mb" })); // Default is 100kb, now increased to 50MB
@@ -1534,7 +1535,239 @@ app.delete('/api/school-timetable/:id', async (req, res) => {
   res.json({ message: 'Deleted' });
 });
 
+app.get('/api/school-clubs-timetable', async (req, res) => {
+  try {
+    const schoolClubsTimetable = await SchoolClubsTimetable.findAll();
+    res.json(schoolClubsTimetable);
+  } catch (err) {
+  console.error('❌ Error updating services:', err);
+  res.status(500).json({ error: 'Failed to update services' });
+}
+});
 
+// POST – додати новий документ
+app.post('/api/school-clubs-timetable', upload.single('file'), async (req, res) => {
+  const { title } = req.body;
+  const { type } = req.body;
+  let folder = "uploads/documents";
+  const file = req.file;
+  const isActive = req.body.isActive === 'true';
+ 
+  
+  // Створюємо нове ім'я файлу з поточною датою та ID посту
+  const timestamp = Date.now();  // Поточна дата у мілісекундах
+  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
+  const newFileName = `doc-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+
+  // Шлях для збереженого файлу
+  const filePath = path.join(folder, newFileName);
+
+  // Переміщаємо файл у відповідну папку
+  fs.renameSync(file.path, filePath);
+
+  // Повертаємо URL файлу
+  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+  console.log("File uploaded:", fileUrl);
+
+  const doc = await SchoolClubsTimetable.create({ title, file: newFileName, isActive });
+  res.json({ url: fileUrl });
+});
+
+// PUT – оновити документ
+app.put('/api/school-clubs-timetable/:id', upload.single('file'), async (req, res) => {
+  const { title, isActive } = req.body;
+  const file = req.file?.filename;
+  const doc = await SchoolClubsTimetable.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  doc.title = title;
+  doc.isActive = isActive === 'true';
+  if (file) doc.file = file;
+
+  await doc.save();
+  res.json(doc);
+});
+
+// DELETE – видалити
+app.delete('/api/school-clubs-timetable/:id', async (req, res) => {
+  const doc = await SchoolClubsTimetable.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  await doc.destroy();
+  res.json({ message: 'Deleted' });
+});
+
+app.get('/api/donations', async (req, res) => {
+  try {
+    const donations = await Donations.findOne();
+    res.json(donations);
+  } catch (err) {
+  console.error('❌ Error updating donations:', err);
+  res.status(500).json({ error: 'Failed to update donations' });
+}
+});
+
+app.put('/api/donations', async (req, res) => {
+  try {
+    const { title, content } = req.body;
+    
+    let donations = await Donations.findOne();
+    if (donations) {
+      await donations.update({ title, content });
+    } else {
+      donations = await Donations.create({ title, content });
+    }
+    res.json(donations);
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to update donations' });
+  }
+});
+
+app.get("/api/admission", async (req, res) => {
+  try {
+    const data = await Admission.findAll();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch admission sections" });
+  }
+});
+
+// PUT update by section
+app.put("/api/admission/:section", async (req, res) => {
+  try {
+    const { section } = req.params;
+    const { content } = req.body;
+
+    const record = await Admission.findOne({ where: { section } });
+    if (record) {
+      await record.update({ content });
+      res.json(record);
+    } else {
+      // Якщо секції ще нема — створюємо
+      const newRec = await Admission.create({ section, title: section, content });
+      res.json(newRec);
+    }
+  } catch (err) {
+    res.status(500).json({ error: "Failed to update admission section" });
+  }
+});
+
+// Отримати всі секції у порядку спадання років
+app.get("/api/finance", async (req, res) => {
+  try {
+    const data = await Finance.findAll({
+      order: [["year", "DESC"]],
+    });
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch finance sections" });
+  }
+});
+
+// Додати нову секцію
+app.post("/api/finance", async (req, res) => {
+  try {
+    const { year, title, content } = req.body;
+    if (!year) {
+      return res.status(400).json({ error: "Year is required" });
+    }
+
+    // Створюємо title автоматично, якщо не передано
+    const newSection = await Finance.create({
+      year,
+      title: title || `Рік ${year}`,
+      content: content || "",
+    });
+
+    res.json(newSection);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to create finance section" });
+  }
+});
+
+// Оновити секцію
+app.put("/api/finance/:id", async (req, res) => {
+  try {
+    const finance = await Finance.findByPk(req.params.id);
+    if (!finance) return res.status(404).json({ error: "Section not found" });
+
+    const { year, title, content } = req.body;
+
+    await finance.update({
+      year: year !== undefined ? year : finance.year,
+      title: title !== undefined ? title : finance.title,
+      content: content !== undefined ? content : finance.content,
+    });
+
+    res.json(finance);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to update finance section" });
+  }
+});
+
+// Видалити секцію
+app.delete("/api/finance/:id", async (req, res) => {
+  try {
+    const finance = await Finance.findByPk(req.params.id);
+    if (!finance) return res.status(404).json({ error: "Section not found" });
+
+    await finance.destroy();
+    res.json({ message: "Section deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete finance section" });
+  }
+});
+
+// GET всі контакти
+app.get('/api/contact333', async (req, res) => {
+  const contacts = await Contact.findAll();
+  res.json(contacts);
+});
+
+// GET контактів
+app.get("/api/contact", async (req, res) => {
+  try {
+    let contact = await Contact.findOne();
+    if (!contact) {
+      // Якщо запису ще немає, створимо за замовчуванням
+      contact = await Contact.create({
+        name: "Гімназія №1",
+        address: "м.Львів, вул.Любінська, 93А",
+        email: "yevshan79@gmail.com",
+        phone: "+38(032)262-20-36",
+        mobilePhone: "",
+        director: "Директор"
+      });
+    }
+    res.json(contact);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to fetch contact" });
+  }
+});
+
+// PUT оновлення контакту
+app.put("/api/contact", async (req, res) => {
+  try {
+    const { name, address, email, phone, director } = req.body;
+
+    let contact = await Contact.findOne();
+    if (!contact) {
+      // якщо запису ще нема – створимо
+      contact = await Contact.create({ name, address, email, phone, director });
+    } else {
+      await contact.update({ name, address, email, phone, director });
+    }
+
+    res.json({ success: true, contact });
+  } catch (err) {
+    console.error("PUT /contact error:", err);
+    res.status(500).json({ error: "Failed to update contact" });
+  }
+});
 
 // Start the server
 const PORT = process.env.PORT || 5000;

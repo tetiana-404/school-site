@@ -100,6 +100,21 @@ db.SchoolBells = schoolBells;
 const schoolTimetable = require('./pages/forparents/schooltimetable')(sequelize, DataTypes);
 db.SchoolTimetable = schoolTimetable;
 
+const schoolClubsTimetable = require('./pages/forparents/schoolclubstimetable')(sequelize, DataTypes);
+db.SchoolClubsTimetable = schoolClubsTimetable;
+
+const donations = require('./pages/forparents/donations')(sequelize, DataTypes);
+db.Donations = donations;
+
+const admission = require('./admission')(sequelize, DataTypes);
+db.Admission = admission;
+
+const finance = require('./finance')(sequelize, DataTypes);
+db.Finance = finance;
+
+const contact = require('./contact')(sequelize, DataTypes);
+db.Contact = contact;
+
 // Define relationships
 db.User.hasMany(db.Post, { foreignKey: "userId" });
 db.Post.belongsTo(db.User, { foreignKey: "userId" });

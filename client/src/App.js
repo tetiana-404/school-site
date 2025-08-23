@@ -37,6 +37,12 @@ import SchoolMedals from "./components/Pages/Achievements/SchoolMedals";
 import SchoolWinners from "./components/Pages/Achievements/SchoolWiners";
 import SchoolBells from "./components/Pages/ForParents/SchoolBells";
 import SchoolTimetable from "./components/Pages/ForParents/SchoolTimetable";
+import SchoolClubsTimetable from "./components/Pages/ForParents/SchoolClubsTimetable";
+import DonationsPage from "./components/Pages/ForParents/DonationsPage";
+
+import AdmissionPage from "./components/Pages/AdmissionPage";
+import FinancePage from "./components/Pages/FinancePage";
+import ContactPage from "./components/Pages/ContactPage";
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "bootstrap-icons/font/bootstrap-icons.css";
@@ -93,6 +99,12 @@ const App = () => {
       
         <Route path="/school-timetable" element={<SchoolTimetable user={user}  />} />
         <Route path="/school-bells" element={<SchoolBells user={user}  />} />
+        <Route path="/school-clubs-timetable" element={<SchoolClubsTimetable user={user}  />} />
+        <Route path="/donations" element={<DonationsPage user={user}  />} />
+
+        <Route path="/admission" element={<AdmissionPage user={user}  />} />
+        <Route path="/finance" element={<FinancePage user={user}  />} />
+        <Route path="/contact" element={<ContactPage user={user}  />} />
       </Routes>
       
       </main>

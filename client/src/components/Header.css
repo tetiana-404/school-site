@@ -85,7 +85,7 @@
 
 .dropdown-item:hover,
 .dropdown-item:hover{
-  color: #fff;
+  color: #fff !important;
 }
 
 .navbar-nav > .nav-item {

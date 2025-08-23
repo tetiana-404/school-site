@@ -169,18 +169,18 @@ const Header = () => {
                     <ul className="dropdown-menu" aria-labelledby="dropdownTeachers">
                       <li><Link className="dropdown-item" to="/school-timetable">Розклад уроків</Link></li>
                       <li><Link className="dropdown-item" to="/school-bells">Розклад дзвінків</Link></li>
-                      <li><Link className="dropdown-item" to="#">Графік гуртків</Link></li>
-                      <li><Link className="dropdown-item" to="#">Благодійні внески</Link></li>
+                      <li><Link className="dropdown-item" to="/school-clubs-timetable">Графік гуртків</Link></li>
+                      <li><Link className="dropdown-item" to="/donations">Благодійні внески</Link></li>
                     </ul>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#">Вступ у гімназію</a>
+                    <Link className="nav-link" to="/admission">Вступ у гімназію</Link>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#">Фінансова прозорість</a>
+                    <Link className="nav-link" to="/finance">Фінансова прозорість</Link>
                   </li>
                   <li className="nav-item">
-                    <a className="nav-link" href="#">Контакти</a>
+                    <Link className="nav-link" to="/contact">Контакти</Link>
                   </li>
                 </ul>
               </div>

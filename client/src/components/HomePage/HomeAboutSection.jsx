@@ -62,7 +62,7 @@ const HomeAboutSection = ({ user }) => {
             {user?.role === "admin" && !editMode ? (
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h6 className="text-warning text-uppercase mb-0">
-                  <i className="icofont-plus me-2"></i> Наша школа
+                  <i className="icofont-plus me-2"></i> Наша гімназія
                 </h6>
                 <button className="btn btn-outline-secondary btn-sm" onClick={() => setEditMode(true)}>
                   ✏️
@@ -70,7 +70,7 @@ const HomeAboutSection = ({ user }) => {
               </div>
             ) : (
               <h6 className="text-warning text-uppercase mb-3">
-                <i className="icofont-plus me-2"></i> Наша школа
+                <i className="icofont-plus me-2"></i> Наша гімназія
               </h6>
             )}
 

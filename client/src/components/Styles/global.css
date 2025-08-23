@@ -7148,3 +7148,11 @@ main p {
 .accordion-button:not(.collapsed) {
     background-color: #AAE8B8 !important;
 }
+
+.list-group {
+  border-radius: 0 !important;
+}
+
+.list-group .active {
+  background-color: var(--primary-green) !important;
+}
