@@ -15,6 +15,7 @@ import ImageExtension from "@tiptap/extension-image";
 import LinkExtension from '@tiptap/extension-link';
 import Heading from '@tiptap/extension-heading';
 import Image from "@tiptap/extension-image";
+import Video from '../extensions/Video';
 
 import {
     Bold, Italic, List, ListOrdered, Link, Trash2,
@@ -48,7 +49,8 @@ const TextEditor = ({ content, setContent }) => {
             TableCell, // Додає комірки
             TableHeader, // Додає заголовки таблиць
             Link,
-            TextAlign.configure({ types: ['paragraph', 'heading'] })
+            TextAlign.configure({ types: ['paragraph', 'heading'] }),
+            Video
         ],
         content: content,
         onUpdate: ({ editor }) => {
@@ -64,14 +66,7 @@ const TextEditor = ({ content, setContent }) => {
     const handleInsertVideo = () => {
         const formattedUrl = convertYouTubeUrl(videoUrl);
         if (formattedUrl) {
-            editor.chain().focus().insertContent(`
-        <iframe width="560" height="315" 
-                src="${formattedUrl}" 
-                frameborder="0" 
-                allowfullscreen 
-                style="max-width: 100%; height: auto;">
-        </iframe>
-      `).run();
+            editor.chain().focus().setVideo({ src: formattedUrl }).run();
         }
         toggleModal('video');
         setVideoUrl('');
