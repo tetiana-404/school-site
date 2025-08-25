@@ -66,8 +66,14 @@ const Posts = () => {
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Помилка видалення поста');
+          let errorText;
+          try {
+            const errorData = await response.json();
+            errorText = errorData.error;
+          } catch {
+            errorText = await response.text();
+          }
+          throw new Error(errorText || 'Помилка видалення поста');
         }
 
         setPosts(posts.filter((post) => post.id !== postId));
@@ -144,7 +150,7 @@ const Posts = () => {
                 <Card
                   sx={{
                     maxWidth: 345,
-                    height: 330,
+                    height: 400,
                     boxShadow: 3,
                     display: "flex",
                     flexDirection: "column",
@@ -198,7 +204,7 @@ const Posts = () => {
                   )}
                   <CardMedia
                     component="img"
-                    height="200"
+                    height="280"
                     image={getMainImage(post.content)}
                     alt={post.title}
                   />
@@ -210,7 +216,13 @@ const Posts = () => {
                         year: "numeric",
                       })}
                     </Typography>
-                    <Typography variant="h6" color="textPrimary">
+                    <Typography variant="h6" color="textPrimary"
+                      sx={{
+                        overflow: "hidden",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,   // кількість рядків
+                        WebkitBoxOrient: "vertical",
+                      }}>
                       {post.title}
                     </Typography>
                   </CardContent>

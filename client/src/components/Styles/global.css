@@ -44,7 +44,7 @@
 body {
   font-family: 'Roboto', sans-serif;
   font-size: 15px;
-  color: #767676;
+  color: #616161; /*#767676;*/
   line-height: 1.9em;
   font-weight: 400;
   overflow-x: hidden;
@@ -7059,26 +7059,27 @@ sup.price {
 * ----------------------------------------------------------------------------------------
 */
 
-.rich-text-editor ul,
-main ul {
+.rich-text-editor ul {
   list-style-type: disc;
   padding-left: 1.5rem;
   margin-bottom: 1rem;
 }
 
-.rich-text-editor ul li,
-main ul li{
+.rich-text-editor ul li{
   list-style-type: disc;
 }
 
 .rich-text-editor ol,
-mail ol {
+.editor-content ol,
+.MuiCardContent-root ol {
   list-style-type: decimal;
   padding-left: 1.5rem;
   margin-bottom: 1rem;
 }
 
-.rich-text-editor ol li {
+.rich-text-editor ol li,
+.editor-content ol li,
+.MuiCardContent-root ol li {
   list-style-type: decimal;
 }
 
@@ -7155,4 +7156,8 @@ main p {
 
 .list-group .active {
   background-color: var(--primary-green) !important;
+}
+
+.MuiCardContent-root img{
+  margin-top: 15px;
 }

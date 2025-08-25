@@ -146,7 +146,7 @@ const authenticateToken = (req, res, next) => {
 
 // 🟢 CRUD Operations for Posts
 app.get("/posts", async (req, res) => {
-  const posts = await Post.findAll({ include: User,  order: [["createdAt", "DESC"]]});
+  const posts = await Post.findAll({ include: User,  order: [["updatedAt", "DESC"]]});
   res.json(posts);
 });
 
