@@ -87,7 +87,7 @@ function PostDetail() {
   return (
     <Box display="flex" gap={4} mt={4} mb={4}>
 
-      <Box flex={3}>
+      <Box flex={3} sx={{ maxWidth: "724px" }}>
         {postData ? (
           <Card sx={{ boxShadow: 3, position: "relative" }}>
             {/* Кнопки редагування та видалення */}

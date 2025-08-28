@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "../../Styles/global.css";
 import TeamSection from "../../HomePage/TeamSection";
 import RichTextEditor from "../../RichTextEditor";
+import { Container, Box, Grid, Card, CardContent, Button, Typography } from "@mui/material";
 
 const AboutPage = ({ user }) => {
   const [editMode, setEditMode] = useState(false);
@@ -217,10 +218,11 @@ const AboutPage = ({ user }) => {
 
       <TeamSection />
 
-      <section id="teamInfo" className="section-padding py-5">
+
+      <section id="teamInfo" className="welcome-section-padding bg-gray">
         <div className="auto-container">
-          <div className='row'>
-            <div className="col-lg-8 mx-auto col-md-12">
+          <div className="row">
+            <div className='col-lg-8 col-md-6'>
               {editTeam ? (
                 <>
                   <RichTextEditor
@@ -228,22 +230,56 @@ const AboutPage = ({ user }) => {
                     setContent={setTeamContent}
                     placeholder="Введіть інформацію про команду"
                   />
-                  <div className="text-center mt-3">
-                    <button className="btn btn-outline-success btn-lg w-50" onClick={() => handleSave('/api/home_about_page', 'PUT', { content: teamContent }, () => setEditTeam(false))}>💾 Зберегти</button>
-                    <button className="btn btn-outline-warning btn-lg w-50" onClick={() => setEditTeam(false)}>❌ Скасувати</button>
-                  </div>
+                  <Box display="flex" gap={2} mt={3} justifyContent="center" flexWrap="wrap">
+                    <Button
+                      variant="outlined"
+                      color="success"
+                      onClick={() =>
+                        handleSave(
+                          "/api/home_about_page",
+                          "PUT",
+                          { content: teamContent },
+                          () => setEditTeam(false)
+                        )
+                      }
+                    >
+                      💾 Зберегти
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      color="warning"
+                      onClick={() => setEditTeam(false)}
+                    >
+                      ❌ Скасувати
+                    </Button>
+                  </Box>
                 </>
               ) : (
-                <div className='position-relative'>
-                  {user?.role === 'admin' && (
-                    <button className="btn btn-outline-dark position-absolute top-0 m-3 w-auto" style={{ right: 20 }} onClick={() => setEditTeam(true)}>✏️</button>
+                <Box position="relative">
+                  {user?.role === "admin" && (
+                    <Button
+                      variant="outlined"
+                      sx={{ position: "absolute", top: 8, right: 8 }}
+                      onClick={() => setEditTeam(true)}
+                    >
+                      ✏️
+                    </Button>
+
                   )}
-                  <div dangerouslySetInnerHTML={{ __html: teamContent }} />
-                </div>
+                  <Box dangerouslySetInnerHTML={{ __html: teamContent }} />
+                </Box>
               )}
-            </div></div>
+            </div>
+            <div className='col-lg-4 col-md-6 col-sm-12 mb-5'>
+              <img className="img-fluid about-image-hover" src={process.env.PUBLIC_URL + '/img/bell.jpg'} alt="Про гімназію" />
+            </div>
+          </div>
         </div>
+
+
       </section>
+
+
     </>
   );
 };

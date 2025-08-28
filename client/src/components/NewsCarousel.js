@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { Card, CardMedia, CardContent, Typography, Box } from "@mui/material";
-import "./NewsCarousel.css"; // Ти можеш тут додати стилі каруселі (наприклад відступи)
+import "./NewsCarousel.css"; 
 
 const NewsCarousel = () => {
   const [posts, setPosts] = useState([]);
@@ -22,20 +22,20 @@ const NewsCarousel = () => {
   }, []);
 
   const getMainImage = (content) => {
-    if (!content) return "/placeholder.jpg";
+    if (!content) return "images/placeholder.jpg";
     try {
       const div = document.createElement("div");
       div.innerHTML = content;
       const imgElement = div.querySelector("img");
-      return imgElement ? imgElement.src : "/placeholder.jpg";
+      return imgElement ? imgElement.src : "images/placeholder.jpg";
     } catch (error) {
       console.error("Error parsing post content for image:", error);
-      return "/placeholder.jpg";
+      return "images/placeholder.jpg";
     }
   };
 
   const settings = {
-    dots: true,
+    dots: false,
     infinite: posts.length > 3,
     speed: 500,
     slidesToShow: 3,
@@ -60,7 +60,7 @@ const NewsCarousel = () => {
               <div
                 className="news-slide-bg"
                 style={{
-                  backgroundImage: `url(${process.env.PUBLIC_URL/getMainImage(post.content)})`,
+                  backgroundImage: `url(${getMainImage(post.content)})`,
                 }}
               >
                 <div className="news-slide-overlay">
@@ -79,7 +79,7 @@ const NewsCarousel = () => {
         ))}
       </Slider>
        <div className="view-more-wrapper">
-        <Link to="/posts" className="view-more-button btn-sm mx-auto text-center wow fadeInDown">
+        <Link to="/posts" className="btn btn-warning mb-2 btn-sm mx-auto text-center w-50 wow fadeInDown">
           ВСІ НОВИНИ ...  <i className="icofont-plus me-2"></i>
           
         </Link>

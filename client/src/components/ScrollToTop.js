@@ -23,11 +23,12 @@ const ScrollToTop = () => {
   }, []);
 
   return (
-    <div
-      className={`scroll-to-top ${visible ? "visible" : ""}`}
-      onClick={scrollToTop}
-    >
-      <FaArrowUp />
+    <div 
+      id="topcontrol" 
+      title="" 
+      style={{position: "fixed", bottom: "5px", right: "5px", opacity: 1, cursor: "pointer"}}
+       onClick={scrollToTop}>
+        <FaArrowUp />
     </div>
   );
 };

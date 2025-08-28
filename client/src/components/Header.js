@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FiLogIn, FiLogOut } from "react-icons/fi";
 import { Link } from "react-router-dom";
 import "./Header.css"
 
@@ -29,12 +28,19 @@ const Header = () => {
     if (!menu) return;
 
     const handleScroll = () => {
-      if (window.pageYOffset >= stickyOffset) {
-        menu.classList.add('sticky-fixed');
+      // Перевіряємо ширину
+      if (window.innerWidth >= 992) {
+        if (window.pageYOffset >= stickyOffset) {
+          menu.classList.add('sticky-fixed');
+        } else {
+          menu.classList.remove('sticky-fixed');
+        }
       } else {
+        // На мобілках sticky прибираємо завжди
         menu.classList.remove('sticky-fixed');
       }
     };
+
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -43,7 +49,7 @@ const Header = () => {
 
   return (
     <header className="header">
-      <div className="container py-4">
+      <div className="container py-2 py-md-4">
         <div className="d-flex flex-column flex-md-row align-items-center justify-content-between w-100">
           <div className="mb-3 mb-md-0">
             <Link to="/"> <img
@@ -54,7 +60,7 @@ const Header = () => {
             /></Link>
           </div>
 
-          <div className="contact-info d-flex flex-wrap justify-content-center justify-content-md-end align-items-center text-center text-md-end gap-3">
+          <div className="contact-info d-none d-md-flex flex-wrap justify-content-center justify-content-md-end align-items-center text-center text-md-end gap-3">
             <div>
               <i className="fas fa-envelope me-2 text-success"></i>
               <a href="mailto:yevshan79@gmail.com" className="text-decoration-none text-dark">yevshan79@gmail.com</a>
@@ -70,10 +76,20 @@ const Header = () => {
       <div className='mainmenu-area' ref={menuRef}>
         <div className='auto-container'>
           <nav className="navbar navbar-expand-lg navbar-gradient">
-            <div className="container-fluid">
-              <button className="navbar-toggler" style={{ margin: "10px 0" }} type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Перемикач навігації">
+            <div className="container-fluid d-flex justify-content-end">
+              <button 
+                className="navbar-toggler my-2" 
+                style={{ outline: 'none', boxShadow: 'none', border: 0, marginRight: '-25px' }} 
+                type="button" 
+                data-bs-toggle="collapse" 
+                data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" 
+                aria-expanded="false" 
+                aria-label="Навігація"
+              >
                 <span className="navbar-toggler-icon"></span>
               </button>
+              
               <div className="collapse navbar-collapse" id="navbarNav">
                 <ul className="navbar-nav w-100 d-flex justify-content-between">
                   <li className="nav-item">
@@ -84,28 +100,16 @@ const Header = () => {
                     <a
                       className="nav-link dropdown-toggle"
                       href="#"
-                      id="dropdownStudents"
+                      id="dropdownAbout"
                       role="button"
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      Про <br /> гімназію
-                      <svg
-                        className="dropdown-arrow"
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="12"
-                        height="12"
-                        viewBox="0 0 12 12"
-                        fill="none"
-                        stroke="#6c757d"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <polyline points="2 4 6 8 10 4" />
-                      </svg>
+                      Про гімназію
+                      
                     </a>
-                    <ul className="dropdown-menu" aria-labelledby="dropdownStudents">
+                    
+                    <ul className="dropdown-menu" aria-labelledby="dropdownAbout">
                       <li><Link className="dropdown-item" to="/about">Загальна інформація</Link></li>
                       <li><Link className="dropdown-item" to="/history">Історія</Link></li>
                       <li><Link className="dropdown-item" to="/anthem">Гімн гімназії</Link></li>
@@ -118,14 +122,10 @@ const Header = () => {
                     </ul>
                   </li>
 
-
-
                   <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="dropdownParents" role="button" data-bs-toggle="dropdown" aria-expanded="false" onClick={(e) => e.preventDefault()} >
-                      Інформаційна <br /> відкритість
-                      <svg className="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#6c757d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="2 4 6 8 10 4" />
-                      </svg>
+                      Інформаційна відкритість
+                      
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownParents">
                       <li><Link className="dropdown-item" to="/internal-documents/all">Нормативні документи</Link></li>
@@ -143,13 +143,10 @@ const Header = () => {
                     </ul>
                   </li>
 
-
                   <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="dropdownTeachers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Наші <br /> досягнення
-                      <svg className="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#6c757d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="2 4 6 8 10 4" />
-                      </svg>
+                      Наші досягнення
+                      
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownTeachers">
                       <li><Link className="dropdown-item" to="/school-rating">Рейтинг</Link></li>
@@ -161,10 +158,8 @@ const Header = () => {
 
                   <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="dropdownTeachers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Учням <br />та батькам
-                      <svg className="dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#6c757d" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                        <polyline points="2 4 6 8 10 4" />
-                      </svg>
+                      Учням та батькам
+                      
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownTeachers">
                       <li><Link className="dropdown-item" to="/school-timetable">Розклад уроків</Link></li>

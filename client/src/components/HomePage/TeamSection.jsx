@@ -119,8 +119,8 @@ const TeamSection = ({ user }) => {
   const cancelChanges = () => window.location.reload();
 
   const settings = {
-    dots: true,
-    infinite: true,
+    dots: false,
+    infinite: false,
     speed: 500,
     slidesToShow: 4,
     slidesToScroll: 1,
@@ -137,7 +137,7 @@ const TeamSection = ({ user }) => {
           <div className="col-lg-7 col-md-7 col-12 mx-auto text-center position-relative">
             <div className="section-title">
               <h6 className="text-success mb-2">Навчаємо з любов'ю</h6>
-              <h2 className="fw-bold mb-3">Наші вчителі</h2>
+              <h2 className="fw-bold mb-3">Адміністрація школи</h2>
               <p className="py-3">Натхненні професіонали, які ведуть дітей до успіху.</p>
             </div>
             

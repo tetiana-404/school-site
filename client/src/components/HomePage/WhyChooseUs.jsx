@@ -26,9 +26,9 @@ const WhyChooseUs = () => {
           <div className="col-12">
             <div className="justify-content-center mb-5 w-100">
               <div className="section-title text-center">
-                <h6 className="text-success mb-2">Думай ширше</h6>
+                <h6 className="text-success mb-2">Перспективне майбутнє</h6>
                 <h2 className="fw-bold mb-3">Чому обирають нашу школу</h2>
-                <p className="text-muted">
+                <p className="text-muted pt-2">
                   Ми створюємо середовище, у якому кожна дитина може розкритись, отримати якісні знання,
                   підтримку вчителів та можливість проявити себе у навчанні, творчості й позашкільному житті.
                 </p>

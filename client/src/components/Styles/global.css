@@ -63,9 +63,9 @@ h3,
 h4,
 h5,
 h6 {
-  color: #333;
+  color: var(--primary-green);
   font-family: 'Dosis', sans-serif;
-  font-weight: 700;
+  font-weight: 700 !important;
 }
 
 a {
@@ -426,9 +426,8 @@ fieldset {
 /* HELPER CLASSES */
 
 .section-padding {
-  padding: 100px 0;
+  padding: 80px 0;
   position: relative;
-  float: left;
   width: 100%;
 }
 
@@ -450,11 +449,11 @@ fieldset {
 }
 
 .overlay:before {
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.7);
   content: "";
   height: 100%;
   left: 0;
-  opacity: 0.8;
+  opacity: 0.7;
   filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
   position: absolute;
@@ -526,7 +525,8 @@ fieldset {
   right: 0;
 }
 
-.section-title.white-title h2 {
+.section-title.white-title h2,
+h2.section-title.white-title {
   color: #fff;
 }
 
@@ -713,14 +713,32 @@ fieldset {
 
 .mainmenu-area .navbar-nav .nav-link {
   color: #fff;
+  font-size: 13px;
   text-transform: uppercase;
-  font-weight: 700;
-  padding: 21px 20px;
+  font-weight: 500;
+  padding: 20px;
   position: relative;
+  box-sizing: border-box;
+  flex-wrap: wrap;
+  white-space: pre-wrap;      /* дозволяє переноси рядків */
+    word-break: break-word;
 }
 
-.mainmenu-area .navbar {
+@media (max-width: 991.98px) {
+  .nav-item.dropdown .nav-link {
+    white-space: nowrap;    /* дозволяємо перенос */
+    overflow-wrap: normal;
+    word-break: normal;
+  }
+}
+
+.mainmenu-area ul.navbar {
   padding: 0;
+}
+
+.mainmenu-area ul.navbar-nav li {
+  display: flex;
+  align-items: center; 
 }
 
 .mainmenu-area .navbar-nav .active.nav-link {
@@ -742,8 +760,10 @@ fieldset {
 }
 
 .mainmenu-area ul.navbar-nav li a {
-  display: inline-block;
-  vertical-align: middle;
+  display: flex;
+  align-items: center;
+  justify-content: center; 
+  height: 100%;
   box-shadow: 0 0 1px transparent;
   position: relative;
   -webkit-transform: perspective(1px) translateZ(0);
@@ -752,6 +772,30 @@ fieldset {
   transition-property: color;
   -webkit-transition-duration: 0.3s;
   transition-duration: 0.3s;
+}
+
+.mainmenu-area ul.navbar-nav .dropdown-menu a.dropdown-item {
+      justify-content: start;
+}
+
+@media (max-width: 991.98px) {
+    .mainmenu-area .navbar-nav .nav-item{
+      align-items: start;
+      height: auto;
+      flex-direction: column;
+    }
+
+  .mainmenu-area .navbar-nav .nav-link {
+    padding: 10px;
+    align-items: flex-start;
+    justify-content: start; 
+    text-align: left;
+    width: 100%;
+  }
+
+  .mainmenu-area ul.navbar-nav li a{
+    justify-content: start; 
+  }
 }
 
 .mainmenu-area ul.navbar-nav li a:before {
@@ -958,6 +1002,85 @@ fieldset {
   animation-duration: 800ms;
 }
 
+.navbar-nav {
+  display: flex;
+  flex-wrap: wrap;          /* дозволяє переносити рядки, якщо потрібно */
+  justify-content: space-between; 
+}
+
+.navbar-nav .nav-item {
+  flex: 0 0 calc(100% / 8); /* 8 пунктів на рядку */
+  text-align: center;       /* вирівнювання тексту по центру */
+  white-space: normal;      /* дозволяє переносити слова */
+  word-wrap: break-word;    /* перенос довгих слів */
+  box-sizing: border-box;  
+}
+
+/* Базовий бургер */
+.navbar-toggler {
+  border: none;
+}
+
+.navbar-toggler-icon {
+  
+  background-color: transparent; /* прибираємо чорний квадратик */
+  width: 24px;
+  height: 2px;
+  position: relative;
+  display: inline-block;
+  transition: all 0.3s ease-in-out;
+}
+.navbar-toggler-icon2,
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+  background-color: #000;   /* колір ліній */
+}
+
+/* Верхня і нижня риски */
+.navbar-toggler-icon::before,
+.navbar-toggler-icon::after {
+  content: "";
+  position: absolute;
+  left: 3px;
+  width: 24px;
+  height: 0px;
+  transition: all 0.3s ease-in-out;
+}
+
+.navbar-toggler-icon::before {
+  top: 7px;
+}
+
+.navbar-toggler-icon::after {
+  top: 14px;
+}
+
+/* Коли меню відкрите (Bootstrap додає aria-expanded="true") */
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon {
+  background-color: transparent; /* середня риска зникає */
+  background-image: none !important;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::before {
+  transform: rotate(45deg);
+  top: 14px;
+  height: 2px;
+}
+
+.navbar-toggler[aria-expanded="true"] .navbar-toggler-icon::after {
+  transform: rotate(-45deg);
+  top: 14px;
+  height: 2px;
+}
+
+@media (max-width: 991.98px) { /* працює тільки для мобільної версії */
+  .navbar-collapse {
+    top: 100%;       /* щоб з’являвся під header */
+    left: 0;
+    width: 100vw;    /* вся ширина вікна */
+    z-index: 1000;
+  }
+}
 
 /* mobile menu css */
 
@@ -1374,9 +1497,8 @@ fieldset {
 
 .welcome-section-padding {
   position: relative;
-  float: left;
   width: 100%;
-  padding: 100px 0;
+  padding: 80px 0;
 }
 
 .about-wel-des h6 {
@@ -1719,7 +1841,6 @@ fieldset {
 .counter-padding {
   padding: 50px 0;
   position: relative;
-  float: left;
   width: 100%;
 }
 
@@ -1736,7 +1857,7 @@ fieldset {
 .counter-icon {
   color: #fff;
   font-size: 75px;
-  margin-right: 25px;
+  /*margin-right: 25px;*/
   margin-top: 6px;
 }
 
@@ -1790,7 +1911,7 @@ fieldset {
 }
 
 .single-counter-item:hover h4 {
-  color: var(--primary-green);
+  color: #ffc107;
 }
 
 .single-counter-item i {
@@ -7049,7 +7170,8 @@ sup.price {
 @media only screen and (max-width: 360px) {
   .container,
   .auto-container {
-    width: 90%;
+    width: 99%;
+    padding: 0 !important;
   }
 }
 

@@ -86,7 +86,8 @@ const CounterSection = ({ user }) => {
           <div className="col-lg-8 text-left">
             <div className="counter-info mb-4">
               <div className="counter-icon">
-                <i className="fas fa-history fa-2x"></i>
+                <i className="fas fa-history" style={{ fontSize: window.innerWidth < 576 ? "0.8em" : "2em" }}></i> 
+
               </div>
               <div className="counter-des">
                 <h2>

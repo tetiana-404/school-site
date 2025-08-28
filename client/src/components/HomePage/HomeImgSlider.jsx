@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -185,7 +186,7 @@ const HomeImgSlider = ({ user }) => {
               <div className="container" style={{ zIndex: 2 }}>
                 <div className="row">
                   <div className="col-lg-8">
-                    <div className="text-white">
+                    <div className="text-white px-2">
                       {editMode ? (
                         <>
                           {['title', 'subtitle', 'text'].map((field, i) => (
@@ -232,12 +233,12 @@ const HomeImgSlider = ({ user }) => {
                           <h2 className="fw-bold mb-4">{slide.subtitle}</h2>
                           <p className="lead mb-4">{slide.text}</p>
                           <div>
-                            <a href="#" className="btn btn-warning me-3 mb-2" style={{ minWidth: 130 }}>
+                            <Link className="btn btn-warning me-3 mb-2" style={{ minWidth: 130 }} to="/school-rating">
                               Детальніше
-                            </a>
-                            <a href="#" className="btn btn-outline-light mb-2" style={{ minWidth: 130 }}>
+                            </Link>
+                            <Link className="btn btn-outline-light mb-2" style={{ minWidth: 130 }} to="/contact">
                               Контакти
-                            </a>
+                            </Link>
                           </div>
                         </>
                       )}

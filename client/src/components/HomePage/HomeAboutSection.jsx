@@ -53,7 +53,7 @@ const HomeAboutSection = ({ user }) => {
   if (loading) return <p>Завантаження...</p>;
 
   return (
-    <section id="about" className="py-5 bg-light">
+    <section id="about" className="py-5 mt-3 bg-light">
       <div className="container">
         
         {message && <div className="alert alert-success">{message}</div>}
@@ -62,7 +62,7 @@ const HomeAboutSection = ({ user }) => {
             {user?.role === "admin" && !editMode ? (
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <h6 className="text-warning text-uppercase mb-0">
-                  <i className="icofont-plus me-2"></i> Наша гімназія
+                  Наша гімназія
                 </h6>
                 <button className="btn btn-outline-secondary btn-sm" onClick={() => setEditMode(true)}>
                   ✏️
@@ -70,7 +70,7 @@ const HomeAboutSection = ({ user }) => {
               </div>
             ) : (
               <h6 className="text-warning text-uppercase mb-3">
-                <i className="icofont-plus me-2"></i> Наша гімназія
+              Наша гімназія
               </h6>
             )}
 

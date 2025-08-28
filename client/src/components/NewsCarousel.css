@@ -57,7 +57,7 @@
 }
 
 .slick-slide {
-  padding: 0 10px; /* Простір між слайдами */
+  padding: 0 0px; /* Простір між слайдами */
   box-sizing: border-box;
 }
 
@@ -65,6 +65,9 @@
   margin: 0 -10px; /* Щоб крайні слайди теж мали відступи */
 }
 
+.slick-dots {
+    bottom: 20px !important;
+}
 .slick-dots li button:before {
   color: white;
 }
@@ -119,14 +122,16 @@
 
 .slick-dots li button:before {
   font-size: 12px;
-  color: rgba(0, 0, 0, 0.8); 
+  color: #fff !important; 
   opacity: 1;                
 }
 
+
 .slick-dots li.slick-active button:before {
-  color: var(--primary-green); /* Активна крапка ще темніша */
+  color: #ffc107 !important; /* Активна крапка ще темніша */
   font-size: 22px;
 }
+
 .view-more-wrapper {
   text-align: center;
   margin-top: 20px;

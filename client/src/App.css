@@ -127,7 +127,7 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
 }
 
 .contact-info {
-    margin: 10px 0;
+    margin: 10px 0 0 0 ;
 }
 
   .menu-icon {
@@ -154,12 +154,6 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
   }
 }
 
-.section-padding {
-  padding: 100px 0;
-  position: relative;
-  width: 100%;
-}
-
 .section-back-image {
   background-size: cover;
   background-position: center center;
@@ -177,50 +171,6 @@ h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
   position: relative;
 }
 
-.overlay:before {
-  background: rgba(0, 0, 0, 0.8);
-  content: "";
-  height: 100%;
-  left: 0;
-  opacity: 0.8;
-  filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
-  position: absolute;
-  top: 0;
-  width: 100%;
-  pointer-events: none;
-  z-index: 0;
-}
-
-.overlay-2:before {
-  position: absolute;
-  content: "";
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.96;
-  background-color: #fff;
-}
-
-.auto-container {
-  position: static;
-  max-width: 1200px;
-  padding: 0px 15px;
-  margin: 0 auto;
-}
-
-.bg-gray {
-  background-color: #F7F9FB;
-}
-
-.bg-theme {
-  background-color: var(--primary-green);
-}
-
-.theme-color {
-  color: var(--primary-green);
-}
 
 /*START SECTION TITLE DESIGN*/
 

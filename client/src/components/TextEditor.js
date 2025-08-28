@@ -20,7 +20,7 @@ import Video from '../extensions/Video';
 import {
     Bold, Italic, List, ListOrdered, Link, Trash2,
     ChevronLeft, ChevronRight, ChevronUp,
-    ChevronDown, Minus, Plus
+    ChevronDown, Minus, Plus, Columns, Rows
 } from "lucide-react";
 
 const TextEditor = ({ content, setContent }) => {
@@ -80,7 +80,7 @@ const TextEditor = ({ content, setContent }) => {
         setLinkUrl('');
     };
 
-    const handleFileUpload = async (event) => {
+    const handleFileUpload = async (event, embed = false) => {
         const file = event.target.files[0];
         if (!file) return;
 
@@ -96,18 +96,33 @@ const TextEditor = ({ content, setContent }) => {
             );
             const fileURL = response.data.url;
 
-            const icon = '📄'; 
-            
-            const html = `<span style="display: inline-flex; align-items: center;"> <span style="font-size: 1.4em;">
-            ${icon}</span> <a href="${fileURL}" target="_blank" style="margin-left: 4px;">${file.name}</a>
-        </span>`;
-         
+            let html;
+
+            if (embed) {
+                // Вставка як iframe
+                html = `
+        <div style="margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; overflow: hidden;">
+          <iframe 
+          src="${fileURL}" width="100%" height="500px" style="border: none;"></iframe>
+        </div>
+      `;
+            } else {
+                // Вставка як посилання
+                const icon = '📄';
+                html = `
+        <span style="display: inline-flex; align-items: center;">
+          <span style="font-size: 1.4em;">${icon}</span>
+          <a href="${fileURL}" target="_blank" style="margin-left: 4px;">${file.name}</a>
+        </span>
+      `;
+            }
+
             editor.chain().focus().insertContent(html).run();
         } catch (error) {
             console.error("Помилка завантаження файлу", error);
         }
     };
-    
+
     const handleInsertImage = useCallback(() => {
         const input = document.createElement("input");
         input.type = "file";
@@ -144,7 +159,7 @@ const TextEditor = ({ content, setContent }) => {
                         type: "image",
                         attrs: {
                             src: response.data.url,
-                            style: "max-width: 100%; height: auto;",
+                            style: "max-width: 100%; height: auto; display: block; margin: 0 auto;",
                         },
                     });
 
@@ -160,7 +175,6 @@ const TextEditor = ({ content, setContent }) => {
 
         if (imageBlocks.length > 0) {
             editor.chain().focus().insertContent(imageBlocks).run();
-            console.log("Image blocks inserted.");
         } else {
             console.error("❌ No valid image blocks to insert.");
         }
@@ -180,7 +194,8 @@ const TextEditor = ({ content, setContent }) => {
                 <EditorToolbar
                     editor={editor}
                     onInsertImage={handleInsertImage}
-                    onInsertFile={handleFileUpload}
+                    onInsertPdfLink={(e) => handleFileUpload(e, false)}   // вставка лінку
+                    onInsertPdfEmbed={(e) => handleFileUpload(e, true)}   // вставка iframe
                     isModal={toggleModal}
                     isClear={handleClear}
                 />
@@ -193,22 +208,22 @@ const TextEditor = ({ content, setContent }) => {
 
                     <div className="table-controls">
                         <button className="table-button" title="Додати колонку зліва" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnBefore().run()}>
-                            <ChevronLeft size={20} />
+                            ↔️➕
                         </button>
-                        <button className="table-button" title="Додати колонку справа" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnAfter().run()}>
-                            <ChevronRight size={20} />
+                        <button className="table-button me-5" title="Додати колонку справа" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnAfter().run()}>
+                            ➕↔️
                         </button>
                         <button className="table-button" title="Додати рядок зверху" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowBefore().run()}>
-                            <ChevronUp size={20} />
+                            ↕️➕
                         </button>
-                        <button className="table-button" title="Додати рядок знизу" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowAfter().run()}>
-                            <ChevronDown size={20} />
+                        <button className="table-button me-5" title="Додати рядок знизу" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowAfter().run()}>
+                            ➕↕️
                         </button>
                         <button className="table-button" title="Видалити колонку" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteColumn().run()}>
-                            <Minus size={20} />
+                            ➖↔️
                         </button>
-                        <button className="table-button" title="Видалити рядок" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteRow().run()}>
-                            <Minus size={20} />
+                        <button className="table-button me-5" title="Видалити рядок" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteRow().run()}>
+                            ➖↕️
                         </button>
                         <button className="table-button" title="Видалити таблицю" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteTable().run()}>
                             <Trash2 size={20} />
@@ -228,22 +243,22 @@ const TextEditor = ({ content, setContent }) => {
 
                         <div className="table-controls">
                             <button className="table-button" title="Додати колонку зліва" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnBefore().run()}>
-                                <ChevronLeft size={20} />
+                                ↔️➕
                             </button>
-                            <button className="table-button" title="Додати колонку справа" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnAfter().run()}>
-                                <ChevronRight size={20} />
+                            <button className="table-button me-5" title="Додати колонку справа" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnAfter().run()}>
+                                ➕↔️
                             </button>
                             <button className="table-button" title="Додати рядок зверху" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowBefore().run()}>
-                                <ChevronUp size={20} />
+                                ↕️➕
                             </button>
-                            <button className="table-button" title="Додати рядок знизу" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowAfter().run()}>
-                                <ChevronDown size={20} />
+                            <button className="table-button me-5" title="Додати рядок знизу" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowAfter().run()}>
+                                ➕↕️
                             </button>
                             <button className="table-button" title="Видалити колонку" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteColumn().run()}>
-                                <Minus size={20} />
+                                ➖↔️
                             </button>
-                            <button className="table-button" title="Видалити рядок" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteRow().run()}>
-                                <Minus size={20} />
+                            <button className="table-button me-5" title="Видалити рядок" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteRow().run()}>
+                                ➖↕️
                             </button>
                             <button className="table-button" title="Видалити таблицю" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteTable().run()}>
                                 <Trash2 size={20} />
@@ -253,7 +268,8 @@ const TextEditor = ({ content, setContent }) => {
                     <EditorToolbar
                         editor={editor}
                         onInsertImage={handleInsertImage}
-                        onInsertFile={handleFileUpload}
+                        onInsertPdfLink={(e) => handleFileUpload(e, false)}   // вставка лінку
+                        onInsertPdfEmbed={(e) => handleFileUpload(e, true)}   // вставка iframe
                         isModal={toggleModal}
                         isClear={handleClear}
                     />
