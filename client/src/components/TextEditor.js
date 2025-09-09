@@ -16,6 +16,7 @@ import LinkExtension from '@tiptap/extension-link';
 import Heading from '@tiptap/extension-heading';
 import Image from "@tiptap/extension-image";
 import Video from '../extensions/Video';
+import CustomImage from "./CustomImage";
 
 import {
     Bold, Italic, List, ListOrdered, Link, Trash2,
@@ -37,6 +38,7 @@ const TextEditor = ({ content, setContent }) => {
                 },
             }),
             ImageExtension,
+            CustomImage,
             Image,
             Bold,
             Italic,
@@ -57,6 +59,7 @@ const TextEditor = ({ content, setContent }) => {
             setContent(editor.getHTML());
         },
     });
+
 
     const toggleModal = (modalType) => {
         if (modalType === 'video') setIsModalOpen(!isModalOpen);
@@ -159,7 +162,7 @@ const TextEditor = ({ content, setContent }) => {
                         type: "image",
                         attrs: {
                             src: response.data.url,
-                            style: "max-width: 100%; height: auto; display: block; margin: 0 auto;",
+                            style: "width: 100%; height: auto; display: block; margin: 0 auto;",
                         },
                     });
 

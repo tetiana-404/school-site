@@ -7283,3 +7283,17 @@ main p {
 .MuiCardContent-root img{
   margin-top: 15px;
 }
+
+.editor-img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+#postDetails img{
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 5px auto;
+}

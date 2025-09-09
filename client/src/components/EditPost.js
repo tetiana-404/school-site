@@ -184,16 +184,16 @@ function EditPost() {
 
             // Очищаємо редагування
             setEditingPost(null);
-            setEditTitle("");
-            setEditContent("");
-            setEditDate("");
-            titleRef.current.value = "";
-            contentRef.current = "";
-            setSelectedDate(new Date());
-            handleClear();
+            //setEditTitle("");
+            //setEditContent("");
+            //setEditDate("");
+            //titleRef.current.value = "";
+            //contentRef.current = "";
+            //setSelectedDate(new Date());
+            //handleClear();
 
-            window.scrollTo(0, 0);
-            navigate(`/posts/${id}`);
+            //window.scrollTo(0, 0);
+            //navigate(`/posts/${id}`);
         } catch (error) {
             console.error("Помилка оновлення поста:", error);
         }

@@ -1,17 +1,19 @@
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { useState, useEffect, useRef } from "react";
-import {
-  Container, Card, CardContent, Typography, CircularProgress,
-  Box, Tooltip, IconButton
-} from "@mui/material";
+import axios from "axios";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { List, ListItemButton, ListItemText } from "@mui/material";
-import { FaTrash, FaEdit } from 'react-icons/fa';
+import { Box, Tooltip, IconButton } from "@mui/material";
 import Swal from 'sweetalert2';
+import EditPost from "./EditPost"; 
 
-function PostDetail() {
-  const { id } = useParams();  // Отримуємо id з URL
+const PostDetail = () => {
+  const { id } = useParams();
   const [postData, setPostData] = useState(null);
   const [allPosts, setAllPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   const user = JSON.parse(localStorage.getItem("user")) || null;
   const navigate = useNavigate();
@@ -22,9 +24,11 @@ function PostDetail() {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/posts/${id}`);
         if (!response.ok) throw new Error("Не вдалося отримати пост.");
         const data = await response.json();
-        setPostData(data);  // Зберігаємо дані поста в стейт
-      } catch (error) {
-        console.error("Error fetching post:", error);
+        setPostData(data);
+      } catch (err) {
+        setError("Не вдалося завантажити пост");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -41,7 +45,7 @@ function PostDetail() {
 
     fetchPost();
     fetchAllPosts();
-  }, [id]);  // Викликаємо fetch при зміні id
+  }, [id]);
 
   const decodeHTML = (html) => {
     const txt = document.createElement("textarea");
@@ -84,102 +88,107 @@ function PostDetail() {
     }
   };
 
+  if (loading) return <p>Завантаження...</p>;
+  if (error) return <p>{error}</p>;
+  if (!postData) return <p>Пост не знайдено</p>;
+
   return (
-    <Box display="flex" gap={4} mt={4} mb={4}>
-
-      <Box flex={3} sx={{ maxWidth: "724px" }}>
-        {postData ? (
-          <Card sx={{ boxShadow: 3, position: "relative" }}>
-            {/* Кнопки редагування та видалення */}
-            {user && user.role === "admin" && (
-              <Box
-                onClick={(e) => {
-                  e.stopPropagation(); // Запобігає переходу по <Link>
-                  e.preventDefault(); // Запобігає стандартному переходу браузера
-                  navigate(`/edit/${id}`);
-                }}
-                className="admin-buttons"
-                sx={{
-                  position: "absolute",
-                  top: 8,
-                  right: 8,
-                  display: "flex",
-                  gap: 1,
-                  transition: "opacity 0.3s ease", // Плавний перехід
-                }}
-              >
-                <Tooltip title="Редагувати пост">
-                  <IconButton
-
-                    sx={{
-                      color: "primary.main",
-                      backgroundColor: "white",
-                      '&:hover': { backgroundColor: "#f0f0f0" },
-                    }}
-                  >
-                    <FaEdit size={20} />
-                  </IconButton>
-                </Tooltip>
-                <Tooltip title="Видалити пост">
-                  <IconButton
-                    onClick={() => handleDeletePost(postData.id)}
-                    sx={{
-                      color: "error.main",
-                      backgroundColor: "white",
-                      '&:hover': { backgroundColor: "#f0f0f0" },
-                    }}
-                  >
-                    <FaTrash size={20} />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            )}
-            <CardContent>
-              <Typography variant="h4" component="h2" gutterBottom align="center" color="primary">
-                {postData.title}
-              </Typography>
-
-              <div
-                style={{
-                  backgroundColor: "#f9f9f9",
-                  padding: "1rem",
-                  borderRadius: "8px",
-                  marginBottom: "1rem",
-
-                }}
-                dangerouslySetInnerHTML={{ __html: decodeHTML(postData.content) }}
-              />
-
-              <Typography variant="body2" color="textSecondary" align="left">
-                <strong>Дата:</strong> {new Date(postData.updatedAt).toLocaleDateString("uk-UA")}
-              </Typography>
-            </CardContent>
-          </Card>
-        ) : (
-          <CircularProgress />
-        )}
-      </Box>
-      <Box flex={1} sx={{ maxWidth: "300px" }}>
-        <Typography variant="h6" gutterBottom sx={{ fontWeight: "bold" }}>
-          Інші новини
-        </Typography>
-        <List>
-          {allPosts
-            .filter((post) => post.id !== id) // Виключаємо поточну новину
-            .slice(0, 10) // Обмежуємо до 6 останніх новин
-            .map((post) => (
-              <ListItemButton key={post.id} onClick={() => navigate(`/posts/${post.id}`)}>
-                <ListItemText
-                  primary={post.title}
-                  secondary={new Date(post.updatedAt).toLocaleDateString("uk-UA")}
+    <>
+      <section id="postDetails" className="section-padding">
+        <div className="auto-container">
+          <div className="row mb-lg-5 mb-0">
+            <div className="col-lg-8 col-md-8 col-sm-12 col-12">
+               <div className="sidebar-widget-inner position-relative">
+              {isEditing ? (
+                // ✅ Inline EditPost
+                <EditPost
+                  id={id}                     // передаємо id
+                  initialData={postData}      // передаємо дані (щоб не вантажити вдруге)
+                  onClose={() => setIsEditing(false)} // вихід з редагування
+                  onSave={(updated) => {
+                    setPostData(updated);     // оновлюємо відразу на сторінці
+                    setIsEditing(false);
+                  }}
                 />
-              </ListItemButton>
-            ))}
-        </List>
-      </Box>
+              ) : (
+                <>
+                      {user && user.role === "admin" && (
+                        <Box
+                          className="admin-buttons"
+                          sx={{
+                            position: "absolute",
+                            top: 8,
+                            right: 8,
+                            display: "flex",
+                            gap: 1,
+                            transition: "opacity 0.3s ease", // Плавний перехід
+                          }}
+                        >
+                          <Tooltip title="Редагувати пост">
+                            <IconButton
+                              onClick={() => setIsEditing(true)}
+                              sx={{
+                                color: "primary.main",
+                                backgroundColor: "white",
+                                '&:hover': { backgroundColor: "#f0f0f0" },
+                              }}
+                            >
+                              <FaEdit size={20} />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Видалити пост">
+                            <IconButton
+                              onClick={() => handleDeletePost(postData.id)}
+                              sx={{
+                                color: "error.main",
+                                backgroundColor: "white",
+                                '&:hover': { backgroundColor: "#f0f0f0" },
+                              }}
+                            >
+                              <FaTrash size={20} />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      )}
+                  <h4 className="sidebar-widget-title">{postData.title}</h4>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: postData.content }}
+                    className="post-content"
+                  />
+                  <p>
+                    <b>{new Date(postData.updatedAt).toLocaleDateString("uk-UA")}</b>
+                  </p>
 
-    </Box>
+                 
+                </>
+              )}
+              </div>
+            </div>
+            <div className="col-lg-4 col-md-4 col-sm-12 col-12 mt-lg-0 mt-md-0 mt-5 pl-lg-5 pl-md-5 pl-0">
+              <div className="service-des">
+                <div className="px-3">
+                  <h4 className="title">Інші новини</h4>
+                </div>
+                <List>
+                  {allPosts
+                    .filter((post) => post.id !== id) // Виключаємо поточну новину
+                    .slice(0, 10) // Обмежуємо до 10 останніх новин
+                    .map((post) => (
+                      <ListItemButton key={post.id} onClick={() => navigate(`/posts/${post.id}`)}>
+                        <ListItemText
+                          primary={post.title}
+                          secondary={new Date(post.updatedAt).toLocaleDateString("uk-UA")}
+                        />
+                      </ListItemButton>
+                    ))}
+                </List>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
-}
+};
 
 export default PostDetail;

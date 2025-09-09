@@ -39,16 +39,10 @@
 }
 
 .news-form-container button {
-    background: #007bff;
-    color: white;
-    border: none;
     cursor: pointer;
     transition: background 0.3s;
 }
 
-.news-form-container button:hover {
-    background: #0056b3;
-}
 
 /*new styles*/
 .news-container {
