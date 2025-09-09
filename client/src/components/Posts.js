@@ -1,48 +1,80 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import TextEditor from "./TextEditor";
-import DatePicker from "react-datepicker";
 import {
-  Card, CardMedia, CardContent, Tooltip, Typography,
-  Box, IconButton, Button
+  Card, CardMedia, CardContent, Tooltip, Typography, useMediaQuery, TextField,
+  Box, IconButton, Button, Accordion, AccordionSummary, AccordionDetails
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import AddIcon from "@mui/icons-material/Add";
-import { Pagination } from "@mui/material";
-import { Link } from "react-router-dom";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { FaTrash, FaEdit } from 'react-icons/fa';
 import Swal from 'sweetalert2';
-import "react-datepicker/dist/react-datepicker.css";
 import './Posts.css';
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
+  const [postsArray, setPostsArray] = useState([]);
+  const [groupedPosts, setGroupedPosts] = useState({});
   const [user, setUser] = useState(() => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });
-  const [postData, setPostData] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [expandedYear, setExpandedYear] = useState(new Date().getFullYear());
   const navigate = useNavigate();
+  const [pageByYear, setPageByYear] = useState({});
+  const [query, setQuery] = useState("");
+  const POSTS_PER_PAGE = 15;
+  const theme = useTheme();
+  const isLarge = useMediaQuery(theme.breakpoints.up("md"));
 
-  const postsPerPage = 12;
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
-  // Отримання всіх новин при завантаженні сторінки
+
+  // Завантаження всіх постів
   useEffect(() => {
     const fetchPosts = async () => {
+      
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/posts`);
+        const res = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/posts`, {
+          params: { search: query, limit: POSTS_PER_PAGE },
+        });
 
-        setPosts(response.data);
+        const posts = res.data.posts; // це масив
+        setPostsArray(posts);
+
+        // сортуємо і групуємо по роках
+        const grouped = posts
+          .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+          .reduce((acc, post) => {
+            const year = new Date(post.updatedAt).getFullYear();
+            if (!acc[year]) acc[year] = [];
+            acc[year].push(post);
+            return acc;
+          }, {});
+
+        setGroupedPosts(grouped);
+        // Ініціалізація сторінок
+        Object.keys(grouped).forEach(year => {
+          setPageByYear(prev => ({ ...prev, [year]: 1 }));
+        });
+
       } catch (err) {
-        console.error("❌ Error fetching posts:", err.response ? err.response.data : err);
+        console.error("Error fetching posts:", err);
       }
     };
     fetchPosts();
-  }, []);
+  }, [query]);
+
+  const years = Object.keys(groupedPosts).sort((a, b) => b - a);
+
+  const handleChangeYear = (year) => (event, isExpanded) => {
+    setExpandedYear(isExpanded ? year : false);
+
+    if (!pageByYear[year]) {
+      setPageByYear((prev) => ({ ...prev, [year]: 1 }));
+    }
+  };
 
   const handleDeletePost = async (postId) => {
     try {
@@ -56,7 +88,6 @@ const Posts = () => {
       });
 
       if (result.isConfirmed) {
-        // Якщо користувач підтвердив
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/posts/${postId}`, {
           method: 'DELETE',
           headers: {
@@ -66,14 +97,7 @@ const Posts = () => {
         });
 
         if (!response.ok) {
-          let errorText;
-          try {
-            const errorData = await response.json();
-            errorText = errorData.error;
-          } catch {
-            errorText = await response.text();
-          }
-          throw new Error(errorText || 'Помилка видалення поста');
+          throw new Error('Помилка видалення поста');
         }
 
         setPosts(posts.filter((post) => post.id !== postId));
@@ -86,162 +110,195 @@ const Posts = () => {
     }
   };
 
-  const handleClick = async (postId) => {
-    try {
-      const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/posts/${postId}`);
-      const data = await response.json();
-      setPostData(data);
-    } catch (error) {
-      console.error("Error fetching post:", error);
-    }
-  };
-
   const getMainImage = (content) => {
-    if (!content) return "/placeholder.jpg"; 
-  
+    if (!content) return "/placeholder.jpg";
     try {
-      //const decodedContent = JSON.parse(`"${content}"`);
-  
       const div = document.createElement("div");
       div.innerHTML = content;
-  
       const imgElement = div.querySelector("img");
-  
-      return imgElement ? imgElement.src : "/placeholder.jpg"; 
+      return imgElement ? imgElement.src : "/placeholder.jpg";
     } catch (error) {
       console.error("Помилка під час обробки контенту:", error);
-      return "/placeholder.jpg"; // У разі помилки повертаємо дефолтну картинку
+      return "/placeholder.jpg";
     }
   };
-  
 
   return (
-    <div>
-     
-      <div className="news-container">
-        <div className="news-header">
-          <h1>Новини</h1>
-          {user && user.role === "admin" && (
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<AddIcon />} // Додаємо іконку
-              onClick={() => navigate("/edit/new")}
-            >
-              Додати новину
-            </Button>
-          )}
-        </div>
-        <Pagination
-                count={Math.ceil(posts.length / postsPerPage)} // Загальна кількість сторінок
-                page={currentPage}
-                onChange={(event, value) => setCurrentPage(value)} // Оновлюємо сторінку
-                className="activePage"
-                sx={{ display: "flex", justifyContent: "center", marginBottom: 3 }}
-              />
-        {posts.length === 0 ? (
-          <p>Немає новин.</p>
-        ) : (
-          <div>
-          <div className="news-grid">
+    <div className="news-container">
+      <div className="news-header">
+        <h1>Новини</h1>
+        {user && user.role === "admin" && (
+          <Button
+            variant="contained"
+            className="btn btn-outlines"
+            color="primary"
+            startIcon={<AddIcon />}
+            onClick={() => navigate("/edit/new")}
+          >
+            {isLarge && "Додати новину"}
+          </Button>
+        )}
+      </div>
+      <div>
+        <TextField
+          label="Пошук новин"
+          variant="outlined"
+          size="small"
+          fullWidth
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+      </div>
+      {years.map((year) => {
+        const postsForYear = groupedPosts[year] || [];
+        const page = pageByYear[year] || 1;
+        const totalPages = Math.ceil(postsForYear.length / POSTS_PER_PAGE);
+        const paginatedPosts = postsForYear.slice((page - 1) * POSTS_PER_PAGE, page * POSTS_PER_PAGE);
+        
+        return (
+          <Accordion
+            key={year}
+            expanded={expandedYear === parseInt(year)}
+            onChange={handleChangeYear(parseInt(year))}
+          >
+            <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+              <Typography variant="h5">{year}</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <div className="news-grid">
 
-            {currentPosts.map((post) => (
-              <Link to={`/posts/${post.id}`} className="news-link" onClick={() => handleClick(post.id)}>
-                <Card
-                  sx={{
-                    maxWidth: 345,
-                    height: 400,
-                    boxShadow: 3,
-                    display: "flex",
-                    flexDirection: "column",
-                    position: "relative",
-                    '&:hover .admin-buttons': { opacity: 1 }, // Показує кнопки при наведенні на картку
-                  }}
-                >
-                  {/* Кнопки редагування та видалення */}
-                  {user && user.role === "admin" && (
-                    <Box
-                      className="admin-buttons"
+                {paginatedPosts.map((post) => (
+                  <Link to={`/posts/${post.id}`} key={post.id} className="news-link">
+                    <Card
                       sx={{
-                        position: "absolute",
-                        top: 8,
-                        right: 8,
+                        width: "100%",
+                        maxWidth: { xs: 245, sm: 345, md: 345 },
+                        height: "100%",
+                        boxShadow: 3,
                         display: "flex",
-                        gap: 1,
-                        opacity: 0, // Приховує кнопки за замовчуванням
-                        transition: "opacity 0.3s ease", // Плавний перехід
+                        flexDirection: "column",
+                        position: "relative",
+                        '&:hover .admin-buttons': { opacity: 1 },
                       }}
                     >
-                      <Tooltip title="Редагувати пост">
-                        <IconButton
-                          onClick={(e) => {
-                            e.stopPropagation(); // Запобігає переходу по <Link>
-                            e.preventDefault(); // Запобігає стандартному переходу браузера
-                            navigate(`/edit/${post.id}`);
-                          }}
+                      {user && user.role === "admin" && (
+                        <Box
+                          className="admin-buttons"
                           sx={{
-                            color: "primary.main",
-                            backgroundColor: "white",
-                            '&:hover': { backgroundColor: "#f0f0f0" },
+                            position: "absolute",
+                            top: 8,
+                            right: 8,
+                            display: "flex",
+                            gap: 1,
+                            opacity: { xs: 1, sm: 1, md: 0 },
+                            transition: "opacity 0.3s ease",
                           }}
                         >
-                          <FaEdit size={20} />
-                        </IconButton>
-                      </Tooltip>
-                      <Tooltip title="Видалити пост">
-                        <IconButton
-                          onClick={() => handleDeletePost(post.id)}
+                          <Tooltip title="Редагувати пост">
+                            <IconButton
+                              onClick={(e) => {
+                                e.preventDefault();
+                                navigate(`/edit/${post.id}`);
+                              }}
+                              sx={{
+                                color: "primary.main",
+                                backgroundColor: "white",
+                                '&:hover': { backgroundColor: "#f0f0f0" },
+                              }}
+                            >
+                              <FaEdit size={20} />
+                            </IconButton>
+                          </Tooltip>
+                          <Tooltip title="Видалити пост">
+                            <IconButton
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleDeletePost(post.id);
+                              }}
+                              sx={{
+                                color: "error.main",
+                                backgroundColor: "white",
+                                '&:hover': { backgroundColor: "#f0f0f0" },
+                              }}
+                            >
+                              <FaTrash size={20} />
+                            </IconButton>
+                          </Tooltip>
+                        </Box>
+                      )}
+                      <CardMedia
+                        component="img"
+                        sx={{
+                          width: "100%",
+                          height: { xs: 200, sm: 250, md: 280 },
+                          objectFit: "cover",
+                        }}
+                        image={getMainImage(post.content)}
+                        alt={post.title}
+                      />
+                      <CardContent sx={{ flexGrow: 1 }}>
+                        <Typography variant="body2" color="textSecondary">
+                          {new Date(post.updatedAt).toLocaleDateString("uk-UA")}
+                        </Typography>
+                        <Typography
+                          variant="h6"
+                          color="textPrimary"
                           sx={{
-                            color: "error.main",
-                            backgroundColor: "white",
-                            '&:hover': { backgroundColor: "#f0f0f0" },
+                            overflow: "hidden",
+                            display: "-webkit-box",
+                            WebkitLineClamp: 2,
+                            WebkitBoxOrient: "vertical",
                           }}
                         >
-                          <FaTrash size={20} />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  )}
-                  <CardMedia
-                    component="img"
-                    height="280"
-                    image={getMainImage(post.content)}
-                    alt={post.title}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="body2" color="textSecondary">
-                      {new Date(post.updatedAt).toLocaleDateString("uk-UA", {
-                        day: "2-digit",
-                        month: "2-digit",
-                        year: "numeric",
-                      })}
-                    </Typography>
-                    <Typography variant="h6" color="textPrimary"
-                      sx={{
-                        overflow: "hidden",
-                        display: "-webkit-box",
-                        WebkitLineClamp: 2,   // кількість рядків
-                        WebkitBoxOrient: "vertical",
-                      }}>
-                      {post.title}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </Link>
-            ))}
-              
-          </div>
-          <Pagination
-                count={Math.ceil(posts.length / postsPerPage)} // Загальна кількість сторінок
-                page={currentPage}
-                onChange={(event, value) => setCurrentPage(value)} // Оновлюємо сторінку
-                color="primary"
-                sx={{ display: "flex", justifyContent: "center", marginTop: 3 }}
-              />
-          </div>
-        )}
-        
-      </div>
+                          {post.title}
+                        </Typography>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+              {/* ✅ Пагінація */}
+              {totalPages > 1 && (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: { xs: "column", sm: "row" },
+                    justifyContent: "center",
+                    alignItems: "center",
+                    gap: 2,
+                    mt: 4,
+                  }}
+                >
+                  <Button
+                    variant="outlined"
+                    className="btn btn-outlines"
+                    disabled={page === 1}
+                    onClick={() =>
+                      setPageByYear((prev) => ({ ...prev, [year]: page - 1 }))
+                    }
+                  >
+                    Попередня
+                  </Button>
+                  <span className="text-center">
+                    Сторінка {page} з {totalPages}
+                  </span>
+                  <Button
+                    variant="outlined"
+                    className="btn btn-outlines"
+                    disabled={page === totalPages}
+                    onClick={() =>
+                      setPageByYear((prev) => ({ ...prev, [year]: page + 1 }))
+                    }
+                  >
+                    Наступна
+                  </Button>
+                </Box>
+              )}
+            </AccordionDetails>
+          </Accordion>
+        );
+      })}
     </div>
   );
 };

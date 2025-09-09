@@ -1,5 +1,6 @@
 require('dotenv').config({ path: '../.env' });
 const express = require("express");
+const { Op } = require("sequelize");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
@@ -8,16 +9,18 @@ const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sequelize, User, Post, Document, Comment, HomeAbout, HomeSlider, HomeCounter, HomeMeta, TeamMember, AboutInfo } = require("./models");
-const { HomeAboutPage, HomeAboutCounter, HomeHistory, HomeDocuments, HomeAnthem, HomeStrategy, HomeReports, HomeTeachers, HomeWorkPlan  } = require('./models');
-const {RegDocuments, InternalDocument, Area, Language, Facilities, Services, FamilyEducation, Rules, Instructions, Bullying, Programs, Certifications, Criteria } = require('./models');
-const {SchoolRating, SchoolMedals, Olympiads} = require('./models');
-const {SchoolBells, SchoolTimetable, SchoolClubsTimetable, Donations} = require('./models');
-const {Admission, Finance, Contact} = require('./models');
+const { HomeAboutPage, HomeAboutCounter, HomeHistory, HomeDocuments, HomeAnthem, HomeStrategy, HomeReports, HomeTeachers, HomeWorkPlan } = require('./models');
+const { RegDocuments, InternalDocument, Area, Language, Facilities, Services, FamilyEducation, Rules, Instructions, Bullying, Programs, Certifications, Criteria } = require('./models');
+const { SchoolRating, SchoolMedals, Olympiads } = require('./models');
+const { SchoolBells, SchoolTimetable, SchoolClubsTimetable, Donations } = require('./models');
+const { Admission, Finance, Contact } = require('./models');
 
 const app = express();
 app.use(express.json({ limit: "10mb" })); // Default is 100kb, now increased to 50MB
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-const upload = multer({ dest: "uploads/" }); 
+const upload = multer({ dest: "uploads/" });
+
+
 
 // Enable CORS for all origins (you can specify specific origins if needed)
 app.use(cors());
@@ -122,7 +125,7 @@ app.post("/login", async (req, res) => {
     const token = jwt.sign({ id: user.id, username: user.username, role: user.role }, process.env.JWT_SECRET, {
       expiresIn: "3h",
     });
-    
+
     console.log("token: ", token, user, user.role)
     res.json({ token, user: { id: user.id, username: user.username, role: user.role } }); // Send the token to the client
 
@@ -146,8 +149,30 @@ const authenticateToken = (req, res, next) => {
 
 // 🟢 CRUD Operations for Posts
 app.get("/posts", async (req, res) => {
-  const posts = await Post.findAll({ include: User,  order: [["updatedAt", "DESC"]]});
-  res.json(posts);
+  try {
+    const { search } = req.query;
+
+    // Побудова where умови
+    let where = {};
+    if (search) {
+      where = {
+        [Op.or]: [
+          { title: { [Op.like]: `%${search}%` } },   // або iLike, якщо Postgres
+          { content: { [Op.like]: `%${search}%` } },
+        ],
+      };
+    }
+
+    const posts = await Post.findAll({
+      where,
+      order: [["updatedAt", "DESC"]],
+    });
+
+    res.json({ posts });
+  } catch (err) {
+    console.error("Error fetching posts:", err);
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 app.get('/posts/:id', (req, res) => {
@@ -212,7 +237,7 @@ app.delete("/posts/:id", authenticateToken, async (req, res) => {
 
     // Перевіряємо, чи авторизований користувач є власником поста
     //if (post.userId !== req.user.userId) {
-      //return res.status(403).json({ error: "Ви не маєте прав видаляти цей пост" });
+    //return res.status(403).json({ error: "Ви не маєте прав видаляти цей пост" });
     //}
 
     // Видаляємо пост
@@ -223,6 +248,30 @@ app.delete("/posts/:id", authenticateToken, async (req, res) => {
     console.error("Помилка видалення поста:", error);
     res.status(500).json({ error: "Помилка сервера" });
   }
+});
+
+app.get("/posts/:year", async (req, res) => {
+  const { year } = req.params;
+  const { page = 1, limit = 15 } = req.query;
+
+  const offset = (page - 1) * limit;
+
+  const { rows, count } = await Post.findAndCountAll({
+    where: sequelize.where(
+      sequelize.fn("YEAR", sequelize.col("createdAt")),
+      year
+    ),
+    order: [["updatedAt", "DESC"]],
+    offset,
+    limit: parseInt(limit),
+  });
+
+  res.json({
+    news: rows,
+    total: count,
+    page: parseInt(page),
+    totalPages: Math.ceil(count / limit),
+  });
 });
 
 // 🟢 CRUD Operations for Documents
@@ -424,11 +473,11 @@ app.get('/api/home_about_page', async (req, res) => {
     const about = await HomeAboutPage.findOne({ where: { id: 1 } });
     res.json(about);
   } catch (error) {
-     console.error('GET /api/home_about_page error:');
-  console.error('Message:', error.message);
-  console.error('Stack:', error.stack);
-  console.error('Full error object:', error);
-  res.status(500).json({ error: 'Помилка при завантаженні розширена.' });
+    console.error('GET /api/home_about_page error:');
+    console.error('Message:', error.message);
+    console.error('Stack:', error.stack);
+    console.error('Full error object:', error);
+    res.status(500).json({ error: 'Помилка при завантаженні розширена.' });
   }
 });
 
@@ -439,7 +488,7 @@ app.put('/api/home_about_page', async (req, res) => {
     let about = await HomeAboutPage.findByPk(1);
 
     if (about) {
-       await about.update({ content });
+      await about.update({ content });
 
       //await about.update({ content });
     } else {
@@ -520,7 +569,7 @@ app.get('/api/history', async (req, res) => {
 app.put('/api/history', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let history = await HomeHistory.findOne();
     if (history) {
       await history.update({ title, content });
@@ -545,7 +594,7 @@ app.get('/api/documents', async (req, res) => {
 app.put('/api/documents', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let documents = await HomeDocuments.findOne();
     if (documents) {
       await documents.update({ title, content });
@@ -563,15 +612,15 @@ app.get('/api/anthem', async (req, res) => {
     const anthem = await HomeAnthem.findOne();
     res.json(anthem);
   } catch (err) {
-  console.error('❌ Error updating anthem:', err);
-  res.status(500).json({ error: 'Failed to update anthem' });
-}
+    console.error('❌ Error updating anthem:', err);
+    res.status(500).json({ error: 'Failed to update anthem' });
+  }
 });
 
 app.put('/api/anthem', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let anthem = await HomeAnthem.findOne();
     if (anthem) {
       await anthem.update({ title, content });
@@ -589,15 +638,15 @@ app.get('/api/strategy', async (req, res) => {
     const strategy = await HomeStrategy.findOne();
     res.json(strategy);
   } catch (err) {
-  console.error('❌ Error updating strategy:', err);
-  res.status(500).json({ error: 'Failed to update strategy' });
-}
+    console.error('❌ Error updating strategy:', err);
+    res.status(500).json({ error: 'Failed to update strategy' });
+  }
 });
 
 app.put('/api/strategy', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let strategy = await HomeStrategy.findOne();
     if (strategy) {
       await strategy.update({ title, content });
@@ -615,15 +664,15 @@ app.get('/api/work-plan', async (req, res) => {
     const workPlan = await WorkPlan.findOne();
     res.json(workPlan);
   } catch (err) {
-  console.error('❌ Error updating workPlan:', err);
-  res.status(500).json({ error: 'Failed to update workPlan' });
-}
+    console.error('❌ Error updating workPlan:', err);
+    res.status(500).json({ error: 'Failed to update workPlan' });
+  }
 });
 
 app.put('/api/work-plan', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let workPlan = await WorkPlan.findOne();
     if (workPlan) {
       await workPlan.update({ title, content });
@@ -641,15 +690,15 @@ app.get('/api/reports', async (req, res) => {
     const reports = await HomeReports.findOne();
     res.json(reports);
   } catch (err) {
-  console.error('❌ Error updating reports:', err);
-  res.status(500).json({ error: 'Failed to update reports' });
-}
+    console.error('❌ Error updating reports:', err);
+    res.status(500).json({ error: 'Failed to update reports' });
+  }
 });
 
 app.put('/api/reports', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let reports = await HomeReports.findOne();
     if (reports) {
       await reports.update({ title, content });
@@ -667,15 +716,15 @@ app.get('/api/teachers', async (req, res) => {
     const teachers = await HomeTeachers.findOne();
     res.json(teachers);
   } catch (err) {
-  console.error('❌ Error updating teachers:', err);
-  res.status(500).json({ error: 'Failed to update teachers' });
-}
+    console.error('❌ Error updating teachers:', err);
+    res.status(500).json({ error: 'Failed to update teachers' });
+  }
 });
 
 app.put('/api/teachers', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let teachers = await HomeTeachers.findOne();
     if (teachers) {
       await teachers.update({ title, content });
@@ -693,15 +742,15 @@ app.get('/api/reg-documents', async (req, res) => {
     const regdocuments = await RegDocuments.findOne();
     res.json(regdocuments);
   } catch (err) {
-  console.error('❌ Error updating regdocuments:', err);
-  res.status(500).json({ error: 'Failed to update regdocuments' });
-}
+    console.error('❌ Error updating regdocuments:', err);
+    res.status(500).json({ error: 'Failed to update regdocuments' });
+  }
 });
 
 app.put('/api/reg-documents', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let regdocuments = await RegDocuments.findOne();
     if (regdocuments) {
       await regdocuments.update({ title, content });
@@ -737,8 +786,8 @@ app.post('/api/internal-documents', upload.single('file'), async (req, res) => {
   let folder = "uploads/documents";
   const file = req.file;
   const isActive = req.body.isActive === 'true';
- 
-  
+
+
   // Створюємо нове ім'я файлу з поточною датою та ID посту
   const timestamp = Date.now();  // Поточна дата у мілісекундах
   const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
@@ -787,15 +836,15 @@ app.get('/api/area', async (req, res) => {
     const area = await Area.findOne();
     res.json(area);
   } catch (err) {
-  console.error('❌ Error updating area:', err);
-  res.status(500).json({ error: 'Failed to update area' });
-}
+    console.error('❌ Error updating area:', err);
+    res.status(500).json({ error: 'Failed to update area' });
+  }
 });
 
 app.put('/api/area', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let area = await Area.findOne();
     if (area) {
       await area.update({ title, content });
@@ -813,15 +862,15 @@ app.get('/api/language', async (req, res) => {
     const language = await Language.findOne();
     res.json(language);
   } catch (err) {
-  console.error('❌ Error updating language:', err);
-  res.status(500).json({ error: 'Failed to update language' });
-}
+    console.error('❌ Error updating language:', err);
+    res.status(500).json({ error: 'Failed to update language' });
+  }
 });
 
 app.put('/api/language', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let language = await Language.findOne();
     if (language) {
       await language.update({ title, content });
@@ -839,15 +888,15 @@ app.get('/api/facilities', async (req, res) => {
     const facilities = await Facilities.findOne();
     res.json(facilities);
   } catch (err) {
-  console.error('❌ Error updating facilities:', err);
-  res.status(500).json({ error: 'Failed to update facilities' });
-}
+    console.error('❌ Error updating facilities:', err);
+    res.status(500).json({ error: 'Failed to update facilities' });
+  }
 });
 
 app.put('/api/facilities', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let facilities = await Facilities.findOne();
     if (facilities) {
       await facilities.update({ title, content });
@@ -865,9 +914,9 @@ app.get('/api/family-education', async (req, res) => {
     const familyEducation = await FamilyEducation.findAll();
     res.json(familyEducation);
   } catch (err) {
-  console.error('❌ Error updating services:', err);
-  res.status(500).json({ error: 'Failed to update services' });
-}
+    console.error('❌ Error updating services:', err);
+    res.status(500).json({ error: 'Failed to update services' });
+  }
 });
 
 // POST – додати новий документ
@@ -877,8 +926,8 @@ app.post('/api/family-education', upload.single('file'), async (req, res) => {
   let folder = "uploads/documents";
   const file = req.file;
   const isActive = req.body.isActive === 'true';
- 
-  
+
+
   // Створюємо нове ім'я файлу з поточною датою та ID посту
   const timestamp = Date.now();  // Поточна дата у мілісекундах
   const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
@@ -927,9 +976,9 @@ app.get('/api/services', async (req, res) => {
     const services = await Services.findAll();
     res.json(services);
   } catch (err) {
-  console.error('❌ Error updating services:', err);
-  res.status(500).json({ error: 'Failed to update services' });
-}
+    console.error('❌ Error updating services:', err);
+    res.status(500).json({ error: 'Failed to update services' });
+  }
 });
 
 // POST – додати новий документ
@@ -939,8 +988,8 @@ app.post('/api/services', upload.single('file'), async (req, res) => {
   let folder = "uploads/documents";
   const file = req.file;
   const isActive = req.body.isActive === 'true';
- 
-  
+
+
   // Створюємо нове ім'я файлу з поточною датою та ID посту
   const timestamp = Date.now();  // Поточна дата у мілісекундах
   const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
@@ -989,15 +1038,15 @@ app.get('/api/rules', async (req, res) => {
     const rules = await Rules.findOne();
     res.json(rules);
   } catch (err) {
-  console.error('❌ Error updating rules:', err);
-  res.status(500).json({ error: 'Failed to update rules' });
-}
+    console.error('❌ Error updating rules:', err);
+    res.status(500).json({ error: 'Failed to update rules' });
+  }
 });
 
 app.put('/api/rules', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let rules = await Rules.findOne();
     if (rules) {
       await rules.update({ title, content });
@@ -1015,15 +1064,15 @@ app.get('/api/instructions', async (req, res) => {
     const instructions = await Instructions.findOne();
     res.json(instructions);
   } catch (err) {
-  console.error('❌ Error updating instructions:', err);
-  res.status(500).json({ error: 'Failed to update instructions' });
-}
+    console.error('❌ Error updating instructions:', err);
+    res.status(500).json({ error: 'Failed to update instructions' });
+  }
 });
 
 app.put('/api/instructions', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let instructions = await Instructions.findOne();
     if (instructions) {
       await instructions.update({ title, content });
@@ -1041,9 +1090,9 @@ app.get('/api/bullying', async (req, res) => {
     const bullying = await Bullying.findAll();
     res.json(bullying);
   } catch (err) {
-  console.error('❌ Error updating bullying:', err);
-  res.status(500).json({ error: 'Failed to update bullying' });
-}
+    console.error('❌ Error updating bullying:', err);
+    res.status(500).json({ error: 'Failed to update bullying' });
+  }
 });
 
 // POST – додати новий документ
@@ -1053,8 +1102,8 @@ app.post('/api/bullying', upload.single('file'), async (req, res) => {
   let folder = "uploads/documents";
   const file = req.file;
   const isActive = req.body.isActive === 'true';
- 
-  
+
+
   // Створюємо нове ім'я файлу з поточною датою та ID посту
   const timestamp = Date.now();  // Поточна дата у мілісекундах
   const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
@@ -1103,9 +1152,9 @@ app.get('/api/programs', async (req, res) => {
     const programs = await Programs.findAll();
     res.json(programs);
   } catch (err) {
-  console.error('❌ Error updating programs:', err);
-  res.status(500).json({ error: 'Failed to update programs' });
-}
+    console.error('❌ Error updating programs:', err);
+    res.status(500).json({ error: 'Failed to update programs' });
+  }
 });
 
 // POST – додати новий документ
@@ -1115,8 +1164,8 @@ app.post('/api/programs', upload.single('file'), async (req, res) => {
   let folder = "uploads/documents";
   const file = req.file;
   const isActive = req.body.isActive === 'true';
- 
-  
+
+
   // Створюємо нове ім'я файлу з поточною датою та ID посту
   const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
@@ -1167,9 +1216,9 @@ app.get('/api/certifications', async (req, res) => {
     const certifications = await Certifications.findAll();
     res.json(certifications);
   } catch (err) {
-  console.error('❌ Error updating certifications:', err);
-  res.status(500).json({ error: 'Failed to update certifications' });
-}
+    console.error('❌ Error updating certifications:', err);
+    res.status(500).json({ error: 'Failed to update certifications' });
+  }
 });
 
 // POST – додати новий документ
@@ -1179,8 +1228,8 @@ app.post('/api/certifications', upload.single('file'), async (req, res) => {
   let folder = "uploads/documents";
   const file = req.file;
   const isActive = req.body.isActive === 'true';
- 
-  
+
+
   // Створюємо нове ім'я файлу з поточною датою та ID посту
   const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
@@ -1230,9 +1279,9 @@ app.get('/api/criteria', async (req, res) => {
     const criteria = await Criteria.findAll();
     res.json(criteria);
   } catch (err) {
-  console.error('❌ Error updating criteria:', err);
-  res.status(500).json({ error: 'Failed to update criteria' });
-}
+    console.error('❌ Error updating criteria:', err);
+    res.status(500).json({ error: 'Failed to update criteria' });
+  }
 });
 
 // POST – додати новий документ
@@ -1242,8 +1291,8 @@ app.post('/api/criteria', upload.single('file'), async (req, res) => {
   let folder = "uploads/documents";
   const file = req.file;
   const isActive = req.body.isActive === 'true';
- 
-  
+
+
   // Створюємо нове ім'я файлу з поточною датою та ID посту
   const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
   const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
@@ -1296,7 +1345,7 @@ app.get('/api/school-ratings', async (req, res) => {
 
 // POST new rating
 app.post('/api/school-ratings', async (req, res) => {
- try {
+  try {
     const newRating = await SchoolRating.create(req.body);
     res.status(201).json(newRating);
   } catch (err) {
@@ -1478,9 +1527,9 @@ app.get('/api/school-timetable', async (req, res) => {
     const schoolTimetable = await SchoolTimetable.findAll();
     res.json(schoolTimetable);
   } catch (err) {
-  console.error('❌ Error updating services:', err);
-  res.status(500).json({ error: 'Failed to update services' });
-}
+    console.error('❌ Error updating services:', err);
+    res.status(500).json({ error: 'Failed to update services' });
+  }
 });
 
 // POST – додати новий документ
@@ -1490,8 +1539,8 @@ app.post('/api/school-timetable', upload.single('file'), async (req, res) => {
   let folder = "uploads/documents";
   const file = req.file;
   const isActive = req.body.isActive === 'true';
- 
-  
+
+
   // Створюємо нове ім'я файлу з поточною датою та ID посту
   const timestamp = Date.now();  // Поточна дата у мілісекундах
   const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
@@ -1540,9 +1589,9 @@ app.get('/api/school-clubs-timetable', async (req, res) => {
     const schoolClubsTimetable = await SchoolClubsTimetable.findAll();
     res.json(schoolClubsTimetable);
   } catch (err) {
-  console.error('❌ Error updating services:', err);
-  res.status(500).json({ error: 'Failed to update services' });
-}
+    console.error('❌ Error updating services:', err);
+    res.status(500).json({ error: 'Failed to update services' });
+  }
 });
 
 // POST – додати новий документ
@@ -1552,8 +1601,8 @@ app.post('/api/school-clubs-timetable', upload.single('file'), async (req, res) 
   let folder = "uploads/documents";
   const file = req.file;
   const isActive = req.body.isActive === 'true';
- 
-  
+
+
   // Створюємо нове ім'я файлу з поточною датою та ID посту
   const timestamp = Date.now();  // Поточна дата у мілісекундах
   const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
@@ -1602,15 +1651,15 @@ app.get('/api/donations', async (req, res) => {
     const donations = await Donations.findOne();
     res.json(donations);
   } catch (err) {
-  console.error('❌ Error updating donations:', err);
-  res.status(500).json({ error: 'Failed to update donations' });
-}
+    console.error('❌ Error updating donations:', err);
+    res.status(500).json({ error: 'Failed to update donations' });
+  }
 });
 
 app.put('/api/donations', async (req, res) => {
   try {
     const { title, content } = req.body;
-    
+
     let donations = await Donations.findOne();
     if (donations) {
       await donations.update({ title, content });

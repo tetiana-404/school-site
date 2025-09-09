@@ -62,6 +62,7 @@
     color: inherit;
     display: block;
     transition: transform 0.3s ease;
+    width: 100%;
   }
   
   .news-link:hover {

@@ -491,6 +491,13 @@ fieldset {
   color: var(--primary-green);
 }
 
+.css-1blvszr-MuiButtonBase-root-MuiButton-root,
+.css-74d805-MuiButtonBase-root-MuiButton-root{
+  border: 1px solid var(--primary-green) !important;
+  background-color:transparent !important;
+  border-color: var(--primary-green, currentColor) !important;
+    color: var(--primary-green) !important;
+}
 
 /*START SECTION TITLE DESIGN*/
 
