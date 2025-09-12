@@ -12,7 +12,7 @@ const NewsCarousel = () => {
     const fetchPosts = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/posts`);
-        setPosts(response.data);
+        setPosts(response.data.posts || []);
       } catch (error) {
         console.error("❌ Error fetching posts for carousel:", error);
       }
@@ -48,7 +48,7 @@ const NewsCarousel = () => {
     autoplaySpeed: 4000,
   };
 
-  const latestPosts = posts.slice(0, 10);
+  const latestPosts = Array.isArray(posts) ? posts.slice(0, 10) : [];
 
   return (
     <section className="news-carousel-section">

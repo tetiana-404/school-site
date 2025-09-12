@@ -105,7 +105,7 @@ const Header = () => {
                       data-bs-toggle="dropdown"
                       aria-expanded="false"
                     >
-                      Про гімназію
+                      Про нас
                       
                     </a>
                     
@@ -124,7 +124,7 @@ const Header = () => {
 
                   <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="dropdownParents" role="button" data-bs-toggle="dropdown" aria-expanded="false" onClick={(e) => e.preventDefault()} >
-                      Інформаційна відкритість
+                      Інформація
                       
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownParents">
@@ -145,7 +145,7 @@ const Header = () => {
 
                   <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="dropdownTeachers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Наші досягнення
+                      Досягнення
                       
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownTeachers">
@@ -158,7 +158,7 @@ const Header = () => {
 
                   <li className="nav-item dropdown">
                     <a className="nav-link dropdown-toggle" href="#" id="dropdownTeachers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                      Учням та батькам
+                      Учні / Батьки
                       
                     </a>
                     <ul className="dropdown-menu" aria-labelledby="dropdownTeachers">
@@ -169,10 +169,10 @@ const Header = () => {
                     </ul>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/admission">Вступ у гімназію</Link>
+                    <Link className="nav-link" to="/admission">Вступ</Link>
                   </li>
                   <li className="nav-item">
-                    <Link className="nav-link" to="/finance">Фінансова прозорість</Link>
+                    <Link className="nav-link" to="/finance">Фінанси</Link>
                   </li>
                   <li className="nav-item">
                     <Link className="nav-link" to="/contact">Контакти</Link>

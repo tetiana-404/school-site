@@ -513,16 +513,18 @@ app.get("/contact", async (req, res) => {
 
 // PUT (update)
 app.put("/contact", async (req, res) => {
-  const { fullName, address, contacts, schedule, image } = req.body;
-  const info = await AboutInfo.findOne({ where: { id: 1 } });
+  const { fullName, address, phone, email, schedule, image } = req.body;
+  let info = await AboutInfo.findOne({ where: { id: 1 } });
+  
   if (info) {
-    await info.update({ fullName, address, contacts, schedule, image });
-    res.json(info);
+    await info.update({ fullName, address, phone, email, schedule, image });
   } else {
-    const newInfo = await AboutInfo.create({ fullName, address, contacts, schedule, image });
-    res.json(newInfo);
+    info = await AboutInfo.create({ fullName, address, contacts: { phone, email }, schedule, image });
   }
+  
+  res.json(info);
 });
+
 
 app.get('/api/home_counter', async (req, res) => {
   try {
@@ -584,27 +586,74 @@ app.put('/api/history', async (req, res) => {
 
 app.get('/api/documents', async (req, res) => {
   try {
-    const documents = await HomeDocuments.findOne();
-    res.json(documents);
+    const docs = await HomeDocuments.findOne({ where: { isActive: 'true' } });
+    res.json(docs);
   } catch (err) {
     res.status(500).json({ error: 'Failed to fetch documents' });
   }
 });
 
-app.put('/api/documents', async (req, res) => {
+app.get('/api/documents/all', async (req, res) => {
   try {
-    const { title, content } = req.body;
-
-    let documents = await HomeDocuments.findOne();
-    if (documents) {
-      await documents.update({ title, content });
-    } else {
-      documents = await HomeDocuments.create({ title, content });
-    }
+    const documents = await HomeDocuments.findAll();
     res.json(documents);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to update history' });
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch documents' });
   }
+});
+
+// POST – додати новий документ
+app.post('/api/documents', upload.single('file'), async (req, res) => {
+  const { title } = req.body;
+  const { type } = req.body;
+  let folder = "uploads/documents";
+  const file = req.file;
+  const isActive = req.body.isActive === 'true';
+
+
+  // Створюємо нове ім'я файлу з поточною датою та ID посту
+  const timestamp = Date.now();  // Поточна дата у мілісекундах
+  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
+  const newFileName = `doc-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+
+  // Шлях для збереженого файлу
+  const filePath = path.join(folder, newFileName);
+
+  // Переміщаємо файл у відповідну папку
+  fs.renameSync(file.path, filePath);
+
+  // Повертаємо URL файлу
+  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+  console.log("File uploaded:", fileUrl);
+
+  const doc = await HomeDocuments.create({ title, file: newFileName, isActive });
+
+  res.json({ url: fileUrl });
+});
+
+// PUT – оновити документ
+app.put('/api/documents/:id', upload.single('file'), async (req, res) => {
+  const { title, isActive } = req.body;
+  const file = req.file?.filename;
+  const doc = await HomeDocuments.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  doc.title = title;
+  doc.isActive = isActive === 'true';
+  if (file) doc.file = file;
+
+  await doc.save();
+  res.json(doc);
+});
+
+// DELETE – видалити
+app.delete('/api/documents/:id', async (req, res) => {
+  const doc = await HomeDocuments.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  await doc.destroy();
+  res.json({ message: 'Deleted' });
 });
 
 app.get('/api/anthem', async (req, res) => {

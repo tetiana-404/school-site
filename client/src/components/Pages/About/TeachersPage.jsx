@@ -36,7 +36,30 @@ const TeachersPage = ({ user }) => {
     };
 
     return (
-        <section id="teachersPage" className="section-padding bg-light py-5">
+        <section id="teachersPage" className="bg-light">
+             <div
+                className="section-padding section-back-image-2 overlay"
+                style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/img/bg/teachers_02.jpg'})` }}
+            >
+                <div className="container h-100">
+                    <div className="row h-100">
+                        <div className="col-lg-12 my-auto">
+                            <div className="text-center">
+                                <h2
+                                    className="page-banner-title display-1 display-md-3 display-sm-5"
+                                    style={{ position: "relative", zIndex: 2, color: "#fff" }}>
+                                    Кадровий склад</h2>
+                                <div
+                                    className="page-banner-breadcrumb"
+                                    style={{ position: "relative", zIndex: 2, color: "#fff" }}>
+                                    <p>Кваліфікація педагогічних працівників</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
             <div className="auto-container">
                 <div className="row">
                     <div className='col-lg-12'>

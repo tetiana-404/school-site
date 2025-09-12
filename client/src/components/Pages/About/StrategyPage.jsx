@@ -36,16 +36,32 @@ const StrategyPage = ({ user }) => {
     };
 
     return (
-        <section id="strategyPage" className="section-padding bg-light py-5">
-            <div className="auto-container">
-                <div className="row">
-                    <div className='col-lg-12'>
-                        <div className="welcome-section-title">
-                            <h6 className="theme-color">Львівська гімназія "Євшан"</h6>
-                            <h2>Стратегія розвитку гімназії </h2>
+        <section id="strategyPage" className="bg-light">
+            <div
+                className="section-padding section-back-image-2 overlay"
+                style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/img/bg/strategy.jpg'})` }}
+            >
+                <div className="container h-100">
+                    <div className="row h-100">
+                        <div className="col-lg-12 my-auto">
+                            <div className="text-center">
+                                <h2
+                                    className="page-banner-title display-1 display-md-3 display-sm-5"
+                                    style={{ position: "relative", zIndex: 2, color: "#fff" }}>
+                                    Стратегія розвитку гімназії</h2>
+                                <div
+                                    className="page-banner-breadcrumb"
+                                    style={{ position: "relative", zIndex: 2, color: "#fff" }}>
+                                    <p>Загальна інформація</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
                 </div>
+            </div>
+            <div className="auto-container">
+                
                 <div className="row">
                     <div className='col-lg-12'>
                         {editMode ? (
@@ -71,31 +87,31 @@ const StrategyPage = ({ user }) => {
                             </>
                         ) : (
                             <div className='position-relative'>
-                                    {user?.role === 'admin' && !editMode && (
-                                        <button
-                                            className="btn btn-outline-dark position-absolute m-0 w-auto"
-                                            style={{ top: "-50px", right:0 }}
-                                            onClick={() => setEditMode(true)}
-                                        >
-                                            ✏️
-                                        </button>
-                                    )}
+                                {user?.role === 'admin' && !editMode && (
+                                    <button
+                                        className="btn btn-outline-dark position-absolute m-0 w-auto"
+                                        style={{ top: "-50px", right: 0 }}
+                                        onClick={() => setEditMode(true)}
+                                    >
+                                        ✏️
+                                    </button>
+                                )}
                                 <div dangerouslySetInnerHTML={{ __html: strategy?.content || "" }} />
                                 {user?.role === 'admin' && !editMode && (
-                                        <button
-                                            className="btn btn-outline-dark position-absolute m-0 w-auto"
-                                            style={{ bottom: "0px", right:0 }}
-                                            onClick={() => setEditMode(true)}
-                                        >
-                                            ✏️
-                                        </button>
-                                    )}
+                                    <button
+                                        className="btn btn-outline-dark position-absolute m-0 w-auto"
+                                        style={{ bottom: "0px", right: 0 }}
+                                        onClick={() => setEditMode(true)}
+                                    >
+                                        ✏️
+                                    </button>
+                                )}
                             </div>
                         )}
 
                     </div>
                 </div>
-              
+
 
             </div>
         </section>

@@ -54,104 +54,151 @@ const AboutPage = ({ user }) => {
     }
   };
 
+  const handleSaveAbout = async () => {
+    const body = {
+      fullName: info.fullName,
+      address: info.address,
+      phone: info.phone,
+      email: info.email,
+      schedule: info.schedule,
+      image: info.image || null,
+    };
+
+    handleSave("/contact", "PUT", body, () => setEditMode(false));
+  };
+
   const handleInputChange = (field) => (e) =>
     setInfo((prev) => ({ ...prev, [field]: e.target.value }));
 
   return (
     <>
-      <section id="pabout" className="section-padding bg-light">
-        <div className="auto-container">
-          <div className="row">
-            <div className='col-lg-12'>
-              <div className="welcome-section-title">
-                <h6 className="theme-color">Загальна інформація</h6>
-                <h2>Про гімназію</h2>
+      <div
+        className="section-padding section-back-image-2 overlay"
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/img/bg/1.jpg'})` }}
+      >
+        <div className="container h-100">
+          <div className="row h-100">
+            <div className="col-lg-12 my-auto">
+              <div className="text-center">
+                <h2
+                  className="page-banner-title display-1 display-md-3 display-sm-5"
+                  style={{ position: "relative", zIndex: 2, color: "#fff" }}>
+                  Про гімназію</h2>
+                <div
+                  className="page-banner-breadcrumb"
+                  style={{ position: "relative", zIndex: 2, color: "#fff" }}>
+                  <p>Загальна інформація</p>
+                </div>
               </div>
             </div>
           </div>
 
-          <div className='row mt-5'>
-            <div className='col-lg-4 col-md-6 col-sm-12 position-relative'>
-              {user?.role === 'admin' && !editMode && (
-                <button
-                  className="btn btn-outline-dark position-absolute top-0 m-0 w-auto"
-                  style={{ right: 20 }}
-                  onClick={() => setEditMode(true)}
-                >
-                  ✏️
-                </button>
+        </div>
+      </div>
+      <section id="pabout" className="section-padding bg-light pt-lg-5 pb-lg-5 pt-md-4 pb-md-4 pt-sm-3 pb-sm-3">
+        <div className="auto-container">
+          <div className='row position-relative justify-content-center'>
+            {user?.role === "admin" && !editMode && (
+              <button
+                className="btn btn-outline-dark position-absolute top-0 m-0 w-auto"
+                style={{ right: 20 }}
+                onClick={() => setEditMode(true)}
+              >
+                ✏️
+              </button>
+            )}
+            <div className="col-lg-1"></div>
+            {/* Повна назва установи */}
+            <div className="col-lg-5 col-md-6 col-sm-12 mb-4">
+              <h4>Повна назва установи</h4>
+              {editMode ? (
+                <input
+                  type="text"
+                  value={info.fullName}
+                  onChange={handleInputChange("fullName")}
+                  className="form-control"
+                />
+              ) : (
+                <p>{info.fullName}</p>
               )}
+            </div>
 
-              {[
-                ['Повна назва установи', 'fullName'],
-                ['Юридична адреса', 'address'],
-              ].map(([label, field]) => (
-                <div key={field} className="mb-4">
-                  <h4>{label}</h4>
-                  {editMode ? (
-                    <input
-                      type="text"
-                      value={info[field]}
-                      onChange={handleInputChange(field)}
-                      className="form-control"
-                    />
-                  ) : (
-                    <p>{info[field]}</p>
-                  )}
-                </div>
-              ))}
+            {/* Юридична адреса */}
+            <div className="col-lg-5 col-md-6 col-sm-12 mb-4">
+              <h4>Юридична адреса</h4>
+              {editMode ? (
+                <input
+                  type="text"
+                  value={info.address}
+                  onChange={handleInputChange("address")}
+                  className="form-control"
+                />
+              ) : (
+                <p>{info.address}</p>
+              )}
+            </div>
+            <div className="col-lg-1"></div>
 
-              <div className="mb-4">
-                <h4>Контакти</h4>
-                {editMode ? (
-                  <>
-                    <input
-                      type="text"
-                      placeholder="Телефон"
-                      value={info.phone}
-                      onChange={handleInputChange('phone')}
-                      className="form-control mb-2"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Email"
-                      value={info.email}
-                      onChange={handleInputChange('email')}
-                      className="form-control"
-                    />
-                  </>
-                ) : (
-                  <>
-                    <p>Телефон: {info.phone}</p>
-                    <p>Email: {info.email}</p>
-                  </>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <h4>Графік роботи школи</h4>
-                {editMode ? (
-                  <textarea
-                    value={info.schedule}
-                    onChange={handleInputChange('schedule')}
+            <div className="col-lg-1"></div>
+            {/* Контакти */}
+            <div className="col-lg-5 col-md-6 col-sm-12 mb-4">
+              <h4>Контакти</h4>
+              {editMode ? (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Телефон"
+                    value={info.phone}
+                    onChange={handleInputChange("phone")}
+                    className="form-control mb-2"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Email"
+                    value={info.email}
+                    onChange={handleInputChange("email")}
                     className="form-control"
                   />
-                ) : (
-                  <p style={{ whiteSpace: "pre-line" }}>{info.schedule}</p>
-                )}
-              </div>
-
-              {editMode && (
-                <div className="d-flex gap-2 mb-3">
-                  <button className="btn btn-outline-success btn-lg w-50" onClick={() => handleSave('/contact', 'PUT', info, () => setEditMode(false))}>💾 Зберегти</button>
-                  <button className="btn btn-outline-warning btn-lg w-50" onClick={() => setEditMode(false)}>❌ Скасувати</button>
-                </div>
+                </>
+              ) : (
+                <>
+                  <p>Телефон: {info.phone}</p>
+                  <p>Email: {info.email}</p>
+                </>
               )}
             </div>
 
-            <div className='col-lg-8 col-md-6 col-sm-12 mb-5'>
-              <img className="img-fluid about-image-hover" src={process.env.PUBLIC_URL + '/img/1.jpg'} alt="Про гімназію" />
+            {/* Графік роботи */}
+            <div className="col-lg-5 col-md-6 col-sm-12 mb-4">
+              <h4>Графік роботи школи</h4>
+              {editMode ? (
+                <textarea
+                  value={info.schedule}
+                  onChange={handleInputChange("schedule")}
+                  className="form-control"
+                />
+              ) : (
+                <p style={{ whiteSpace: "pre-line" }}>{info.schedule}</p>
+              )}
             </div>
+            <div className="col-lg-1"></div>
+
+            {editMode && (
+              <div className="col-12 d-flex gap-2 mb-3">
+                <button
+                  className="btn btn-outline-success btn-lg w-50"
+                  onClick={handleSaveAbout}
+                >
+                  💾 Зберегти
+                </button>
+                <button
+                  className="btn btn-outline-warning btn-lg w-50"
+                  onClick={() => setEditMode(false)}
+                >
+                  ❌ Скасувати
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </section>

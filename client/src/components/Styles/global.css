@@ -541,6 +541,23 @@ h2.section-title.white-title {
   background-color: #fff;
 }
 
+.pdf-container {
+  position: relative;
+  width: 100%;
+  padding-bottom: 140%; /* пропорції (можеш підлаштувати) */
+  height: 0;
+  overflow: hidden;
+}
+
+.pdf-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+}
+
 
 /*END SECTION TITLE DESIGN*/
 
@@ -723,7 +740,7 @@ h2.section-title.white-title {
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 500;
-  padding: 20px;
+  padding: 15px 20px;
   position: relative;
   box-sizing: border-box;
   flex-wrap: wrap;
@@ -7178,7 +7195,7 @@ sup.price {
   .container,
   .auto-container {
     width: 99%;
-    padding: 0 !important;
+    /*padding: 0 !important;*/
   }
 }
 
