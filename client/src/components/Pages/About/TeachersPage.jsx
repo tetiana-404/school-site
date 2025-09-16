@@ -60,15 +60,8 @@ const TeachersPage = ({ user }) => {
 
                 </div>
             </div>
-            <div className="auto-container">
-                <div className="row">
-                    <div className='col-lg-12'>
-                        <div className="welcome-section-title">
-                            <h6 className="theme-color">Львівська гімназія "Євшан"</h6>
-                            <h2>Кадровий склад</h2>
-                        </div>
-                    </div>
-                </div>
+            <div className="auto-container py-5">
+               
                 <div className="row">
                     <div className='col-lg-12'>
                         {editMode ? (

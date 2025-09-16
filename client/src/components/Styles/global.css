@@ -63,8 +63,8 @@ h3,
 h4,
 h5,
 h6 {
-  color: var(--primary-green);
-  font-family: 'Dosis', sans-serif;
+  color: var(--primary-green) !important;
+  font-family: 'Roboto', sans-serif;
   font-weight: 700 !important;
 }
 
@@ -3331,8 +3331,8 @@ h2.section-title.white-title {
   margin-top: -100px;
 }
 
-.page-banner-title {
-  color: #fff;
+h2.page-banner-title {
+  color: #fff !important;
   font-size: 70px;
   font-weight: 800;
   margin: 0 0 20px;
@@ -7265,10 +7265,7 @@ main p {
 #anthemPage table td,
 #strategyPage table,
 #strategyPage table tr,
-#strategyPage table td,
-#reportsPage table,
-#reportsPage table tr,
-#reportsPage table td {
+#strategyPage table td {
   border: 0;
 }
 
@@ -7277,10 +7274,8 @@ main p {
 #historyPage .editor-content table td,
 #strategyPage .editor-content table,
 #strategyPage .editor-content table tr,
-#strategyPage .editor-content table td,
-#reportsPage .editor-content table,
-#reportsPage .editor-content table tr,
-#reportsPage .editor-content table td{
+#strategyPage .editor-content table td
+{
   border: 1px solid #999;
 }
 

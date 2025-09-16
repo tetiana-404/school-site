@@ -36,8 +36,31 @@ const AreaPage = ({ user }) => {
     };
 
     return (
-        <section id="areaPage" className="section-padding bg-light py-5">
-            <div className="auto-container">
+        <section id="areaPage" className="bg-light">
+            <div
+                className="section-padding section-back-image-2 overlay"
+                style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/img/bg/lviv.jpg'})` }}
+            >
+                <div className="container h-100">
+                    <div className="row h-100">
+                        <div className="col-lg-12 my-auto">
+                            <div className="text-center">
+                                <h2
+                                    className="page-banner-title display-1 display-md-3 display-sm-5"
+                                    style={{ position: "relative", zIndex: 2, color: "#fff" }}>
+                                    Територія обслуговування</h2>
+                                <div
+                                    className="page-banner-breadcrumb"
+                                    style={{ position: "relative", zIndex: 2, color: "#fff" }}>
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div className="auto-container py-5">
                 <div className="row">
                     <div className='col-lg-12'>
                         <div className="welcome-section-title">

@@ -106,7 +106,7 @@ const TextEditor = ({ content, setContent }) => {
                 html = `
         <div style="margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; overflow: hidden;">
           <iframe 
-          src="${fileURL}" width="100%" height="500px" style="border: none;"></iframe>
+          src="${fileURL}" width="100%" height="500px" style="border: none"></iframe>
         </div>
       `;
             } else {

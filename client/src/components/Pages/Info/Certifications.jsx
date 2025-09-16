@@ -84,22 +84,36 @@ const CertificationsEditor = ({ user }) => {
   };
 
   return (
-    <section id="certificationsPage" className="section-padding bg-light py-5">
-      <div className="auto-container">
-        <div className="row">
-          <div className="col-lg-12">
-            <div className="welcome-section-title">
-              <h6 className="theme-color">Львівська гімназія "Євшан"</h6>
-              <h2>Підвищення кваліфікації педагогічних працівників</h2>
+    <section id="certificationsPage" className="bg-light">
+      <div
+        className="section-padding section-back-image-2 overlay"
+        style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/img/bg/education.jpg'})` }}
+      >
+        <div className="container h-100">
+          <div className="row h-100">
+            <div className="col-lg-12 my-auto">
+              <div className="text-center">
+                <h2
+                  className="page-banner-title display-1 display-md-3 display-sm-5"
+                  style={{ position: "relative", zIndex: 2, color: "#fff" }}>
+                  Підвищення кваліфікації педагогічних працівників</h2>
+                <div
+                  className="page-banner-breadcrumb"
+                  style={{ position: "relative", zIndex: 2, color: "#fff" }}>
+                  <p></p>
+                </div>
+              </div>
             </div>
           </div>
+
         </div>
+      </div>
+      <div className="auto-container py-5">
+       
 
         <div className="row">
           <div className="col-lg-12">
-            <div className="py-3">
-              <img src={process.env.PUBLIC_URL + '/img/education.jpg'} className='w-100' />
-            </div>
+            
             <div className="accordion">
               {documents.map((doc) => (
                 <div

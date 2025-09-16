@@ -46,7 +46,7 @@ const HistoryPage = ({ user }) => {
                         <div className="col-lg-12 my-auto">
                             <div className="text-center">
                                 <h2 
-                                    className="page-banner-title"
+                                    className="page-banner-title display-1 display-md-3 display-sm-5"
                                     style={{ position: "relative", zIndex: 2, color: "#fff" }}>
                                         Історія гімназії</h2>
                                 <div 

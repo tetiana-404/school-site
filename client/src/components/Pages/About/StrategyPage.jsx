@@ -60,7 +60,7 @@ const StrategyPage = ({ user }) => {
 
                 </div>
             </div>
-            <div className="auto-container">
+            <div className="auto-container py-5">
                 
                 <div className="row">
                     <div className='col-lg-12'>

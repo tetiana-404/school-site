@@ -88,8 +88,18 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
   res.json({ url: fileUrl });
 });
 
-// Статичний доступ до файлів
-app.use("/uploads", express.static("uploads"));
+// Статична роздача папки uploads
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"), {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith(".pdf")) {
+        res.setHeader("Content-Type", "application/pdf");
+      }
+    },
+  })
+);
+
 
 // 🟢 User Registration
 app.post("/register", async (req, res) => {
@@ -710,7 +720,7 @@ app.put('/api/strategy', async (req, res) => {
 
 app.get('/api/work-plan', async (req, res) => {
   try {
-    const workPlan = await WorkPlan.findOne();
+    const workPlan = await HomeWorkPlan.findOne();
     res.json(workPlan);
   } catch (err) {
     console.error('❌ Error updating workPlan:', err);
@@ -722,11 +732,11 @@ app.put('/api/work-plan', async (req, res) => {
   try {
     const { title, content } = req.body;
 
-    let workPlan = await WorkPlan.findOne();
+    let workPlan = await HomeWorkPlan.findOne();
     if (workPlan) {
       await workPlan.update({ title, content });
     } else {
-      workPlan = await WorkPlan.create({ title, content });
+      workPlan = await HomeWorkPlan.create({ title, content });
     }
     res.json(workPlan);
   } catch (err) {
@@ -1082,9 +1092,10 @@ app.delete('/api/services/:id', async (req, res) => {
   res.json({ message: 'Deleted' });
 });
 
+
 app.get('/api/rules', async (req, res) => {
   try {
-    const rules = await Rules.findOne();
+    const rules = await Rules.findAll();
     res.json(rules);
   } catch (err) {
     console.error('❌ Error updating rules:', err);
@@ -1092,25 +1103,61 @@ app.get('/api/rules', async (req, res) => {
   }
 });
 
-app.put('/api/rules', async (req, res) => {
-  try {
-    const { title, content } = req.body;
+// POST – додати новий документ
+app.post('/api/rules', upload.single('file'), async (req, res) => {
+  const { title } = req.body;
+  const { type } = req.body;
+  let folder = "uploads/documents";
+  const file = req.file;
+  const isActive = req.body.isActive === 'true';
 
-    let rules = await Rules.findOne();
-    if (rules) {
-      await rules.update({ title, content });
-    } else {
-      rules = await Rules.create({ title, content });
-    }
-    res.json(rules);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to update rules' });
-  }
+
+  // Створюємо нове ім'я файлу з поточною датою та ID посту
+  const timestamp = Date.now();  // Поточна дата у мілісекундах
+  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
+  const newFileName = `rules-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+
+  // Шлях для збереженого файлу
+  const filePath = path.join(folder, newFileName);
+
+  // Переміщаємо файл у відповідну папку
+  fs.renameSync(file.path, filePath);
+
+  // Повертаємо URL файлу
+  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+  console.log("File uploaded:", fileUrl);
+
+  const doc = await Rules.create({ title, file: newFileName, isActive });
+  res.json({ url: fileUrl });
+});
+
+// PUT – оновити документ
+app.put('/api/rules/:id', upload.single('file'), async (req, res) => {
+  const { title, isActive } = req.body;
+  const file = req.file?.filename;
+  const doc = await Rules.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  doc.title = title;
+  doc.isActive = isActive === 'true';
+  if (file) doc.file = file;
+
+  await doc.save();
+  res.json(doc);
+});
+
+// DELETE – видалити
+app.delete('/api/rules/:id', async (req, res) => {
+  const doc = await Rules.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  await doc.destroy();
+  res.json({ message: 'Deleted' });
 });
 
 app.get('/api/instructions', async (req, res) => {
   try {
-    const instructions = await Instructions.findOne();
+    const instructions = await Instructions.findAll();
     res.json(instructions);
   } catch (err) {
     console.error('❌ Error updating instructions:', err);
@@ -1118,20 +1165,56 @@ app.get('/api/instructions', async (req, res) => {
   }
 });
 
-app.put('/api/instructions', async (req, res) => {
-  try {
-    const { title, content } = req.body;
+// POST – додати новий документ
+app.post('/api/instructions', upload.single('file'), async (req, res) => {
+  const { title } = req.body;
+  const { type } = req.body;
+  let folder = "uploads/documents";
+  const file = req.file;
+  const isActive = req.body.isActive === 'true';
 
-    let instructions = await Instructions.findOne();
-    if (instructions) {
-      await instructions.update({ title, content });
-    } else {
-      instructions = await Instructions.create({ title, content });
-    }
-    res.json(instructions);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to update instructions' });
-  }
+
+  // Створюємо нове ім'я файлу з поточною датою та ID посту
+  const timestamp = Date.now();  // Поточна дата у мілісекундах
+  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
+  const newFileName = `instr-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+
+  // Шлях для збереженого файлу
+  const filePath = path.join(folder, newFileName);
+
+  // Переміщаємо файл у відповідну папку
+  fs.renameSync(file.path, filePath);
+
+  // Повертаємо URL файлу
+  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+  console.log("File uploaded:", fileUrl);
+
+  const doc = await Instructions.create({ title, file: newFileName, isActive });
+  res.json({ url: fileUrl });
+});
+
+// PUT – оновити документ
+app.put('/api/instructions/:id', upload.single('file'), async (req, res) => {
+  const { title, isActive } = req.body;
+  const file = req.file?.filename;
+  const doc = await Instructions.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  doc.title = title;
+  doc.isActive = isActive === 'true';
+  if (file) doc.file = file;
+
+  await doc.save();
+  res.json(doc);
+});
+
+// DELETE – видалити
+app.delete('/api/instructions/:id', async (req, res) => {
+  const doc = await Instructions.findByPk(req.params.id);
+  if (!doc) return res.status(404).json({ error: 'Not found' });
+
+  await doc.destroy();
+  res.json({ message: 'Deleted' });
 });
 
 app.get('/api/bullying', async (req, res) => {
@@ -1189,7 +1272,7 @@ app.put('/api/bullying/:id', upload.single('file'), async (req, res) => {
 
 // DELETE – видалити
 app.delete('/api/bullying/:id', async (req, res) => {
-  const doc = await Programs.findByPk(req.params.id);
+  const doc = await Bullying.findByPk(req.params.id);
   if (!doc) return res.status(404).json({ error: 'Not found' });
 
   await doc.destroy();
