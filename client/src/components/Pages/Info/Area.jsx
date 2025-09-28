@@ -80,7 +80,7 @@ const AreaPage = ({ user }) => {
                                     placeholder="Введіть інформацію про територію обслуговування"
                                 />
 
-                                <div className="text-center mt-3">
+                                <div className="fixed-bottom-actions text-center mt-5">
                                     <button
                                         className="btn btn-outline-success btn-lg w-50"
                                         onClick={() =>

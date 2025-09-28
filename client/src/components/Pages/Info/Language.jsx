@@ -57,7 +57,7 @@ const LanguagePage = ({ user }) => {
                                     placeholder="Введіть інформацію про мову освітнього процесу"
                                 />
 
-                                <div className="text-center mt-3">
+                                <div className="fixed-bottom-actions text-center mt-5">
                                     <button
                                         className="btn btn-outline-success btn-lg w-50"
                                         onClick={() =>

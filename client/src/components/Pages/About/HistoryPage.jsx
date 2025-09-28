@@ -70,20 +70,25 @@ const HistoryPage = ({ user }) => {
                                 <TextEditor
                                     content={history?.content || ""}
                                     setContent={(newContent) => setHistory(prev => ({ ...prev, content: newContent }))}
-                                    placeholder="Введіть інформацію про команду"
+                                    placeholder="Введіть інформацію про історію гімназії"
                                 />
 
-                                <div className="text-center mt-3">
+                                <div className="fixed-bottom-actions text-center mt-3">
                                     <button
-                                        className="btn btn-outline-success btn-lg w-50"
+                                        className="btn btn-outline-success btn-lg"
                                         onClick={() =>
                                             handleSave('/api/history', 'PUT', { content: history?.content }, () => setEditMode(false))
                                         }
                                     >
-                                        💾 Зберегти
+                                        <span>💾 Зберегти</span>
+                                        
                                     </button>
-                                    <button className="btn btn-outline-warning btn-lg w-50" onClick={() => setEditMode(false)}>❌ Скасувати</button>
+                                    <button className="btn btn-outline-warning btn-lg" onClick={() => setEditMode(false)}>
+                                        <span>❌ Скасувати</span>
+                                        
+                                    </button>
                                 </div>
+                                
                             </>
                         ) : (
                             <div className='position-relative'>

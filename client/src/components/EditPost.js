@@ -112,7 +112,6 @@ function EditPost() {
                 config
             );
 
-            console.log("Post added:", response.data);
             setPosts((prevPosts) => [response.data, ...prevPosts]);
 
             setNewPost({ title: "", content: "", updatedAt: "" });  // Очищаємо форму після додавання поста

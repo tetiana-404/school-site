@@ -136,7 +136,6 @@ app.post("/login", async (req, res) => {
       expiresIn: "3h",
     });
 
-    console.log("token: ", token, user, user.role)
     res.json({ token, user: { id: user.id, username: user.username, role: user.role } }); // Send the token to the client
 
   } catch (error) {
@@ -744,31 +743,71 @@ app.put('/api/work-plan', async (req, res) => {
   }
 });
 
+// ==================== REPORTS API ====================
+
+// Отримати один активний звіт (якщо треба)
 app.get('/api/reports', async (req, res) => {
   try {
-    const reports = await HomeReports.findOne();
-    res.json(reports);
+    const report = await HomeReports.findOne({ where: { isActive: true } });
+    res.json(report);
   } catch (err) {
-    console.error('❌ Error updating reports:', err);
-    res.status(500).json({ error: 'Failed to update reports' });
+    res.status(500).json({ error: 'Failed to fetch reports' });
   }
 });
 
-app.put('/api/reports', async (req, res) => {
+// Отримати всі звіти
+app.get('/api/reports/all', async (req, res) => {
   try {
-    const { title, content } = req.body;
-
-    let reports = await HomeReports.findOne();
-    if (reports) {
-      await reports.update({ title, content });
-    } else {
-      reports = await HomeReports.create({ title, content });
-    }
+    const reports = await HomeReports.findAll({ order: [['year', 'DESC']] });
     res.json(reports);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to update reports' });
+    console.error(err);
+    res.status(500).json({ error: 'Failed to fetch all reports' });
   }
 });
+
+app.post('/api/reports', async (req, res) => {
+  try {
+    const { year, title, url } = req.body;
+    const report = await HomeReports.create({ year, title, url });
+    res.json(report);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to create report' });
+  }
+});
+
+app.put('/api/reports/:id', async (req, res) => {
+  try {
+    const { year, title, url } = req.body;
+    const report = await HomeReports.findByPk(req.params.id);
+    if (!report) return res.status(404).json({ error: 'Not found' });
+
+    report.year = year;
+    report.title = title;
+    report.url = url;
+
+    await report.save();
+    res.json(report);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to update report' });
+  }
+});
+
+app.delete('/api/reports/:id', async (req, res) => {
+  try {
+    const report = await HomeReports.findByPk(req.params.id);
+    if (!report) return res.status(404).json({ error: 'Not found' });
+
+    await report.destroy();
+    res.json({ message: 'Deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Failed to delete report' });
+  }
+});
+
 
 app.get('/api/teachers', async (req, res) => {
   try {

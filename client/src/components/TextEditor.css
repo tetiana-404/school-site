@@ -13,6 +13,8 @@
   margin-top: 20px;
 }
 
+
+
 .editor-container {
   max-width: 800px;
   margin: auto;
@@ -22,22 +24,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Панель інструментів */
-.editor-controls, .table-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding: 10px;
-  background: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
 
-.table-toolbar {
-  margin: 20px 0;
-}
 /* Кнопки */
 button, .editor-button, .add-table-button, .table-button {
   border: none;
@@ -81,13 +68,51 @@ button, .editor-button, .add-table-button, .table-button {
   opacity: 0.6;
 }
 
-.table-controls {
+/* Панель інструментів */
+ .editor-toolbar, .table-toolbar {
   display: flex;
+  justify-content: flex-start;
+  align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
-  justify-content: center;
-  margin-top: 10px;
+  gap: 8px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
 }
+
+.table-toolbar {
+  margin: 20px 0;
+}
+
+.table-controls,.editor-controls {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  justify-content: flex-start;
+  margin-top: 10px;
+  flex: 1;           
+  overflow-x: auto; 
+}
+.table-controls button, .editor-toolbar button {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 768px) {
+   .table-toolbar {
+    justify-content: flex-start;
+  }
+  .add-table-button span { 
+    display: none; 
+  }
+  .table-controls button {
+    font-size: 12px;
+    padding: 4px 6px;
+  }
+}
+
+
 /* Область редактора */
 .tiptap {
   min-height: 200px;
@@ -155,7 +180,7 @@ select, input {
 
 .fixed-bottom-toolbar {
   position: fixed;
-  bottom: 0;
+  bottom: 60px;
   left: 0;
   width: 100%;
   background: #fff; /* або інший фон, щоб було видно */

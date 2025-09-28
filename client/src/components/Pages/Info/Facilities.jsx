@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import TextEditor from "../../TextEditor";
+import "../../Styles/global.css"
 
 const FacilitiesPage = ({ user }) => {
     const [editMode, setEditMode] = useState(false);
@@ -61,14 +62,7 @@ const FacilitiesPage = ({ user }) => {
                 </div>
             </div>
             <div className="auto-container py-5">
-                <div className="row">
-                    <div className='col-lg-12'>
-                        <div className="welcome-section-title">
-                            <h6 className="theme-color">Львівська гімназія "Євшан"</h6>
-                            <h2>Матеріально-технічне забезпечення гімназії </h2>
-                        </div>
-                    </div>
-                </div>
+               
                 <div className="row">
                     <div className='col-lg-12'>
                         {editMode ? (
@@ -80,7 +74,7 @@ const FacilitiesPage = ({ user }) => {
                                     placeholder="Введіть інформацію про територію обслуговування"
                                 />
 
-                                <div className="text-center mt-3">
+                                <div className="fixed-bottom-actions text-center mt-5">
                                     <button
                                         className="btn btn-outline-success btn-lg w-50"
                                         onClick={() =>
@@ -93,7 +87,7 @@ const FacilitiesPage = ({ user }) => {
                                 </div>
                             </>
                         ) : (
-                            <div className='position-relative'>
+                            <div className='position-relative  '>
                                     {user?.role === 'admin' && !editMode && (
                                         <button
                                             className="btn btn-outline-dark position-absolute m-0 w-auto"
@@ -103,7 +97,7 @@ const FacilitiesPage = ({ user }) => {
                                             ✏️
                                         </button>
                                     )}
-                                <div dangerouslySetInnerHTML={{ __html: facilities?.content || "" }} />
+                                <div className="editor-content" dangerouslySetInnerHTML={{ __html: facilities?.content || "" }} />
                                 {user?.role === 'admin' && !editMode && (
                                         <button
                                             className="btn btn-outline-dark position-absolute m-0 w-auto"

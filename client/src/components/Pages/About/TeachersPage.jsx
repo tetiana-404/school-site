@@ -38,7 +38,7 @@ const TeachersPage = ({ user }) => {
     return (
         <section id="teachersPage" className="bg-light">
              <div
-                className="section-padding section-back-image-2 overlay"
+                className="section-padding section-back-image-2 overlay d-none"
                 style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/img/bg/teachers_02.jpg'})` }}
             >
                 <div className="container h-100">
@@ -73,7 +73,7 @@ const TeachersPage = ({ user }) => {
                                     placeholder="Введіть інформацію про кадровий склад гімназії"
                                 />
 
-                                <div className="text-center mt-3">
+                                <div className="fixed-bottom-actions text-center mt-5">
                                     <button
                                         className="btn btn-outline-success btn-lg w-50"
                                         onClick={() =>

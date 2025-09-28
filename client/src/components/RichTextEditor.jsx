@@ -67,7 +67,6 @@ const MenuBar = ({ editor }) => {
 
       <button
         onClick={() => {
-          console.log("CLICK bullet list");
           editor.chain().focus().toggleBulletList().run()
         }}
         className={editor.isActive('bulletList') ? 'is-active' : ''}
@@ -152,6 +151,11 @@ const RichTextEditor = ({
       if (setContent) {
         setContent(editor.getHTML());
       }
+    },
+    editorProps: {
+      attributes: {
+        class: "editor ProseMirror",
+      },
     },
   });
 

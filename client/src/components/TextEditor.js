@@ -13,16 +13,11 @@ import TextAlign from '@tiptap/extension-text-align';
 import UnderlineExtension from '@tiptap/extension-underline';
 import ImageExtension from "@tiptap/extension-image";
 import LinkExtension from '@tiptap/extension-link';
-import Heading from '@tiptap/extension-heading';
 import Image from "@tiptap/extension-image";
 import Video from '../extensions/Video';
 import CustomImage from "./CustomImage";
 
-import {
-    Bold, Italic, List, ListOrdered, Link, Trash2,
-    ChevronLeft, ChevronRight, ChevronUp,
-    ChevronDown, Minus, Plus, Columns, Rows
-} from "lucide-react";
+import {Bold, Italic, List, ListOrdered, Link, Trash2, Plus} from "lucide-react";
 
 const TextEditor = ({ content, setContent }) => {
     const [videoUrl, setVideoUrl] = useState('');
@@ -46,10 +41,10 @@ const TextEditor = ({ content, setContent }) => {
             List,
             ListOrdered,
             LinkExtension,
-            Table.configure({ resizable: true }), // Додає таблиці
-            TableRow, // Додає рядки
-            TableCell, // Додає комірки
-            TableHeader, // Додає заголовки таблиць
+            Table.configure({ resizable: true, HTMLAttributes: { class: 'border-table' }, }), // Додає таблиці
+            TableRow, 
+            TableCell, 
+            TableHeader, 
             Link,
             TextAlign.configure({ types: ['paragraph', 'heading'] }),
             Video
@@ -104,7 +99,7 @@ const TextEditor = ({ content, setContent }) => {
             if (embed) {
                 // Вставка як iframe
                 html = `
-        <div style="margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; overflow: hidden;">
+       <div class="ratio ratio-16x9 mt-2" style="border:1px solid #ccc;">
           <iframe 
           src="${fileURL}" width="100%" height="500px" style="border: none"></iframe>
         </div>
@@ -193,54 +188,19 @@ const TextEditor = ({ content, setContent }) => {
     return (
         <div className="container">
             <div className="editor-section">
-
-                <EditorToolbar
-                    editor={editor}
-                    onInsertImage={handleInsertImage}
-                    onInsertPdfLink={(e) => handleFileUpload(e, false)}   // вставка лінку
-                    onInsertPdfEmbed={(e) => handleFileUpload(e, true)}   // вставка iframe
-                    isModal={toggleModal}
-                    isClear={handleClear}
-                />
-                <div className="table-toolbar">
-
-                    <button className="add-table-button" title="Додати таблицю"
-                        onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
-                        <Plus size={20} /> Додати таблицю
-                    </button>
-
-                    <div className="table-controls">
-                        <button className="table-button" title="Додати колонку зліва" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnBefore().run()}>
-                            ↔️➕
-                        </button>
-                        <button className="table-button me-5" title="Додати колонку справа" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnAfter().run()}>
-                            ➕↔️
-                        </button>
-                        <button className="table-button" title="Додати рядок зверху" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowBefore().run()}>
-                            ↕️➕
-                        </button>
-                        <button className="table-button me-5" title="Додати рядок знизу" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowAfter().run()}>
-                            ➕↕️
-                        </button>
-                        <button className="table-button" title="Видалити колонку" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteColumn().run()}>
-                            ➖↔️
-                        </button>
-                        <button className="table-button me-5" title="Видалити рядок" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteRow().run()}>
-                            ➖↕️
-                        </button>
-                        <button className="table-button" title="Видалити таблицю" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteTable().run()}>
-                            <Trash2 size={20} />
-                        </button>
-                    </div>
-                </div>
-                <div className="editor-content">
-                    <EditorContent editor={editor} />
-                </div>
-                <div className="fixed-bottom-toolbar">
+                <div className="d-none d-md-block">
+                    <EditorToolbar
+                        editor={editor}
+                        onInsertImage={handleInsertImage}
+                        onInsertPdfLink={(e) => handleFileUpload(e, false)}   // вставка лінку
+                        onInsertPdfEmbed={(e) => handleFileUpload(e, true)}   // вставка iframe
+                        isModal={toggleModal}
+                        isClear={handleClear}
+                    />
                     <div className="table-toolbar">
 
                         <button className="add-table-button" title="Додати таблицю"
-                            onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}>
+                            onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true, HTMLAttributes: { style: 'width: 100%;' } }).run()}>
                             <Plus size={20} /> Додати таблицю
                         </button>
 
@@ -268,14 +228,52 @@ const TextEditor = ({ content, setContent }) => {
                             </button>
                         </div>
                     </div>
-                    <EditorToolbar
-                        editor={editor}
-                        onInsertImage={handleInsertImage}
-                        onInsertPdfLink={(e) => handleFileUpload(e, false)}   // вставка лінку
-                        onInsertPdfEmbed={(e) => handleFileUpload(e, true)}   // вставка iframe
-                        isModal={toggleModal}
-                        isClear={handleClear}
-                    />
+                </div>
+                <div className="editor-content">
+                    <EditorContent editor={editor} />
+                </div>
+                <div className="fixed-bottom-toolbar">
+                    <div className="table-toolbar">
+
+                        <button className="add-table-button" title="Додати таблицю"
+                            onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true,  HTMLAttributes: { style: 'width: 100%;' } }).run()}>
+                            <Plus size={20} /> Додати таблицю
+                        </button>
+
+                        <div className="table-controls">
+                            <button className="table-button" title="Додати колонку зліва" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnBefore().run()}>
+                                ↔️➕
+                            </button>
+                            <button className="table-button me-md-5" title="Додати колонку справа" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addColumnAfter().run()}>
+                                ➕↔️
+                            </button>
+                            <button className="table-button" title="Додати рядок зверху" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowBefore().run()}>
+                                ↕️➕
+                            </button>
+                            <button className="table-button me-md-5" title="Додати рядок знизу" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().addRowAfter().run()}>
+                                ➕↕️
+                            </button>
+                            <button className="table-button" title="Видалити колонку" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteColumn().run()}>
+                                ➖↔️
+                            </button>
+                            <button className="table-button me-md-5" title="Видалити рядок" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteRow().run()}>
+                                ➖↕️
+                            </button>
+                            <button className="table-button" title="Видалити таблицю" disabled={!editor?.isActive("table")} onClick={() => editor.chain().focus().deleteTable().run()}>
+                                <Trash2 size={20} />
+                            </button>
+                        </div>
+                    </div>
+                    <div className="editor-toolbar">
+                        <EditorToolbar
+                            editor={editor}
+                            onInsertImage={handleInsertImage}
+                            onInsertPdfLink={(e) => handleFileUpload(e, false)}   // вставка лінку
+                            onInsertPdfEmbed={(e) => handleFileUpload(e, true)}   // вставка iframe
+                            isModal={toggleModal}
+                            isClear={handleClear}
+                        />
+                    </div>
                 </div>
             </div>
 

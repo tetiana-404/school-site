@@ -59,7 +59,7 @@ const App = () => {
 
   return (
     <BrowserRouter basename="/school-site">
-      <Topbar />
+      <Topbar user={user} setUser={setUser} />
       <Header />
       
       <main>

@@ -61,28 +61,26 @@ const StrategyPage = ({ user }) => {
                 </div>
             </div>
             <div className="auto-container py-5">
-                
                 <div className="row">
                     <div className='col-lg-12'>
                         {editMode ? (
                             <>
-
                                 <TextEditor
                                     content={strategy?.content || ""}
                                     setContent={(newContent) => setStrategy(prev => ({ ...prev, content: newContent }))}
                                     placeholder="Введіть інформацію установчі документи гімназії"
                                 />
 
-                                <div className="text-center mt-3">
+                                <div className="fixed-bottom-actions text-center mt-5">
                                     <button
-                                        className="btn btn-outline-success btn-lg w-50"
+                                        className="btn btn-outline-success btn-lg"
                                         onClick={() =>
                                             handleSave('/api/strategy', 'PUT', { content: strategy?.content }, () => setEditMode(false))
                                         }
                                     >
                                         💾 Зберегти
                                     </button>
-                                    <button className="btn btn-outline-warning btn-lg w-50" onClick={() => setEditMode(false)}>❌ Скасувати</button>
+                                    <button className="btn btn-outline-warning btn-lg" onClick={() => setEditMode(false)}>❌ Скасувати</button>
                                 </div>
                             </>
                         ) : (

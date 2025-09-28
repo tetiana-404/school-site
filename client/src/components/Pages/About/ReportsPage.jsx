@@ -1,122 +1,205 @@
-import React, { useEffect, useState } from "react";
-import TextEditor from "../../TextEditor";
+import React, { useState, useEffect } from 'react';
 
 const ReportsPage = ({ user }) => {
     const [editMode, setEditMode] = useState(false);
-    const [reports, setReports] = useState(null);
+    const [reports, setReports] = useState([]);
+    const [editing, setEditing] = useState(null);
+    const [newReport, setNewReport] = useState({ year: '', title: '', url: '' });
+    const [openYear, setOpenYear] = useState(null);
+    const [activePdf, setActivePdf] = useState(null);
 
-    useEffect(() => {
-        const fetchReports = async () => {
-            try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/reports`);
-                const data = await res.json();
-                if (!data) {
-                    setReports({ title: 'Звіти директора', content: '' });
-                } else {
-                    setReports(data);
-                }
-            } catch (error) {
-                console.error("Failed to fetch Reports:", error);
-            }
-        };
+    // Toggle акордеон по року
+    const toggleAccordion = (year) => {
+        setOpenYear(prev => (prev === year ? null : year));
+    };
 
-        fetchReports();
-    }, []);
-
-    const handleSave = async (endpoint, method, body, callback) => {
+    // Завантаження звітів з API
+    const fetchReports = async () => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/reports`, {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...body,
-                    title: 'Звіти директора',
-                }),
-            });
-            callback();
-        } catch (err) {
-            console.error(`Помилка при збереженні: ${endpoint}`, err);
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/reports/all`);
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            const data = await res.json();
+            setReports(data);
+        } catch (error) {
+            console.error('Не вдалося отримати звіти:', error);
         }
     };
 
+    useEffect(() => {
+        fetchReports();
+    }, []);
+
+     const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const payload = {
+            year: newReport.year,
+            title: newReport.title,
+            url: newReport.url, 
+        };
+
+        const endpoint = editing
+            ? `${process.env.REACT_APP_BACKEND_URL}/api/reports/${editing.id}`
+            : `${process.env.REACT_APP_BACKEND_URL}/api/reports`;
+
+        const method = editing ? 'PUT' : 'POST';
+
+        try {
+            const res = await fetch(endpoint, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(payload),
+            });
+
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+
+            await fetchReports();
+            setNewReport({ year: '', title: '', url: '' });
+            setEditing(null);
+            setEditMode(false);
+        } catch (error) {
+            console.error('Не вдалося надіслати звіт:', error);
+        }
+    };
+
+
+    const handleEdit = (report) => {
+        setNewReport({ year: report.year, title: report.title, file: null, url: report.url || '' });
+        setEditing(report);
+        setEditMode(true);
+    };
+
+    const handleCancelEdit = () => {
+        setEditing(null);
+        setNewReport({ year: '', title: '', file: null });
+        setEditMode(false);
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Видалити звіт?')) {
+            try {
+                await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/reports/${id}`, { method: 'DELETE' });
+                await fetchReports();
+            } catch (error) {
+                console.error('Не вдалося видалити звіт:', error);
+            }
+        }
+    };
+
+    // Групування звітів по роках
+    const reportsByYear = reports.reduce((acc, report) => {
+        acc[report.year] = acc[report.year] || [];
+        acc[report.year].push(report);
+        return acc;
+    }, {});
+
     return (
-        <section id="reportsPage" className="bg-light">
-            <div
-                className="section-padding section-back-image-2 overlay"
-                style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/img/bg/reports.jpg'})` }}
-            >
-                <div className="container h-100">
-                    <div className="row h-100">
-                        <div className="col-lg-12 my-auto">
-                            <div className="text-center">
-                                <h2
-                                    className="page-banner-title display-1 display-md-3 display-sm-5"
-                                    style={{ position: "relative", zIndex: 2, color: "#fff" }}>
-                                    Звіти директора</h2>
-                                <div
-                                    className="page-banner-breadcrumb"
-                                    style={{ position: "relative", zIndex: 2, color: "#fff" }}>
-                                    <p>Методична / Навчальна / Виховна робота</p>
-                                </div>
+        <section id="directorReports" className="bg-light section-padding">
+            <div className="container">
+                <div className="text-center mb-5">
+                    <h2 className="display-4">Звіти директора</h2>
+                    <p>Навчальні звіти директора за роками</p>
+                </div>
+
+                <div className="accordion">
+                    {Object.keys(reportsByYear).sort((a, b) => b - a).map(year => (
+                        <div key={year} className="accordion-item mb-2 border rounded">
+                            <div
+                                className="accordion-header p-2"
+                                style={{ cursor: 'pointer', background: '#f5f5f5' }}
+                                onClick={() => toggleAccordion(year)}
+                            >
+                                <strong>{year}</strong>
                             </div>
+                            {openYear === year && (
+                                <div className="accordion-body p-2">
+                                    <ul className="list-unstyled">
+                                        {reportsByYear[year].map(report => (
+                                            <li key={report.id} className="mb-1 d-flex justify-content-between align-items-center">
+                                                <a
+                                                    href={`${report.url}`}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                >
+                                                    {report.title}
+                                                </a>
+                                                {user?.role === 'admin' && !editMode && (
+                                                    <div>
+                                                        <button className="btn btn-sm btn-outline-secondary me-1" onClick={() => handleEdit(report)}>✏️</button>
+                                                        <button className="btn btn-sm btn-outline-danger" onClick={() => handleDelete(report.id)}>🗑️</button>
+                                                    </div>
+                                                )}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
                         </div>
-                    </div>
-
+                    ))}
                 </div>
-            </div>
-            <div className="auto-container py-5">
-                
-                <div className="row">
-                    <div className='col-lg-12'>
-                        {editMode ? (
-                            <>
 
-                                <TextEditor
-                                    content={reports?.content || ""}
-                                    setContent={(newContent) => setReports(prev => ({ ...prev, content: newContent }))}
-                                    placeholder="Введіть інформацію про звіти директора"
-                                />
+                {editMode && (
+                    <div className="mt-4">
+                        <h4>{editing ? 'Редагування звіту' : 'Додати звіт'}</h4>
 
-                                <div className="text-center mt-3">
-                                    <button
-                                        className="btn btn-outline-success btn-lg w-50"
-                                        onClick={() =>
-                                            handleSave('/api/reports', 'PUT', { content: reports?.content }, () => setEditMode(false))
-                                        }
-                                    >
-                                        💾 Зберегти
-                                    </button>
-                                    <button className="btn btn-outline-warning btn-lg w-50" onClick={() => setEditMode(false)}>❌ Скасувати</button>
-                                </div>
-                            </>
-                        ) : (
-                            <div className='position-relative'>
-                                    {user?.role === 'admin' && !editMode && (
-                                        <button
-                                            className="btn btn-outline-dark position-absolute m-0 w-auto"
-                                            style={{ top: "-50px", right:0 }}
-                                            onClick={() => setEditMode(true)}
-                                        >
-                                            ✏️
-                                        </button>
-                                    )}
-                                <div dangerouslySetInnerHTML={{ __html: reports?.content || "" }} />
-                                {user?.role === 'admin' && !editMode && (
-                                        <button
-                                            className="btn btn-outline-dark position-absolute m-0 w-auto"
-                                            style={{ bottom: "0px", right:0 }}
-                                            onClick={() => setEditMode(true)}
-                                        >
-                                            ✏️
-                                        </button>
-                                    )}
-                            </div>
-                        )}
+                        <form onSubmit={handleSubmit}>
+                            {/* Вибір року */}
+                            <select
+                                value={newReport.year}
+                                onChange={(e) => setNewReport({ ...newReport, year: e.target.value })}
+                                required
+                                className="form-control mb-2"
+                            >
+                                <option value="">Оберіть рік</option>
+                                {Array.from({ length: new Date().getFullYear() - 2000 + 1 }, (_, i) => new Date().getFullYear() - i)
+                                    .map((year) => (
+                                        <option key={year} value={year}>
+                                            {year}
+                                        </option>
+                                    ))}
+                            </select>
+
+                            {/* Назва звіту */}
+                            <input
+                                type="text"
+                                placeholder="Назва звіту"
+                                value={newReport.title}
+                                onChange={(e) => setNewReport({ ...newReport, title: e.target.value })}
+                                required
+                                className="form-control mb-2"
+                            />
+
+                            {/* Файл */}
+                            <input
+                                type="url"
+                                placeholder="Посилання на PDF"
+                                value={newReport.url || ""}
+                                onChange={(e) => setNewReport({ ...newReport, url: e.target.value })}
+                                required
+                                className="form-control mb-2"
+                            />
+
+                            {/* Кнопки */}
+                            <button type="submit" className="btn btn-outline-success btn-lg me-3">
+                                {editing ? 'Оновити' : 'Додати'}
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-outline-warning btn-lg"
+                                onClick={handleCancelEdit}
+                            >
+                                Відмінити
+                            </button>
+                        </form>
 
                     </div>
-                </div>
-              
+                )}
 
+                {!editMode && user?.role === 'admin' && (
+                    <button className="btn btn-outline-dark mt-3" onClick={() => setEditMode(true)}>➕ Додати звіт</button>
+                )}
             </div>
         </section>
     );

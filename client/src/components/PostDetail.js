@@ -37,7 +37,8 @@ const PostDetail = () => {
         const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/posts`);
         if (!response.ok) throw new Error("Не вдалося отримати список новин.");
         const data = await response.json();
-        setAllPosts(data);
+        //setAllPosts(data);
+        setAllPosts(data.posts);
       } catch (error) {
         console.error("Error fetching posts:", error);
       }
@@ -171,7 +172,7 @@ const PostDetail = () => {
                 </div>
                 <List>
                   {allPosts
-                    .filter((post) => post.id !== id) // Виключаємо поточну новину
+                    .filter((post) => post.id !== Number(id)) // Виключаємо поточну новину
                     .slice(0, 10) // Обмежуємо до 10 останніх новин
                     .map((post) => (
                       <ListItemButton key={post.id} onClick={() => navigate(`/posts/${post.id}`)}>

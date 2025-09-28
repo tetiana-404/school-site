@@ -39,17 +39,17 @@ const AnthemPage = ({ user }) => {
         <section id="anthemPage" className="section-padding1 bg-light py1-5">
             <div
                 className="section-padding section-back-image-2 overlay"
-                style={{backgroundImage:  `url(${process.env.PUBLIC_URL + '/img/bg/anthem.jpg'})`}}
+                style={{ backgroundImage: `url(${process.env.PUBLIC_URL + '/img/bg/anthem.jpg'})` }}
             >
                 <div className="container h-100">
                     <div className="row h-100">
                         <div className="col-lg-12 my-auto">
                             <div className="text-center">
-                                <h2 
+                                <h2
                                     className="page-banner-title display-1 display-md-3 display-sm-5"
                                     style={{ position: "relative", zIndex: 2, color: "#fff" }}>
-                                        Гімн гімназії</h2>
-                                <div 
+                                    Гімн гімназії</h2>
+                                <div
                                     className="page-banner-breadcrumb"
                                     style={{ position: "relative", zIndex: 2, color: "#fff" }}>
                                     <p>Слова і музика вчителя гімназії Дембіцької-Прокопець Ніни Григорівни</p>
@@ -57,11 +57,45 @@ const AnthemPage = ({ user }) => {
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
             <div className="section-padding">
                 <div className="auto-container ">
+                    <div className="row">
+                        <div className="col-md-6">
+                            <div className="poem-column">
+                                <div className="stanza">
+                                    <p>Є зілля <span className="highlight">євшан</span> в степах України,</p>
+                                    <p>Його кожен зна, хто нашої віри.</p>
+                                    <p><span className="highlight">Євшане, євшан</span> – знак розуму й сили,</p>
+                                    <p>Знак нашим синам служить Україні!</p>
+                                </div>
+                                <div className="stanza">
+                                    <p>В широких степах – кургани, кургани...</p>
+                                    <p>Нелегкий нам шлях, євшане, євшане...</p>
+                                    <p>Далеким вікам вклоняємось в шані.</p>
+                                    <p>Підем у життя у серці з євшаном!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="col-md-6">
+                            <div className="poem-column">
+                                <div className="stanza">
+                                    <p><span className="highlight">Євшан</span> – степ, козацька воля,</p>
+                                    <p>України слава й доля!</p>
+                                    <p><span className="highlight">Євшан</span> – думи патріота,</p>
+                                    <p>Бути матері оплотом!</p>
+                                </div>
+                                <div className="stanza">
+                                    <p><span className="highlight">Євшан</span> – квіт любові, мрії,</p>
+                                    <p>В майбуття ясної віри,</p>
+                                    <p><span className="highlight">Євшан</span> - слово педагога,</p>
+                                    <p>Ключ до знань, до перемоги!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div className="row">
                         <div className='col-lg-12'>
                             {editMode ? (
@@ -72,16 +106,16 @@ const AnthemPage = ({ user }) => {
                                         placeholder="Введіть інформацію установчі документи гімназії"
                                     />
 
-                                    <div className="text-center mt-5">
+                                    <div className="fixed-bottom-actions text-center mt-5">
                                         <button
-                                            className="btn btn-outline-success btn-lg w-50"
+                                            className="btn btn-outline-success btn-lg"
                                             onClick={() =>
                                                 handleSave('/api/anthem', 'PUT', { content: anthem?.content }, () => setEditMode(false))
                                             }
                                         >
-                                            💾 Зберегти
+                                            <span>💾 Зберегти</span>
                                         </button>
-                                        <button className="btn btn-outline-warning btn-lg w-50" onClick={() => setEditMode(false)}>❌ Скасувати</button>
+                                        <button className="btn btn-outline-warning btn-lg" onClick={() => setEditMode(false)}>❌ Скасувати</button>
                                     </div>
                                 </>
                             ) : (
@@ -110,7 +144,21 @@ const AnthemPage = ({ user }) => {
 
                         </div>
                     </div>
-
+                    <div className="row justify-content-center">
+                        <div className="col-lg-4">
+                            <div className="poem-column p-4 shadow">
+                                <div className="stanza text-center mb-3">
+                                    <p>Де того євшану взяти,</p>
+                                    <p>Того зілля-привороту,</p>
+                                    <p>Що на певний шлях направить,-</p>
+                                    <p>Шлях у край свій повороту!</p>
+                                </div>
+                                <div className="author text-center fst-italic text-success">
+                                    (М.Вороний)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>

@@ -499,6 +499,61 @@ fieldset {
     color: var(--primary-green) !important;
 }
 
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tableWrapper table,
+.border-table {
+  width: 100%;
+  min-width: 100% !important;
+  table-layout: auto; 
+  border-collapse: collapse;
+}
+
+.tableWrapper table,
+.tableWrapper table tr,
+.tableWrapper table td,
+.border-table,
+.border-table tr,
+.border-table td
+{
+  border: 1px solid #ccc;
+  width: auto;
+}
+
+@media (max-width: 768px) {
+  .tableWrapper table,
+  .tableWrapper thead,
+  .tableWrapper tbody,
+  .tableWrapper th,
+  .tableWrapper td,
+  .tableWrapper tr {
+    display: block;
+    width: 100%;
+  }
+
+  .tableWrapper thead tr {
+    display: none; 
+  }
+
+  .tableWrapper td {
+    display: block;
+    align-items: center;
+    padding: 6px 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+    position: relative;
+    white-space: normal;
+  }
+
+  .tableWrapper td::before {
+    content: attr(data-label); /* Буде назва колонки */
+    font-weight: bold;
+    flex-basis: 50%;
+  }
+}
 /*START SECTION TITLE DESIGN*/
 
 .section-title {
@@ -3373,6 +3428,18 @@ h2.page-banner-title {
   margin: 3px auto;
 }
 
+@media (max-width: 768px) {
+  h2.page-banner-title {
+    font-size: 3rem; 
+  }
+}
+
+@media (max-width: 576px) {
+  h2.page-banner-title {
+    font-size: 3rem; 
+    line-height: 1em;
+  }
+}
 
 /*end page banner area*/
 
@@ -7205,13 +7272,46 @@ sup.price {
 * ----------------------------------------------------------------------------------------
 */
 
-.rich-text-editor ul {
+.fixed-bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  text-align: center;
+  z-index: 1001; 
+  gap: 10px;
+}
+
+.fixed-bottom-actions button {
+  margin: 0 5px;
+  flex: 1;
+  max-width: 200px;
+}
+
+@media (max-width: 768px) {
+  .fixed-bottom-actions button {
+    padding: 8px;
+    font-size: 14px;
+  }
+ 
+}
+
+.editor-content{
+ text-align: justify;
+}
+
+.rich-text-editor ul,
+.editor-content ul {
   list-style-type: disc;
   padding-left: 1.5rem;
   margin-bottom: 1rem;
 }
 
-.rich-text-editor ul li{
+.rich-text-editor ul li,
+.editor-content ul li{
   list-style-type: disc;
 }
 
@@ -7238,31 +7338,14 @@ main p {
   margin-bottom: 1.2em; 
 }
 
-#historyPage img,
-#anthemPage img,
-#strategyPage img,
-#reportsPage img,
-#teachersPage img,
-#areaPage img,
-#languagePage img,
-.img-100 img {
-  width: 100%;
-}
 
-#historyPage table,
-#anthemPage table,
-#strategyPage table,
-#reportsPage table {
-  width: 100%;
-  table-layout: fixed;
-}
 
 #historyPage table,
 #historyPage table tr,
 #historyPage table td,
-#anthemPage table,
-#anthemPage table tr,
-#anthemPage table td,
+#anthemPage2 table,
+#anthemPage2 table tr,
+#anthemPage2 table td,
 #strategyPage table,
 #strategyPage table tr,
 #strategyPage table td {
@@ -7310,9 +7393,49 @@ main p {
   margin: 0 auto;
 }
 
-#postDetails img{
+#postDetails img,
+#languagePage img{
+  width: 100%;
   max-width: 100%;
   height: auto;
   display: block;
   margin: 5px auto;
+}
+#teachersPage img{
+  width: 100%;
+}
+
+ .stanza {
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #ccc;
+  }
+
+  .highlight {
+    font-weight: bold;
+    color: #4a7c59;
+  }
+
+  .poem-column {
+    background-color: #fff;
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+  }
+
+   .author {
+    margin-top: 20px;
+    font-style: italic;
+    color: #4a7c59;
+  }
+
+.ProseMirror ul {
+  list-style: disc !important;
+  margin-left: 1.5rem; /* щоб було відступлення */
+  padding-left: 1.5rem;
+}
+
+.ProseMirror ul li {
+  list-style: disc !important;
 }

@@ -42,7 +42,6 @@ function parseDateDMY(dateStr) {
 // Основна функція імпорту
 async function importNews() {
   const data = JSON.parse(fs.readFileSync(JSON_FILE, "utf-8"));
-  console.log(`${process.env.REACT_APP_BACKEND_URL}`)
   for (const news of data) {
     try {
       let contentWithImages = news.full_text;

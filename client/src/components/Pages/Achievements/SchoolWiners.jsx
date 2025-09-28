@@ -49,7 +49,6 @@ const SchoolWinners = ({ user }) => {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
-            console.log('Дані перед відправкою:', formData);
             setEditYear(null);
             setFormData({ year: '', content: '' });
             fetchData();

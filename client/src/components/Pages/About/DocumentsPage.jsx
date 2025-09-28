@@ -6,6 +6,7 @@ const DocumentsPage = ({ user }) => {
     const [editing, setEditing] = useState(null);
     const [newDoc, setNewDoc] = useState({ title: '', file: null, isActive: true });
     const [openId, setOpenId] = useState(null);
+    const [activePdf, setActivePdf] = useState(null);
 
     const toggleAccordion = (id) => {
         setOpenId((prev) => (prev === id ? null : id));
@@ -149,15 +150,18 @@ const DocumentsPage = ({ user }) => {
 
                                         {openId === doc.id && (
                                             <div className="accordion-content" style={{ padding: '10px' }}>
-                                                <div className="pdf-container">
-                                                    <iframe
-                                                        src={`${process.env.REACT_APP_BACKEND_URL}/uploads/documents/${doc.file}`}
-                                                        width="100%"
-                                                        height="600px"
-                                                        style={{ border: '1px solid #ccc', marginTop: '10px' }}
-                                                        title={`Документ: ${doc.title}`}
-                                                    />
+                                                <div className="d-none d-md-block">
+                                                    <div className="pdf-container ratio ratio-16x9 border  mt-2">
+                                                        <iframe
+                                                            src={`${process.env.REACT_APP_BACKEND_URL}/uploads/documents/${doc.file}`}
+                                                            width="100%"
+                                                            height="600px"
+                                                            style={{ border: '1px solid #ccc', marginTop: '10px' }}
+                                                            title={`Документ: ${doc.title}`}
+                                                        />
+                                                    </div>
                                                 </div>
+
                                                 <p className="d-md-none">
                                                     📄 <a
                                                         href={`${process.env.REACT_APP_BACKEND_URL}/uploads/documents/${doc.file}`}
@@ -167,6 +171,12 @@ const DocumentsPage = ({ user }) => {
                                                         Відкрити PDF
                                                     </a>
                                                 </p>
+                                                <div className="d-none mt-2 text-center">
+                                                   
+                                                    <button className="btn btn-outline-primary" onClick={() => setActivePdf(doc.file)}>
+                                                        📄 Відкрити PDF
+                                                    </button>
+                                                </div>
 
                                                 {user?.role === 'admin' && !editMode && (
                                                     <div style={{ marginTop: '10px' }}>
@@ -179,7 +189,9 @@ const DocumentsPage = ({ user }) => {
                                                         </button>
                                                     </div>
                                                 )}
+
                                             </div>
+
                                         )}
                                     </div>
                                 ))}
@@ -229,6 +241,31 @@ const DocumentsPage = ({ user }) => {
                     </div>
                 </div>
             </div>
+            {activePdf && (
+                <div className="modal fade show" style={{ display: 'block' }} tabIndex="-1">
+        <div className="modal-dialog modal-fullscreen-sm-down">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Документ</h5>
+              <button
+                type="button"
+                className="btn-close"
+                onClick={() => setActivePdf(null)}
+              ></button>
+            </div>
+            <div className="modal-body p-0">
+              <iframe
+                src={`${process.env.REACT_APP_BACKEND_URL}/uploads/documents/${activePdf}`}
+                width="100%"
+                height="100vh"
+                style={{ border: 'none' }}
+                title="PDF"
+              ></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+            )}
         </section >
     );
 };

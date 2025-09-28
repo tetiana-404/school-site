@@ -1,8 +1,18 @@
 // models/HomeReports.js
 module.exports = (sequelize, DataTypes) => {
   const HomeReports = sequelize.define('HomeReports', {
-    title: DataTypes.STRING,
-    content: DataTypes.TEXT,
+    year: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    url: {             
+      type: DataTypes.STRING,
+      allowNull: false,
+    }
   }, {
     tableName: 'HomeReports'
   });

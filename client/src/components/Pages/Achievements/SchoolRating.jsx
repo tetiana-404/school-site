@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { Button } from "@mui/material";
+import { motion } from "framer-motion";
+import { red } from '@mui/material/colors';
 
 const emptyRating = {
     year: '',
@@ -88,85 +90,87 @@ const SchoolRating = ({ user }) => {
         }
     };
 
-
     return (
-        <section id="pabout" className="section-padding bg-light">
-            <div className="auto-container">
-                <div className="row mb-5">
-                    <div className='col-lg-12'>
-                        <div className="welcome-section-title">
-                            <h6 className="theme-color">Рейтинг школи</h6>
-                            <h2>Рейтинг школи</h2>
-                        </div>
-                    </div>
-                </div>
+        <>
+          
+            <section className="container my-5">
+                <h2 className="text-center mb-5">Рейтинг школи</h2>
+               <div className="position-relative mx-auto" style={{ maxWidth: "700px" }}>
+                    {/* Вертикальна лінія */}
+                    <div
+                        className="position-absolute top-0 bottom-0 start-50 translate-middle-x bg-dark"
+                        style={{ width: "4px" }}
+                    ></div>
 
-                <div className='row text-center'>
-                    {ratings.map(r => (
+                    {ratings.map((item, index) => (
+                        <div
+                            key={index}
+                            className={`d-flex mb-5 position-relative 
+          justify-content-center justify-content-md-${index % 2 === 0 ? "start" : "end"}`}
+                        >
+                            {/* Кружечок */}
+                            <div
+                                className="position-absolute bg-dark rounded-circle"
+                                style={{
+                                    width: "20px",
+                                    height: "20px",
+                                    top: "20px",
+                                    left: "50%",
+                                    transform: "translateX(-50%)",
+                                    zIndex: 2,
+                                }}
+                            ></div>
+                           
+                          
+                            <motion.div
+                                className="card shadow-sm border-0"
+                                style={{ width: "300px", maxWidth: "90%", }}
+                                initial={{
+                                    opacity: 0,
+                                    x: index % 2 === 0 ? -100 : 100, // ліворуч або праворуч
+                                }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ duration: 0.8 }}
+                                viewport={{ once: true, amount: 0.3 }}
+                            >
+                                <div className="card-body">
+                                    <h6 className="text-dark mb-3">{item.year} р.</h6>
 
-                        <div key={r.id} className="col-lg-6 col-md-6 col-sm-12 position-relative" style={{ minWidth: 250 }}>
+                                    <p className="mb-2">
+                                        <span className="display-5 text-success  fw-bold">{item.cityRank}</span>
+                                        <a href={item.cityLink} target="_blank" rel="noopener noreferrer" className="ms-1 text-dark">
+                                            місце по м. Львів
+                                        </a>
+                                    </p>
 
-                            <div className='single-featured-item shadow position-relative mb-4'>
-                                <div className='text-holder mb-2'>
-
-                                    <h3 className='theme-color mb-3'><b>{r.year}</b></h3>
-                                    <img src={process.env.PUBLIC_URL + '/img/trophy.png'} className='w-25' alt="Трофей" />
+                                    <p className="mb-0">
+                                        <span className="display-5 text-dark fw-bold">{item.countryRank}</span>
+                                        <a href={item.countryLink} target="_blank" rel="noopener noreferrer" className="ms-1 text-dark">
+                                            місце по Україні
+                                        </a>
+                                    </p>
                                 </div>
-
-
-                                <div className="rating-row d-flex justify-content-around flex-wrap gap-4">
-                                    <div className="rating-item text-center">
-                                         
-                                        <div className="icon-holder">
-                                            <span>{r.cityRank}</span>
-                                        </div>
-                                        <div className="text-holder">
-                                            <p>
-                                                <a href={r.cityLink} target="_blank" rel="noopener noreferrer">
-                                                    місце по м. Львів
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <div className="rating-item text-center">
-                                        <div className="icon-holder">
-                                            <span>{r.countryRank}</span>
-                                        </div>
-                                        <div className="text-holder">
-                                            <p>
-                                                <a href={r.countryLink} target="_blank" rel="noopener noreferrer">
-                                                    місце по Україні
-                                                </a>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                {/* Кнопки редагування та видалення */}
                                 {user?.role === 'admin' && !editMode && (
-                                    <div className='position-absolute top-0 end-0' style={{ marginTop: '10px' }}>
-                                        <button
-                                            onClick={() => handleEdit(r)}
-                                            className='btn btn-outline-dark  me-1 w-auto'>
-                                            ✏️
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(r.id)}
-                                            style={{ marginLeft: '10px' }}
-                                            className='btn btn-outline-dark  me-3 w-auto'
-                                        >
-                                            🗑️
-                                        </button>
-                                    </div>
-                                )}
-
-                            </div>
+                                        <div className='position-absolute top-0 end-0' style={{ marginTop: '10px' }}>
+                                            <button
+                                                onClick={() => handleEdit(item)}
+                                                className='btn btn-link btn-sm p-0 me-1'>
+                                                ✏️
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(item.id)}
+                                                style={{ marginLeft: '10px' }}
+                                                className='btn btn-link btn-sm p-0'
+                                            >
+                                                🗑️
+                                            </button>
+                                        </div>
+                                    )}
+                            </motion.div>
                         </div>
                     ))}
-                </div>
 
+                </div>
                 {isAdmin && !editMode && (
                     <div className='text-center'>
                         <button onClick={() => setEditMode(true)} className="btn btn-outline-success mb-3 mt-4">
@@ -183,15 +187,24 @@ const SchoolRating = ({ user }) => {
                         <form onSubmit={handleSubmit} className="border rounded p-4 shadow" style={{ maxWidth: 400 }}>
                             <div className="mb-3">
                                 <label className="form-label">Рік</label>
-                                <input
-                                    type="text"
+                                
+                                <select
                                     name="year"
                                     value={currentRating.year}
                                     onChange={handleChange}
                                     className="form-control"
-                                    placeholder="Наприклад, 2023 - 2024"
                                     required
-                                />
+                                >
+                                    <option value="">Оберіть рік</option>
+                                    {Array.from(
+                                        { length: new Date().getFullYear() - 2000 + 1 },
+                                        (_, i) => new Date().getFullYear() - i
+                                    ).map((year) => (
+                                        <option key={year} value={year}>
+                                            {year}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
 
                             <div className="mb-3">
@@ -251,8 +264,9 @@ const SchoolRating = ({ user }) => {
 
                     </Modal.Footer>
                 </Modal>
-            </div>
-        </section>
+            </section>
+            
+        </>
     );
 };
 
