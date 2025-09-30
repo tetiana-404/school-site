@@ -1,79 +1,40 @@
 const fs = require("fs");
 const path = require("path");
-const axios = require("axios");
-require("dotenv").config();
-const { Post } = require("./models"); // ваша модель Sequelize
+const { Post } = require("./models");
+const { sequelize } = require("./models");
 
-const JSON_FILE = path.join(__dirname, "downloaded_news/yevshan_news.json");
-const IMAGES_DIR = path.join(__dirname, "uploads/images"); // папка для збереження зображень
-fs.mkdirSync(IMAGES_DIR, { recursive: true });
-
-// URL бекенду з .env
-const BACKEND_URL = process.env.BACKEND_URL || "http://localhost:5000";
-
-// Функція завантаження зображення
-async function downloadImage(url) {
-  try {
-    const filename = path.basename(url);
-    const filepath = path.join(IMAGES_DIR, filename);
-
-    if (!fs.existsSync(filepath)) {
-      const writer = fs.createWriteStream(filepath);
-      response.data.pipe(writer);
-      await new Promise((resolve, reject) => {
-        writer.on("finish", resolve);
-        writer.on("error", reject);
-      });
-      console.log(`✔ Завантажено: ${filename}`);
-    }
-
-    return filename;
-  } catch (err) {
-    console.error(`⚠ Помилка при завантаженні ${url}: ${err.message}`);
-    return null;
-  }
-}
-
-function parseDateDMY(dateStr) {
-  const [day, month, year] = dateStr.split(".");
-  return new Date(`${year}-${month}-${day}`); // формат ISO
-}
-
-// Основна функція імпорту
 async function importNews() {
-  const data = JSON.parse(fs.readFileSync(JSON_FILE, "utf-8"));
-  for (const news of data) {
-    try {
-      let contentWithImages = news.full_text;
+  try {
+    const dataPath = path.join(__dirname, "news_after_2025.json"); // твій JSON
+    const raw = fs.readFileSync(dataPath, "utf8");
+    const newsArray = JSON.parse(raw);
 
-      // Додаємо теги <img> для кожного зображення
-      if (news.images && news.images.length) {
-        for (const imgUrl of news.images) {
-          const filename = await downloadImage(imgUrl);
-          if (filename) {
-            contentWithImages += `<br><img src="${BACKEND_URL}/uploads/images/${filename}" alt="${news.title}">`;
-          }
-        }
-      }
+    // Очищення таблиці і скидання лічильника ID
+    await Post.destroy({ where: {} });
+    await sequelize.query("DELETE FROM sqlite_sequence WHERE name='Posts';");
+    console.log("🗑️ Таблицю Posts очищено і лічильник ID скинуто!");
 
-      // створюємо запис у Post
-      await Post.create({
-        id: news.id,
+    // Підготовка даних
+    const postsData = newsArray.map(news => {
+      const dateParts = news.updateDate.split("."); // "19.09.2025"
+      const updateDate = new Date(`${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`);
+      return {
         title: news.title,
-        content: contentWithImages,
-        updatedAt: parseDateDMY(news.date),
-        userId: 1, // дефолтний користувач
-      });
+        content: news.content,
+        userId: 1,
+        createdAt: updateDate,
+        updatedAt: updateDate
+      };
+    });
 
-      console.log(`✅ Імпортовано новину: ${news.title}`);
-    } catch (err) {
-      console.error(`⚠ Помилка при імпорті новини "${news.title}": ${err.message}`);
-    }
+    // Масовий імпорт
+    await Post.bulkCreate(postsData, { fields: ["title", "content", "userId", "createdAt", "updatedAt"] });
+
+    console.log(`✅ Імпорт завершено! Додано ${postsData.length} записів.`);
+    await sequelize.close();
+  } catch (err) {
+    console.error("❌ Помилка імпорту:", err);
   }
-
-  console.log("✅ Імпорт усіх новин завершено!");
 }
 
-
-// Запускаємо
 importNews();
