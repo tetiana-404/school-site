@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { HashRouter as Router, Routes, Route, Link } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import Topbar from "./components/Topbar";
 import Header from "./components/Header"
@@ -58,7 +58,7 @@ const App = () => {
   });
 
   return (
-    <BrowserRouter basename="/school-site">
+    <Router basename="/school-site">
       <Topbar user={user} setUser={setUser} />
       <Header />
       
@@ -112,7 +112,7 @@ const App = () => {
       <Footer />
       <ScrollToTop />
      
-    </BrowserRouter>
+    </Router >
   );
 };
 
