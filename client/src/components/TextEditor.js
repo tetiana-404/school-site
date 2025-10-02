@@ -186,9 +186,9 @@ const TextEditor = ({ content, setContent }) => {
     };
 
     return (
-        <div className="container">
+        <>
             <div className="editor-section">
-                <div className="d-none d-md-block">
+                <div className="d-none">
                     <EditorToolbar
                         editor={editor}
                         onInsertImage={handleInsertImage}
@@ -289,7 +289,7 @@ const TextEditor = ({ content, setContent }) => {
                     <button onClick={handleInsertLink}>Вставити</button>
                 </Modal>
             )}
-        </div>
+        </>
     );
 };
 

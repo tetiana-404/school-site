@@ -3,6 +3,7 @@ import json
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
+from datetime import datetime
 
 BASE_URL = "https://yevshan.com.ua"
 NEWS_URL = BASE_URL + "/news"
@@ -13,13 +14,16 @@ os.makedirs(IMG_FOLDER, exist_ok=True)
 new_news = []
 failed_news = []
 
-TARGET_MONTH = "01"
-TARGET_YEAR = "2020"
+TARGET_MONTH = 1
+TARGET_YEAR = 2021
+
 
 def get_all_news():
     all_posts = []
     offset = 0
-    while True:
+    stop = False
+
+    while not stop:
         try:
             res = requests.post(
                 urljoin(BASE_URL, "php/functions/loadNews.php"),
@@ -35,34 +39,40 @@ def get_all_news():
                     title_div = post_div.find("div", class_="content-post-title")
                     title = title_div.get_text(strip=True) if title_div else "Без назви"
                     date_div = post_div.find("div", class_="content-post-info-date")
-                    updateDate = date_div.get_text(strip=True) if date_div else "0000-00-00"
+                    updateDate = date_div.get_text(strip=True) if date_div else "01.01.1970"
+                    dt = datetime.strptime(updateDate, "%d.%m.%Y")
+                    year = dt.year
                     more_link = post_div.find("div", class_="content-post-continue")
                     url = urljoin(BASE_URL, more_link.find("a")["href"]) if more_link and more_link.find("a") else None
 
-                    day, month, year = map(int, updateDate.split("."))
-                    
-                    if year > int(TARGET_YEAR):
-                        continue 
-
-                    page_posts.append({
-                        "id": post_id,
-                        "title": title,
-                        "updateDate": updateDate,
-                        "url": url
-                    })
+                   
+                    if year < TARGET_YEAR:
+                        stop = True
+                        break
+                    # ✅ якщо саме потрібний рік – додаємо
+                    else:
+                        page_posts.append({
+                            "id": post_id,
+                            "title": title,
+                            "updateDate": updateDate,
+                            "year": year,
+                            "url": url
+                        })
                 except Exception as e:
                     print(f"❌ Помилка при парсингу посту: {e}")
 
-            if not page_posts:
-                break  # більше новин нема, виходимо з циклу
+            if not page_posts and not stop:
+                break  # більше новин нема
 
             all_posts.extend(page_posts)
-            offset += 10  # далі беремо наступні 10
+            offset += 10
+            print(f"📥 Offset {offset}, зібрано {len(all_posts)} новин ({year})")
+
         except Exception as e:
             print(f"❌ Помилка при отриманні новин: {e}")
             break
 
-    print(f"Завантажено новин: {len(all_posts)}")
+    print(f"✅ Завантажено новин за {TARGET_YEAR}: {len(all_posts)}")
     return all_posts
 
 def get_full_content(news_url):
@@ -147,9 +157,9 @@ def fetch_all_news():
                 post["content"] = content
                 new_news.append(post)
 
-                #images = get_images_from_post(post["url"])
-                #for img_url in images:
-                    #download_image(img_url)
+                images = get_images_from_post(post["url"])
+                for img_url in images:
+                    download_image(img_url)
 
         if not new_news:
             break

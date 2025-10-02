@@ -2131,7 +2131,7 @@ h2.section-title.white-title {
 }
 
 .single-team-member .single-team-member-content .single-team-member-text h4 {
-  color: #fff;
+  color: #fff !important;
   line-height: 24px;
   letter-spacing: 0.30px;
 }

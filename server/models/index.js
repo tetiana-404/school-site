@@ -1,5 +1,10 @@
+const path = require("path"); 
 const { Sequelize, DataTypes } = require("sequelize");
 const config = require("../config/config.json")["development"];
+
+if (config.dialect === "sqlite") {
+  config.storage = path.join(__dirname, "../database.sqlite"); 
+}
 
 const sequelize = new Sequelize(config);
 

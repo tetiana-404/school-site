@@ -6,7 +6,7 @@ import { TextField, Button, Container, Stack } from "@mui/material";
 import axios from "axios";
 import './EditPost.css'
 
-function EditPost() {
+function EditPost({ onSave, onClose } ) {
     const { id } = useParams();
     const [posts, setPosts] = useState([]);
     const [newPost, setNewPost] = useState({ title: "", content: "", updatedAt: "", });
@@ -31,18 +31,18 @@ function EditPost() {
 
     useEffect(() => {
         if (!isNewPost) {
-        fetch(`${process.env.REACT_APP_BACKEND_URL}/posts/${id}`)
-            .then((res) => res.json())
-            .then((data) => {
-                setEditingPost(data);
-                setEditTitle(data.title);
-                setEditContent(data.content);
-                setEditDate(new Date(data.updatedAt));
+            fetch(`${process.env.REACT_APP_BACKEND_URL}/posts/${id}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    setEditingPost(data);
+                    setEditTitle(data.title);
+                    setEditContent(data.content);
+                    setEditDate(new Date(data.updatedAt));
 
-                if (titleRef.current) {
-                    titleRef.current.value = data.title; // Заповнюємо поле заголовка
-                }
-            });
+                    if (titleRef.current) {
+                        titleRef.current.value = data.title; // Заповнюємо поле заголовка
+                    }
+                });
         }
     }, [id, isNewPost]);
 
@@ -121,7 +121,10 @@ function EditPost() {
             handleClear();
 
             window.scrollTo(0, 0);
-            navigate("/posts");
+            setEditingPost(null);        // прибираємо форму
+            if (typeof onSave === "function") onSave(response.data);
+            navigate(`/posts/${response.data.id}`);
+
         } catch (err) {
             console.error("Error adding post:", err.response ? err.response.data : err);
         }
@@ -181,18 +184,12 @@ function EditPost() {
 
             setPosts(posts.map((post) => (post.id === editingPost.id ? response.data : post)));
 
-            // Очищаємо редагування
-            setEditingPost(null);
-            //setEditTitle("");
-            //setEditContent("");
-            //setEditDate("");
-            //titleRef.current.value = "";
-            //contentRef.current = "";
-            //setSelectedDate(new Date());
-            //handleClear();
+            window.scrollTo(0, 0);
+            setEditingPost(null);        // прибираємо форму
+            if (typeof onSave === "function") onSave(response.data);
+            navigate(`/posts/${response.data.id}`);
+            
 
-            //window.scrollTo(0, 0);
-            //navigate(`/posts/${id}`);
         } catch (error) {
             console.error("Помилка оновлення поста:", error);
         }
@@ -202,8 +199,8 @@ function EditPost() {
         <div>
             {user && user.role === "admin" && (
                 <div className="news-form-container">
-                    <h2 className="news-form-title">{isNewPost ? "Додати новину" : "Редагувати новину" }</h2>
-                    <form className="news-form" onSubmit={isNewPost  ? handleAddPost : handleUpdatePost }>
+                    <h2 className="news-form-title">{isNewPost ? "Додати новину" : "Редагувати новину"}</h2>
+                    <form className="news-form" onSubmit={isNewPost ? handleAddPost : handleUpdatePost}>
                         <input
                             type="text"
                             name="title"
@@ -230,36 +227,22 @@ function EditPost() {
                             className="news-input"
                         />
 
-                        <div className="button-group">
-                            <Stack direction="row" spacing={2} justifyContent="center">
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    color="primary"
-                                    sx={{ px: 3, py: 1.5 }}
-                                >
-                                    {isNewPost  ? "Додати" : "Оновити" }
-                                </Button>
+                        <div className="button-group fixed-bottom-actions text-center mt-5">
+                            <button type="submit" className="btn btn-outline-success btn-lg" >
+                                <span>{isNewPost ? "💾 Додати" : "💾 Оновити"}</span>
+                            </button>
 
-                                {!isNewPost && (
-                                    <Button
-                                        type="button"
-                                        variant="contained"
-                                        color="error"
-                                        sx={{ px: 3, py: 1.5 }}
-                                        onClick={() => {
-                                            setEditingPost(null);
-                                            setEditTitle("");
-                                            setEditContent("");
-                                            setEditDate(null);
-                                            window.scrollTo(0, 0);
-                                            navigate("/posts");
-                                        }}
-                                    >
-                                        Скасувати
-                                    </Button>
-                                )}
-                            </Stack>
+
+                            {!isNewPost && (
+                                <button className="btn btn-outline-warning btn-lg"
+                                    onClick={() => {
+                                        if (typeof onClose === "function") {
+                                            onClose(); 
+                                        }
+                                        window.scrollTo(0, 0); 
+                                    }}
+                                >❌ Скасувати</button>
+                            )}
                         </div>
 
 

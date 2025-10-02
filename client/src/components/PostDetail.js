@@ -14,6 +14,9 @@ const PostDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [startIndex, setStartIndex] = useState(0);
+  const postsPerPage = 10;
+
 
   const user = JSON.parse(localStorage.getItem("user")) || null;
   const navigate = useNavigate();
@@ -172,8 +175,8 @@ const PostDetail = () => {
                 </div>
                 <List>
                   {allPosts
-                    .filter((post) => post.id !== Number(id)) // Виключаємо поточну новину
-                    .slice(0, 10) // Обмежуємо до 10 останніх новин
+                    .filter((post) => post.id !== Number(id)) 
+                    .slice(startIndex, startIndex + postsPerPage) 
                     .map((post) => (
                       <ListItemButton key={post.id} onClick={() => navigate(`/posts/${post.id}`)}>
                         <ListItemText
@@ -183,6 +186,21 @@ const PostDetail = () => {
                       </ListItemButton>
                     ))}
                 </List>
+                <div className="pagination-buttons">
+                  <button
+                    onClick={() => setStartIndex(Math.max(0, startIndex - postsPerPage))}
+                    disabled={startIndex === 0}
+                  >
+                    ◀ Попередні
+                  </button>
+                  <button
+                    onClick={() => setStartIndex(startIndex + postsPerPage)}
+                    disabled={startIndex + postsPerPage >= allPosts.filter(post => post.id !== Number(id)).length}
+                  >
+                    Наступні ▶
+                  </button>
+                </div>
+
               </div>
             </div>
           </div>

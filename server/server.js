@@ -1619,7 +1619,6 @@ app.get('/api/olympiads', async (req, res) => {
     const winner = await Olympiads.findAll({
       order: [['year', 'DESC']],
     });
-    console.log('✅ Winners found:', winner);
     res.json(winner);
   } catch (err) {
     console.error('❌ Error in /api/olympiads:', err);
