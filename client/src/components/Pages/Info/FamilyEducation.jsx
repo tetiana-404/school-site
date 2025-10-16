@@ -117,7 +117,7 @@ const FamilyEducationEditor = ({ user }) => {
 
                         <div className="accordion">
                             {documents.map((doc) => (
-                                <div className="accordion-content" style={{ padding: '10px' }}>
+                                <div key={doc.id} className="accordion-content" style={{ padding: '10px' }}>
                                     <iframe
                                         src={`${process.env.REACT_APP_BACKEND_URL}/uploads/documents/${doc.file}`}
                                         width="100%"

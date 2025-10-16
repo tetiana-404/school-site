@@ -184,6 +184,22 @@ const FinancePage = ({ user }) => {
                         )
                       }
                     />
+                      <div className="fixed-bottom-actions text-center mt-5">
+                        <button
+                          className="btn btn-outline-success btn-lg"
+                          onClick={handleSave}
+                        >
+                          💾 Зберегти
+                        </button>
+
+                        <button
+                          className="btn btn-outline-warning btn-lg"
+                          onClick={() => setEditMode(false)}
+                        >
+                          ❌ Скасувати
+                        </button>
+
+                      </div>
                     <Box display="flex" gap={2} mt={2}>
                       <IconButton
                         sx={{ color: "success.main", backgroundColor: "white" }}

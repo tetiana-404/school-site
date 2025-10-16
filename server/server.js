@@ -101,6 +101,7 @@ app.use(
 );
 
 
+
 // 🟢 User Registration
 app.post("/register", async (req, res) => {
   const { username, password, role } = req.body;
@@ -613,47 +614,129 @@ app.get('/api/documents/all', async (req, res) => {
 });
 
 // POST – додати новий документ
+// POST – додати новий документ
 app.post('/api/documents', upload.single('file'), async (req, res) => {
-  const { title } = req.body;
-  const { type } = req.body;
-  let folder = "uploads/documents";
-  const file = req.file;
-  const isActive = req.body.isActive === 'true';
+  try {
+    const { title, type } = req.body;
+    const isActive = req.body.isActive === 'true';
 
+    if (!req.file) {
+      return res.status(400).json({ error: "Файл не завантажено" });
+    }
 
-  // Створюємо нове ім'я файлу з поточною датою та ID посту
-  const timestamp = Date.now();  // Поточна дата у мілісекундах
-  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
-  const newFileName = `doc-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+    let folder = "uploads/documents";
 
-  // Шлях для збереженого файлу
-  const filePath = path.join(folder, newFileName);
+    // Формуємо нове ім’я файлу
+    const timestamp = Date.now();
+    const fileExtension = path.extname(req.file.originalname);
+    const newFileName = `doc-${timestamp}${fileExtension}`;
+    const filePath = path.join(folder, newFileName);
 
-  // Переміщаємо файл у відповідну папку
-  fs.renameSync(file.path, filePath);
+    // Переміщаємо у папку
+    fs.renameSync(req.file.path, filePath);
 
-  // Повертаємо URL файлу
-  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
-  console.log("File uploaded:", fileUrl);
+    // URL доступу
+    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
 
-  const doc = await HomeDocuments.create({ title, file: newFileName, isActive });
+    // Зберігаємо у БД
+    const doc = await HomeDocuments.create({ title, file: newFileName, isActive });
 
-  res.json({ url: fileUrl });
+    // Відповідь — віддаємо ВСЕ
+    res.json({
+      id: doc.id,
+      title: doc.title,
+      file: newFileName,
+      url: fileUrl,
+      isActive: doc.isActive,
+    });
+  } catch (err) {
+    console.error("Помилка при завантаженні документа:", err);
+    res.status(500).json({ error: "Не вдалося завантажити документ" });
+  }
 });
+
 
 // PUT – оновити документ
 app.put('/api/documents/:id', upload.single('file'), async (req, res) => {
-  const { title, isActive } = req.body;
-  const file = req.file?.filename;
-  const doc = await HomeDocuments.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const { title, isActive } = req.body;
+    const doc = await HomeDocuments.findByPk(req.params.id);
 
-  doc.title = title;
-  doc.isActive = isActive === 'true';
-  if (file) doc.file = file;
+    if (!doc) return res.status(404).json({ error: 'Документ не знайдено' });
 
-  await doc.save();
-  res.json(doc);
+    doc.title = title;
+    doc.isActive = isActive === 'true';
+
+    // Якщо є новий файл — замінюємо
+    if (req.file) {
+      let folder = "uploads/documents";
+      const timestamp = Date.now();
+      const fileExtension = path.extname(req.file.originalname);
+      const newFileName = `doc-${timestamp}${fileExtension}`;
+      const filePath = path.join(folder, newFileName);
+
+      fs.renameSync(req.file.path, filePath);
+
+      doc.file = newFileName;
+    }
+
+    await doc.save();
+
+    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${doc.file}`;
+
+    res.json({
+      id: doc.id,
+      title: doc.title,
+      file: doc.file,
+      url: fileUrl,
+      isActive: doc.isActive,
+    });
+  } catch (err) {
+    console.error("Помилка при оновленні документа:", err);
+    res.status(500).json({ error: "Не вдалося оновити документ" });
+  }
+});
+
+
+// PUT – оновити документ
+app.put('/api/documents/:id', upload.single('file'), async (req, res) => {
+  try {
+    const { title, isActive } = req.body;
+    const doc = await HomeDocuments.findByPk(req.params.id);
+
+    if (!doc) return res.status(404).json({ error: 'Документ не знайдено' });
+
+    doc.title = title;
+    doc.isActive = isActive === 'true';
+
+    // Якщо є новий файл — замінюємо
+    if (req.file) {
+      let folder = "uploads/documents";
+      const timestamp = Date.now();
+      const fileExtension = path.extname(req.file.originalname);
+      const newFileName = `doc-${timestamp}${fileExtension}`;
+      const filePath = path.join(folder, newFileName);
+
+      fs.renameSync(req.file.path, filePath);
+
+      doc.file = newFileName;
+    }
+
+    await doc.save();
+
+    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${doc.file}`;
+
+    res.json({
+      id: doc.id,
+      title: doc.title,
+      file: doc.file,
+      url: fileUrl,
+      isActive: doc.isActive,
+    });
+  } catch (err) {
+    console.error("Помилка при оновленні документа:", err);
+    res.status(500).json({ error: "Не вдалося оновити документ" });
+  }
 });
 
 // DELETE – видалити
@@ -879,45 +962,61 @@ app.get('/api/internal-documents/all', async (req, res) => {
 
 // POST – додати новий документ
 app.post('/api/internal-documents', upload.single('file'), async (req, res) => {
-  const { title } = req.body;
-  const { type } = req.body;
-  let folder = "uploads/documents";
-  const file = req.file;
-  const isActive = req.body.isActive === 'true';
+  try {
+    const { title, type, isActive } = req.body;
+    const file = req.file;
+    if (!file) return res.status(400).json({ error: 'Файл не завантажено' });
 
+    const timestamp = Date.now();
+    const fileExtension = path.extname(file.originalname);
+    const newFileName = `doc-${timestamp}${fileExtension}`;
+    const folder = "uploads/documents";
+    const filePath = path.join(folder, newFileName);
 
-  // Створюємо нове ім'я файлу з поточною датою та ID посту
-  const timestamp = Date.now();  // Поточна дата у мілісекундах
-  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
-  const newFileName = `doc-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+    fs.renameSync(file.path, filePath);
 
-  // Шлях для збереженого файлу
-  const filePath = path.join(folder, newFileName);
+    // зберігаємо у БД з підпапкою
+    const doc = await InternalDocument.create({
+      title,
+      file: `documents/${newFileName}`,
+      isActive: isActive === 'true'
+    });
 
-  // Переміщаємо файл у відповідну папку
-  fs.renameSync(file.path, filePath);
-
-  // Повертаємо URL файлу
-  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
-  console.log("File uploaded:", fileUrl);
-
-  const doc = await InternalDocument.create({ title, file: newFileName, isActive });
-  res.json({ url: fileUrl });
+    res.json(doc);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Помилка при додаванні документа' });
+  }
 });
 
 // PUT – оновити документ
 app.put('/api/internal-documents/:id', upload.single('file'), async (req, res) => {
-  const { title, isActive } = req.body;
-  const file = req.file?.filename;
-  const doc = await InternalDocument.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const { title, isActive } = req.body;
+    const doc = await InternalDocument.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Не знайдено' });
 
-  doc.title = title;
-  doc.isActive = isActive === 'true';
-  if (file) doc.file = file;
+    doc.title = title;
+    doc.isActive = isActive === 'true';
 
-  await doc.save();
-  res.json(doc);
+    if (req.file) {
+      const timestamp = Date.now();
+      const fileExtension = path.extname(req.file.originalname);
+      const newFileName = `doc-${timestamp}${fileExtension}`;
+      const folder = "uploads/documents";
+      const filePath = path.join(folder, newFileName);
+
+      fs.renameSync(req.file.path, filePath);
+
+      doc.file = `documents/${newFileName}`;  // завжди з підпапкою
+    }
+
+    await doc.save();
+    res.json(doc);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Помилка при оновленні документа' });
+  }
 });
 
 // DELETE – видалити
@@ -1018,46 +1117,72 @@ app.get('/api/family-education', async (req, res) => {
 });
 
 // POST – додати новий документ
+// POST – додати новий документ
 app.post('/api/family-education', upload.single('file'), async (req, res) => {
-  const { title } = req.body;
-  const { type } = req.body;
-  let folder = "uploads/documents";
-  const file = req.file;
-  const isActive = req.body.isActive === 'true';
+  try {
+    const { title, type } = req.body;
+    const isActive = req.body.isActive === 'true';
 
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-  // Створюємо нове ім'я файлу з поточною датою та ID посту
-  const timestamp = Date.now();  // Поточна дата у мілісекундах
-  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
-  const newFileName = `doc-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+    const folder = path.join(__dirname, "uploads/documents");
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder, { recursive: true });
+    }
 
-  // Шлях для збереженого файлу
-  const filePath = path.join(folder, newFileName);
+    const timestamp = Date.now();
+    const fileExtension = path.extname(req.file.originalname);
+    const newFileName = `doc-${timestamp}${fileExtension}`;
 
-  // Переміщаємо файл у відповідну папку
-  fs.renameSync(file.path, filePath);
+    const filePath = path.join(folder, newFileName);
+    fs.renameSync(req.file.path, filePath);
 
-  // Повертаємо URL файлу
-  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
-  console.log("File uploaded:", fileUrl);
+    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+    console.log("✅ File uploaded:", fileUrl);
 
-  const doc = await FamilyEducation.create({ title, file: newFileName, isActive });
-  res.json({ url: fileUrl });
+    const doc = await FamilyEducation.create({ title, file: newFileName, isActive });
+    res.json({ ...doc.toJSON(), url: fileUrl });
+
+  } catch (err) {
+    console.error("❌ Upload error:", err);
+    res.status(500).json({ error: "Failed to upload file" });
+  }
 });
 
 // PUT – оновити документ
 app.put('/api/family-education/:id', upload.single('file'), async (req, res) => {
-  const { title, isActive } = req.body;
-  const file = req.file?.filename;
-  const doc = await FamilyEducation.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const { title, isActive } = req.body;
+    const doc = await FamilyEducation.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: "Not found" });
 
-  doc.title = title;
-  doc.isActive = isActive === 'true';
-  if (file) doc.file = file;
+    doc.title = title;
+    doc.isActive = isActive === 'true';
 
-  await doc.save();
-  res.json(doc);
+    if (req.file) {
+      const folder = path.join(__dirname, "uploads/documents");
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder, { recursive: true });
+      }
+
+      const timestamp = Date.now();
+      const fileExtension = path.extname(req.file.originalname);
+      const newFileName = `doc-${timestamp}${fileExtension}`;
+      const filePath = path.join(folder, newFileName);
+
+      fs.renameSync(req.file.path, filePath);
+      doc.file = newFileName;
+    }
+
+    await doc.save();
+    res.json(doc);
+
+  } catch (err) {
+    console.error("❌ Update error:", err);
+    res.status(500).json({ error: "Failed to update file" });
+  }
 });
 
 // DELETE – видалити
@@ -1132,191 +1257,286 @@ app.delete('/api/services/:id', async (req, res) => {
 });
 
 
+// GET – отримати всі правила
 app.get('/api/rules', async (req, res) => {
   try {
     const rules = await Rules.findAll();
     res.json(rules);
   } catch (err) {
-    console.error('❌ Error updating rules:', err);
-    res.status(500).json({ error: 'Failed to update rules' });
+    console.error('❌ Error fetching rules:', err);
+    res.status(500).json({ error: 'Failed to fetch rules' });
   }
 });
 
 // POST – додати новий документ
 app.post('/api/rules', upload.single('file'), async (req, res) => {
-  const { title } = req.body;
-  const { type } = req.body;
-  let folder = "uploads/documents";
-  const file = req.file;
-  const isActive = req.body.isActive === 'true';
+  try {
+    const { title } = req.body;
+    const isActive = req.body.isActive === 'true';
 
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-  // Створюємо нове ім'я файлу з поточною датою та ID посту
-  const timestamp = Date.now();  // Поточна дата у мілісекундах
-  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
-  const newFileName = `rules-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+    const folder = path.join(__dirname, "uploads/documents");
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder, { recursive: true });
+    }
 
-  // Шлях для збереженого файлу
-  const filePath = path.join(folder, newFileName);
+    const timestamp = Date.now();
+    const fileExtension = path.extname(req.file.originalname);
+    const newFileName = `rules-${timestamp}${fileExtension}`;
+    const filePath = path.join(folder, newFileName);
 
-  // Переміщаємо файл у відповідну папку
-  fs.renameSync(file.path, filePath);
+    fs.renameSync(req.file.path, filePath);
 
-  // Повертаємо URL файлу
-  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
-  console.log("File uploaded:", fileUrl);
+    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+    console.log("✅ File uploaded:", fileUrl);
 
-  const doc = await Rules.create({ title, file: newFileName, isActive });
-  res.json({ url: fileUrl });
+    const doc = await Rules.create({ title, file: newFileName, isActive });
+    res.json({ ...doc.toJSON(), url: fileUrl });
+
+  } catch (err) {
+    console.error("❌ Upload error:", err);
+    res.status(500).json({ error: "Failed to upload file" });
+  }
 });
 
 // PUT – оновити документ
 app.put('/api/rules/:id', upload.single('file'), async (req, res) => {
-  const { title, isActive } = req.body;
-  const file = req.file?.filename;
-  const doc = await Rules.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const { title, isActive } = req.body;
+    const doc = await Rules.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Not found' });
 
-  doc.title = title;
-  doc.isActive = isActive === 'true';
-  if (file) doc.file = file;
+    doc.title = title;
+    doc.isActive = isActive === 'true';
 
-  await doc.save();
-  res.json(doc);
+    if (req.file) {
+      const folder = path.join(__dirname, "uploads/documents");
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder, { recursive: true });
+      }
+
+      const timestamp = Date.now();
+      const fileExtension = path.extname(req.file.originalname);
+      const newFileName = `rules-${timestamp}${fileExtension}`;
+      const filePath = path.join(folder, newFileName);
+
+      fs.renameSync(req.file.path, filePath);
+      doc.file = newFileName;
+    }
+
+    await doc.save();
+    res.json(doc);
+
+  } catch (err) {
+    console.error("❌ Update error:", err);
+    res.status(500).json({ error: "Failed to update file" });
+  }
 });
 
 // DELETE – видалити
 app.delete('/api/rules/:id', async (req, res) => {
-  const doc = await Rules.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const doc = await Rules.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Not found' });
 
-  await doc.destroy();
-  res.json({ message: 'Deleted' });
+    await doc.destroy();
+    res.json({ message: 'Deleted' });
+  } catch (err) {
+    console.error("❌ Delete error:", err);
+    res.status(500).json({ error: "Failed to delete rule" });
+  }
 });
 
+// GET – отримати всі інструкції
 app.get('/api/instructions', async (req, res) => {
   try {
     const instructions = await Instructions.findAll();
     res.json(instructions);
   } catch (err) {
-    console.error('❌ Error updating instructions:', err);
-    res.status(500).json({ error: 'Failed to update instructions' });
+    console.error('❌ Error fetching instructions:', err);
+    res.status(500).json({ error: 'Failed to fetch instructions' });
   }
 });
 
 // POST – додати новий документ
 app.post('/api/instructions', upload.single('file'), async (req, res) => {
-  const { title } = req.body;
-  const { type } = req.body;
-  let folder = "uploads/documents";
-  const file = req.file;
-  const isActive = req.body.isActive === 'true';
+  try {
+    const { title } = req.body;
+    const isActive = req.body.isActive === 'true';
 
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-  // Створюємо нове ім'я файлу з поточною датою та ID посту
-  const timestamp = Date.now();  // Поточна дата у мілісекундах
-  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
-  const newFileName = `instr-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+    const folder = path.join(__dirname, "uploads/documents");
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder, { recursive: true });
+    }
 
-  // Шлях для збереженого файлу
-  const filePath = path.join(folder, newFileName);
+    const timestamp = Date.now();
+    const fileExtension = path.extname(req.file.originalname);
+    const newFileName = `instr-${timestamp}${fileExtension}`;
+    const filePath = path.join(folder, newFileName);
 
-  // Переміщаємо файл у відповідну папку
-  fs.renameSync(file.path, filePath);
+    fs.renameSync(req.file.path, filePath);
 
-  // Повертаємо URL файлу
-  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
-  console.log("File uploaded:", fileUrl);
+    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+    console.log("✅ File uploaded:", fileUrl);
 
-  const doc = await Instructions.create({ title, file: newFileName, isActive });
-  res.json({ url: fileUrl });
+    const doc = await Instructions.create({ title, file: newFileName, isActive });
+    res.json({ ...doc.toJSON(), url: fileUrl });
+
+  } catch (err) {
+    console.error("❌ Upload error:", err);
+    res.status(500).json({ error: "Failed to upload file" });
+  }
 });
 
 // PUT – оновити документ
 app.put('/api/instructions/:id', upload.single('file'), async (req, res) => {
-  const { title, isActive } = req.body;
-  const file = req.file?.filename;
-  const doc = await Instructions.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const { title, isActive } = req.body;
+    const doc = await Instructions.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Not found' });
 
-  doc.title = title;
-  doc.isActive = isActive === 'true';
-  if (file) doc.file = file;
+    doc.title = title;
+    doc.isActive = isActive === 'true';
 
-  await doc.save();
-  res.json(doc);
+    if (req.file) {
+      const folder = path.join(__dirname, "uploads/documents");
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder, { recursive: true });
+      }
+
+      const timestamp = Date.now();
+      const fileExtension = path.extname(req.file.originalname);
+      const newFileName = `instr-${timestamp}${fileExtension}`;
+      const filePath = path.join(folder, newFileName);
+
+      fs.renameSync(req.file.path, filePath);
+      doc.file = newFileName;
+    }
+
+    await doc.save();
+    res.json(doc);
+
+  } catch (err) {
+    console.error("❌ Update error:", err);
+    res.status(500).json({ error: "Failed to update file" });
+  }
 });
 
 // DELETE – видалити
 app.delete('/api/instructions/:id', async (req, res) => {
-  const doc = await Instructions.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const doc = await Instructions.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Not found' });
 
-  await doc.destroy();
-  res.json({ message: 'Deleted' });
+    await doc.destroy();
+    res.json({ message: 'Deleted' });
+  } catch (err) {
+    console.error("❌ Delete error:", err);
+    res.status(500).json({ error: "Failed to delete instruction" });
+  }
 });
 
+
+// GET – отримати всі документи
 app.get('/api/bullying', async (req, res) => {
   try {
     const bullying = await Bullying.findAll();
     res.json(bullying);
   } catch (err) {
-    console.error('❌ Error updating bullying:', err);
-    res.status(500).json({ error: 'Failed to update bullying' });
+    console.error('❌ Error fetching bullying:', err);
+    res.status(500).json({ error: 'Failed to fetch bullying' });
   }
 });
 
 // POST – додати новий документ
 app.post('/api/bullying', upload.single('file'), async (req, res) => {
-  const { title } = req.body;
-  const { type } = req.body;
-  let folder = "uploads/documents";
-  const file = req.file;
-  const isActive = req.body.isActive === 'true';
+  try {
+    const { title } = req.body;
+    const isActive = req.body.isActive === 'true';
 
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded" });
+    }
 
-  // Створюємо нове ім'я файлу з поточною датою та ID посту
-  const timestamp = Date.now();  // Поточна дата у мілісекундах
-  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
-  const newFileName = `doc-${timestamp}${fileExtension}`;  // Формуємо нове ім'я файлу
+    const folder = path.join(__dirname, "uploads/documents");
+    if (!fs.existsSync(folder)) {
+      fs.mkdirSync(folder, { recursive: true });
+    }
 
-  // Шлях для збереженого файлу
-  const filePath = path.join(folder, newFileName);
+    const timestamp = Date.now();
+    const fileExtension = path.extname(req.file.originalname);
+    const newFileName = `bullying-${timestamp}${fileExtension}`;
+    const filePath = path.join(folder, newFileName);
 
-  // Переміщаємо файл у відповідну папку
-  fs.renameSync(file.path, filePath);
+    fs.renameSync(req.file.path, filePath);
 
-  // Повертаємо URL файлу
-  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
-  console.log("File uploaded:", fileUrl);
+    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+    console.log("✅ File uploaded:", fileUrl);
 
-  const doc = await Bullying.create({ title, file: newFileName, isActive });
-  res.json({ url: fileUrl });
+    const doc = await Bullying.create({ title, file: newFileName, isActive });
+    res.json({ ...doc.toJSON(), url: fileUrl });
+
+  } catch (err) {
+    console.error("❌ Upload error:", err);
+    res.status(500).json({ error: "Failed to upload file" });
+  }
 });
 
 // PUT – оновити документ
 app.put('/api/bullying/:id', upload.single('file'), async (req, res) => {
-  const { title, isActive } = req.body;
-  const file = req.file?.filename;
-  const doc = await Bullying.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const { title, isActive } = req.body;
+    const doc = await Bullying.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Not found' });
 
-  doc.title = title;
-  doc.isActive = isActive === 'true';
-  if (file) doc.file = file;
+    doc.title = title;
+    doc.isActive = isActive === 'true';
 
-  await doc.save();
-  res.json(doc);
+    if (req.file) {
+      const folder = path.join(__dirname, "uploads/documents");
+      if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder, { recursive: true });
+      }
+
+      const timestamp = Date.now();
+      const fileExtension = path.extname(req.file.originalname);
+      const newFileName = `bullying-${timestamp}${fileExtension}`;
+      const filePath = path.join(folder, newFileName);
+
+      fs.renameSync(req.file.path, filePath);
+      doc.file = newFileName;
+    }
+
+    await doc.save();
+    res.json(doc);
+
+  } catch (err) {
+    console.error("❌ Update error:", err);
+    res.status(500).json({ error: "Failed to update document" });
+  }
 });
 
 // DELETE – видалити
 app.delete('/api/bullying/:id', async (req, res) => {
-  const doc = await Bullying.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const doc = await Bullying.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Not found' });
 
-  await doc.destroy();
-  res.json({ message: 'Deleted' });
+    await doc.destroy();
+    res.json({ message: 'Deleted' });
+  } catch (err) {
+    console.error("❌ Delete error:", err);
+    res.status(500).json({ error: "Failed to delete document" });
+  }
 });
+
 
 app.get('/api/programs', async (req, res) => {
   try {
@@ -1329,49 +1549,76 @@ app.get('/api/programs', async (req, res) => {
 });
 
 // POST – додати новий документ
+// POST – додати новий документ
 app.post('/api/programs', upload.single('file'), async (req, res) => {
-  const { title } = req.body;
-  const { type } = req.body;
-  let folder = "uploads/documents";
-  const file = req.file;
-  const isActive = req.body.isActive === 'true';
+  try {
+    const { title, type } = req.body;
+    const isActive = req.body.isActive === 'true';
+    const file = req.file;
+    if (!file) return res.status(400).json({ error: "No file uploaded" });
 
+    let folder = "uploads/documents";
 
-  // Створюємо нове ім'я файлу з поточною датою та ID посту
-  const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
-  const baseName = path.basename(file.originalname, fileExtension);
-  baseName = cyrillicToLatin(baseName);  // транслітерація
-  const newFileName = `${baseName}-${timestamp}${fileExtension}`;
+    // Формуємо нову назву
+    const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const fileExtension = path.extname(file.originalname);
+    let baseName = path.basename(file.originalname, fileExtension);
+    baseName = cyrillicToLatin(baseName);
+    const newFileName = `${baseName}-${timestamp}${fileExtension}`;
 
-  // Шлях для збереженого файлу
-  const filePath = path.join(folder, newFileName);
+    // Переміщаємо
+    const filePath = path.join(folder, newFileName);
+    fs.renameSync(file.path, filePath);
 
-  // Переміщаємо файл у відповідну папку
-  fs.renameSync(file.path, filePath);
+    // URL
+    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+    console.log("File uploaded:", fileUrl);
 
-  // Повертаємо URL файлу
-  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
-  console.log("File uploaded:", fileUrl);
-
-  const doc = await Programs.create({ title, file: newFileName, isActive });
-  res.json({ url: fileUrl });
+    const doc = await Programs.create({ title, file: newFileName, isActive });
+    res.json(doc);
+  } catch (err) {
+    console.error("❌ Error uploading program:", err);
+    res.status(500).json({ error: "Upload failed" });
+  }
 });
 
 // PUT – оновити документ
 app.put('/api/programs/:id', upload.single('file'), async (req, res) => {
-  const { title, isActive } = req.body;
-  const file = req.file?.filename;
-  const doc = await Programs.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const { title, isActive } = req.body;
+    const doc = await Programs.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: "Not found" });
 
-  doc.title = title;
-  doc.isActive = isActive === 'true';
-  if (file) doc.file = file;
+    doc.title = title;
+    doc.isActive = isActive === 'true';
 
-  await doc.save();
-  res.json(doc);
+    if (req.file) {
+      // видаляємо старий файл
+      const oldPath = path.join("uploads/documents", doc.file);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+
+      // формуємо нову назву
+      const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      const fileExtension = path.extname(req.file.originalname);
+      let baseName = path.basename(req.file.originalname, fileExtension);
+      baseName = cyrillicToLatin(baseName);
+      const newFileName = `${baseName}-${timestamp}${fileExtension}`;
+
+      // переміщаємо
+      const filePath = path.join("uploads/documents", newFileName);
+      fs.renameSync(req.file.path, filePath);
+
+      doc.file = newFileName;
+    }
+
+    await doc.save();
+    res.json(doc);
+  } catch (err) {
+    console.error("❌ Error updating program:", err);
+    res.status(500).json({ error: "Update failed" });
+  }
 });
+
 
 // DELETE – видалити
 app.delete('/api/programs/:id', async (req, res) => {
@@ -1382,131 +1629,193 @@ app.delete('/api/programs/:id', async (req, res) => {
   res.json({ message: 'Deleted' });
 });
 
+// GET – всі сертифікації
 app.get('/api/certifications', async (req, res) => {
   try {
     const certifications = await Certifications.findAll();
     res.json(certifications);
   } catch (err) {
-    console.error('❌ Error updating certifications:', err);
-    res.status(500).json({ error: 'Failed to update certifications' });
+    console.error('❌ Error fetching certifications:', err);
+    res.status(500).json({ error: 'Failed to fetch certifications' });
   }
 });
 
-// POST – додати новий документ
+// POST – додати
 app.post('/api/certifications', upload.single('file'), async (req, res) => {
-  const { title } = req.body;
-  const { type } = req.body;
-  let folder = "uploads/documents";
-  const file = req.file;
-  const isActive = req.body.isActive === 'true';
+  try {
+    const { title } = req.body;
+    const isActive = req.body.isActive === 'true';
+    const file = req.file;
 
+    if (!file) return res.status(400).json({ error: "No file uploaded" });
 
-  // Створюємо нове ім'я файлу з поточною датою та ID посту
-  const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
-  const baseName = path.basename(file.originalname, fileExtension);
-  const newFileName = `${baseName}-${timestamp}${fileExtension}`;
+    const folder = "uploads/documents";
+    const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const fileExtension = path.extname(file.originalname);
+    const baseName = path.basename(file.originalname, fileExtension);
+    const newFileName = `${baseName}-${timestamp}${fileExtension}`;
 
-  // Шлях для збереженого файлу
-  const filePath = path.join(folder, newFileName);
+    const filePath = path.join(folder, newFileName);
+    fs.renameSync(file.path, filePath);
 
-  // Переміщаємо файл у відповідну папку
-  fs.renameSync(file.path, filePath);
+    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+    console.log("File uploaded:", fileUrl);
 
-  // Повертаємо URL файлу
-  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
-  console.log("File uploaded:", fileUrl);
-
-  const doc = await Certifications.create({ title, file: newFileName, isActive });
-  res.json({ url: fileUrl });
+    const doc = await Certifications.create({ title, file: newFileName, isActive });
+    res.json(doc);
+  } catch (err) {
+    console.error("❌ Error uploading certification:", err);
+    res.status(500).json({ error: "Upload failed" });
+  }
 });
 
-// PUT – оновити документ
+// PUT – оновити
 app.put('/api/certifications/:id', upload.single('file'), async (req, res) => {
-  const { title, isActive } = req.body;
-  const file = req.file?.filename;
-  const doc = await Certifications.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const { title, isActive } = req.body;
+    const doc = await Certifications.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: "Not found" });
 
-  doc.title = title;
-  doc.isActive = isActive === 'true';
-  if (file) doc.file = file;
+    doc.title = title;
+    doc.isActive = isActive === 'true';
 
-  await doc.save();
-  res.json(doc);
+    if (req.file) {
+      // видаляємо старий файл
+      const oldPath = path.join("uploads/documents", doc.file);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+
+      // перейменовуємо новий
+      const folder = "uploads/documents";
+      const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      const fileExtension = path.extname(req.file.originalname);
+      const baseName = path.basename(req.file.originalname, fileExtension);
+      const newFileName = `${baseName}-${timestamp}${fileExtension}`;
+
+      const filePath = path.join(folder, newFileName);
+      fs.renameSync(req.file.path, filePath);
+
+      doc.file = newFileName;
+    }
+
+    await doc.save();
+    res.json(doc);
+  } catch (err) {
+    console.error("❌ Error updating certification:", err);
+    res.status(500).json({ error: "Update failed" });
+  }
 });
 
 // DELETE – видалити
 app.delete('/api/certifications/:id', async (req, res) => {
-  const doc = await Certifications.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const doc = await Certifications.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Not found' });
 
-  await doc.destroy();
-  res.json({ message: 'Deleted' });
+    const filePath = path.join("uploads/documents", doc.file);
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+    await doc.destroy();
+    res.json({ message: 'Deleted' });
+  } catch (err) {
+    console.error("❌ Error deleting certification:", err);
+    res.status(500).json({ error: "Delete failed" });
+  }
 });
 
+
+// GET – отримати всі документи
 app.get('/api/criteria', async (req, res) => {
   try {
     const criteria = await Criteria.findAll();
     res.json(criteria);
   } catch (err) {
-    console.error('❌ Error updating criteria:', err);
-    res.status(500).json({ error: 'Failed to update criteria' });
+    console.error('❌ Error fetching criteria:', err);
+    res.status(500).json({ error: 'Failed to fetch criteria' });
   }
 });
 
 // POST – додати новий документ
 app.post('/api/criteria', upload.single('file'), async (req, res) => {
-  const { title } = req.body;
-  const { type } = req.body;
-  let folder = "uploads/documents";
-  const file = req.file;
-  const isActive = req.body.isActive === 'true';
+  try {
+    const { title } = req.body;
+    const isActive = req.body.isActive === 'true';
+    const file = req.file;
 
+    if (!file) return res.status(400).json({ error: 'No file uploaded' });
 
-  // Створюємо нове ім'я файлу з поточною датою та ID посту
-  const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
-  const fileExtension = path.extname(file.originalname);  // Отримуємо розширення файлу
-  const baseName = path.basename(file.originalname, fileExtension);
-  const newFileName = `${baseName}-${timestamp}${fileExtension}`;
+    const folder = "uploads/documents";
+    const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const fileExtension = path.extname(file.originalname);
+    const baseName = path.basename(file.originalname, fileExtension);
+    const newFileName = `${baseName}-${timestamp}${fileExtension}`;
 
-  // Шлях для збереженого файлу
-  const filePath = path.join(folder, newFileName);
+    const filePath = path.join(folder, newFileName);
+    fs.renameSync(file.path, filePath);
 
-  // Переміщаємо файл у відповідну папку
-  fs.renameSync(file.path, filePath);
+    const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
+    console.log("✅ File uploaded:", fileUrl);
 
-  // Повертаємо URL файлу
-  const fileUrl = `${req.protocol}://${req.get("host")}/uploads/documents/${newFileName}`;
-  console.log("File uploaded:", fileUrl);
-
-  const doc = await Criteria.create({ title, file: newFileName, isActive });
-  res.json({ url: fileUrl });
+    const doc = await Criteria.create({ title, file: newFileName, isActive });
+    res.json(doc);
+  } catch (err) {
+    console.error("❌ Error uploading criteria file:", err);
+    res.status(500).json({ error: "Upload failed" });
+  }
 });
 
 // PUT – оновити документ
 app.put('/api/criteria/:id', upload.single('file'), async (req, res) => {
-  const { title, isActive } = req.body;
-  const file = req.file?.filename;
-  const doc = await Criteria.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const { title, isActive } = req.body;
+    const doc = await Criteria.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Not found' });
 
-  doc.title = title;
-  doc.isActive = isActive === 'true';
-  if (file) doc.file = file;
+    doc.title = title;
+    doc.isActive = isActive === 'true';
 
-  await doc.save();
-  res.json(doc);
+    if (req.file) {
+      // видаляємо старий файл
+      const oldPath = path.join("uploads/documents", doc.file);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+
+      // формуємо нове ім'я файлу
+      const folder = "uploads/documents";
+      const timestamp = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+      const fileExtension = path.extname(req.file.originalname);
+      const baseName = path.basename(req.file.originalname, fileExtension);
+      const newFileName = `${baseName}-${timestamp}${fileExtension}`;
+
+      const filePath = path.join(folder, newFileName);
+      fs.renameSync(req.file.path, filePath);
+
+      doc.file = newFileName;
+    }
+
+    await doc.save();
+    res.json(doc);
+  } catch (err) {
+    console.error("❌ Error updating criteria:", err);
+    res.status(500).json({ error: "Update failed" });
+  }
 });
 
-// DELETE – видалити
+// DELETE – видалити документ
 app.delete('/api/criteria/:id', async (req, res) => {
-  const doc = await Criteria.findByPk(req.params.id);
-  if (!doc) return res.status(404).json({ error: 'Not found' });
+  try {
+    const doc = await Criteria.findByPk(req.params.id);
+    if (!doc) return res.status(404).json({ error: 'Not found' });
 
-  await doc.destroy();
-  res.json({ message: 'Deleted' });
+    const filePath = path.join("uploads/documents", doc.file);
+    if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
+
+    await doc.destroy();
+    res.json({ message: 'Deleted' });
+  } catch (err) {
+    console.error("❌ Error deleting criteria:", err);
+    res.status(500).json({ error: "Delete failed" });
+  }
 });
+
 
 // GET all ratings
 app.get('/api/school-ratings', async (req, res) => {
@@ -1851,25 +2160,30 @@ app.get("/api/admission", async (req, res) => {
   }
 });
 
-// PUT update by section
 app.put("/api/admission/:section", async (req, res) => {
   try {
     const { section } = req.params;
     const { content } = req.body;
 
-    const record = await Admission.findOne({ where: { section } });
+    if (!content) {
+      return res.status(400).json({ error: "Content is required" });
+    }
+
+    let record = await Admission.findOne({ where: { section } });
+
     if (record) {
       await record.update({ content });
-      res.json(record);
+      await record.save();
     } else {
-      // Якщо секції ще нема — створюємо
-      const newRec = await Admission.create({ section, title: section, content });
-      res.json(newRec);
+      record = await Admission.create({ section, title: section, content });
     }
+
+    res.json(record);
   } catch (err) {
     res.status(500).json({ error: "Failed to update admission section" });
   }
 });
+
 
 // Отримати всі секції у порядку спадання років
 app.get("/api/finance", async (req, res) => {

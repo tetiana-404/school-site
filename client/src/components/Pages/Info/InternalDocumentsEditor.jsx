@@ -140,7 +140,7 @@ const InternalDocumentsEditor = ({ user }) => {
                   {openId === doc.id && (
                     <div className="accordion-content" style={{ padding: '10px' }}>
                       <iframe
-                        src={`${process.env.REACT_APP_BACKEND_URL}/uploads/documents/${doc.file}`}
+                        src={`${process.env.REACT_APP_BACKEND_URL}/uploads/${doc.file}`}
                         width="100%"
                         height="600px"
                         style={{ border: '1px solid #ccc', marginTop: '10px' }}

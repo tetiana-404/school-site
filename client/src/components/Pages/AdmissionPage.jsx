@@ -47,10 +47,10 @@ const AdmissionPage = ({ user }) => {
 
     const handleSave = async () => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admission/${currentSection.id}`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admission/${currentSection.section}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(currentSection),
+                body: JSON.stringify({ content: currentSection.content }),
             });
             setEditMode(false);
         } catch (err) {
@@ -107,20 +107,29 @@ const AdmissionPage = ({ user }) => {
                                                 )
                                             }
                                         />
-                                        <Box display="flex" gap={2} mt={2}>
-                                            <IconButton
-                                                sx={{ color: "success.main", backgroundColor: "white" }}
-                                                onClick={handleSave}
-                                            >
-                                                <FaSave />
-                                            </IconButton>
-                                            <IconButton
-                                                sx={{ color: "error.main", backgroundColor: "white" }}
-                                                onClick={() => setEditMode(false)}
-                                            >
-                                                <FaTimes />
-                                            </IconButton>
-                                        </Box>
+                                            <div className="fixed-bottom-actions text-center mt-5">
+                                                <button
+                                                    className="btn btn-outline-success btn-lg"
+                                                    onClick={() =>
+                                                        handleSave(
+                                                            `${process.env.REACT_APP_BACKEND_URL}/api/admission/${currentSection.section}`,
+                                                            "PUT",
+                                                            { content: currentSection.content },
+                                                            () => setEditMode(false)
+                                                        )
+                                                    }
+                                                >
+                                                    💾 Зберегти
+                                                </button>
+
+                                                <button
+                                                    className="btn btn-outline-warning btn-lg"
+                                                    onClick={() => setEditMode(false)}
+                                                >
+                                                    ❌ Скасувати
+                                                </button>
+                                            
+                                        </div>
                                     </>
                                 ) : (
                                     <div

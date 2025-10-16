@@ -96,7 +96,7 @@ const InstructionsPage = ({ user }) => {
                                 <h2
                                     className="page-banner-title display-1 display-md-3 display-sm-5"
                                     style={{ position: "relative", zIndex: 2, color: "#fff" }}>
-                                    Правила поведінки для здобувачів освіти</h2>
+                                    Інструкції та пам'ятки</h2>
                                 <div
                                     className="page-banner-breadcrumb"
                                     style={{ position: "relative", zIndex: 2, color: "#fff" }}>
