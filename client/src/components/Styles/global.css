@@ -1946,8 +1946,8 @@ h2.section-title.white-title {
 }
 
 .counter-des h2 {
-  color: #fff;
-  font-size: 45px;
+  color: #fff !important;
+  font-size: 45px !important;
 }
 
 .single-counter-item {
@@ -1983,7 +1983,7 @@ h2.section-title.white-title {
 }
 
 .single-counter-item h4 {
-  color: #fff;
+  color: #fff !important;
   font-size: 55px;
   margin: 0 0 10px;
   -webkit-transition: all 0.2s;
@@ -2053,7 +2053,7 @@ h2.section-title.white-title {
   position: absolute;
   bottom: 0;
   width: 100%;
-  padding: 20px 0px;
+  padding: 20px 10px;
   display: inline-block;
   vertical-align: middle;
   -webkit-transform: translateZ(0);
@@ -7361,6 +7361,10 @@ main p {
 #strategyPage .editor-content table td
 {
   border: 1px solid #999;
+}
+
+#historyPage img{
+  width: 100%;
 }
 
 #medalsSection ul,

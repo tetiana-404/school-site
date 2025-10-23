@@ -102,7 +102,7 @@ const CounterSection = ({ user }) => {
                     placeholder="Підпис під заголовком"
                   />
                 ) : (
-                  <p>{subtitle}</p>
+                  <p className='text-center'>{subtitle}</p>
                 )}
               </div>
             </div>

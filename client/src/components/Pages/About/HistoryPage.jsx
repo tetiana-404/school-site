@@ -50,9 +50,9 @@ const HistoryPage = ({ user }) => {
                                     style={{ position: "relative", zIndex: 2, color: "#fff" }}>
                                         Історія гімназії</h2>
                                 <div 
-                                    className="page-banner-breadcrumb"
+                                    className="page-banner-breadcrumb text-center"
                                     style={{ position: "relative", zIndex: 2, color: "#fff" }}>
-                                    <p>1968 - {new Date().getFullYear()}</p>
+                                    <p className="text-center">1968 - {new Date().getFullYear()}</p>
                                 </div>
                             </div>
                         </div>

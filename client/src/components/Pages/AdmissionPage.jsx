@@ -23,7 +23,7 @@ const AdmissionPage = ({ user }) => {
 
     const menuItems = [
         { key: "general", label: "Загальна інформація" },
-        { key: "ukr_exam", label: "Іспит з української" },
+        { key: "ukr_exam", label: "Іспит з української мови" },
         { key: "math_exam", label: "Іспит з математики" },
     ];
 

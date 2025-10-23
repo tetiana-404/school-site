@@ -79,7 +79,7 @@ const NewsCarousel = () => {
         ))}
       </Slider>
        <div className="view-more-wrapper">
-        <Link to="/posts" className="btn btn-warning mb-2 btn-sm mx-auto text-center w-50 wow fadeInDown">
+        <Link to="/posts" className="btn btn-outline-success btn-lg mb-2 mx-auto text-center w-50 wow fadeInDown">
           ВСІ НОВИНИ ...  <i className="icofont-plus me-2"></i>
           
         </Link>

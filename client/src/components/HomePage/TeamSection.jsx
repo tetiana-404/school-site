@@ -138,7 +138,7 @@ const TeamSection = ({ user }) => {
             <div className="section-title">
               <h6 className="text-success mb-2">Навчаємо з любов'ю</h6>
               <h2 className="fw-bold mb-3">Адміністрація школи</h2>
-              <p className="py-3">Натхненні професіонали, які ведуть дітей до успіху.</p>
+              <p className="py-3 text-center">Натхненні професіонали, які ведуть дітей до успіху.</p>
             </div>
             
           </div>
@@ -197,7 +197,7 @@ const TeamSection = ({ user }) => {
                           ) : (
                             <>
                               <div className="single-team-member-social list-inline mb-2">
-                                <p><a>{member.position}</a></p>
+                                <p className='text-center'><a>{member.position}</a></p>
                               </div>
                               <div className="single-team-member-text">
                                 <h4>{member.name}</h4>

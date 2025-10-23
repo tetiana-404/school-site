@@ -115,7 +115,6 @@ const Header = () => {
                       <li><Link className="dropdown-item" to="/anthem">Гімн гімназії</Link></li>
                       <li><Link className="dropdown-item" to="/documents">Установчі документи</Link></li>
                       <li><Link className="dropdown-item" to="/strategy">Стратегія розвитку гімназії</Link></li>
-                      <li><Link className="dropdown-item" to="/work-plan">План роботи гімназії</Link></li>
                       <li><Link className="dropdown-item" to="/reports">Звіти директора</Link></li>
                       <li><Link className="dropdown-item" to="/teachers">Кадровий склад</Link></li>
                       <li><Link className="dropdown-item" to="/vacancies">Вакансії</Link></li>
@@ -152,7 +151,6 @@ const Header = () => {
                       <li><Link className="dropdown-item" to="/school-rating">Рейтинг</Link></li>
                       <li><Link className="dropdown-item" to="/school-medals">Медалісти</Link></li>
                       <li><Link className="dropdown-item" to="/olympiads">Олімпіади</Link></li>
-                      <li><Link className="dropdown-item" to="#">Успішний вчитель</Link></li>
                     </ul>
                   </li>
 
