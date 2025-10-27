@@ -1159,6 +1159,18 @@ h2.section-title.white-title {
     left: 0;
     width: 100vw;    /* вся ширина вікна */
     z-index: 1000;
+    overflow: hidden;
+    transform: translateY(-20px);
+    opacity: 0;
+    visibility: hidden;
+
+    /* плавність і bounce ефект */
+    transition: all 0.5s cubic-bezier(0.25, 1.25, 0.5, 1);
+  }
+  .navbar-collapse.show {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
   }
 }
 
