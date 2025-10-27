@@ -16,6 +16,19 @@ const Header = () => {
   const menuRef = useRef(null);
   const [stickyOffset, setStickyOffset] = useState(0);
 
+  const handleNavLinkClick = () => {
+    const navbarCollapse = document.querySelector(".navbar-collapse");
+    if (navbarCollapse && navbarCollapse.classList.contains("show")) {
+      navbarCollapse.classList.remove("show");
+
+      const toggler = document.querySelector(".navbar-toggler");
+      if (toggler) {
+        toggler.setAttribute("aria-expanded", "false");
+        toggler.classList.add("collapsed");
+      }
+    }
+  };
+
   useEffect(() => {
     const menu = menuRef.current;
     if (menu) {
@@ -36,7 +49,6 @@ const Header = () => {
           menu.classList.remove('sticky-fixed');
         }
       } else {
-        // На мобілках sticky прибираємо завжди
         menu.classList.remove('sticky-fixed');
       }
     };
@@ -93,7 +105,7 @@ const Header = () => {
               <div className="collapse navbar-collapse" id="navbarNav">
                 <ul className="navbar-nav w-100 d-flex justify-content-between">
                   <li className="nav-item">
-                    <Link className="nav-link" to="/posts">Новини</Link>
+                    <Link className="nav-link" to="/posts" onClick={handleNavLinkClick}>Новини</Link>
                   </li>
 
                   <li className="nav-item dropdown">
@@ -110,7 +122,7 @@ const Header = () => {
                     </a>
                     
                     <ul className="dropdown-menu" aria-labelledby="dropdownAbout">
-                      <li><Link className="dropdown-item" to="/about">Загальна інформація</Link></li>
+                      <li><Link className="dropdown-item" to="/about" onClick={handleNavLinkClick}>Загальна інформація</Link></li>
                       <li><Link className="dropdown-item" to="/history">Історія</Link></li>
                       <li><Link className="dropdown-item" to="/anthem">Гімн гімназії</Link></li>
                       <li><Link className="dropdown-item" to="/documents">Установчі документи</Link></li>
