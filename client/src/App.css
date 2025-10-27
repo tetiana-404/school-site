@@ -1,16 +1,42 @@
 /* Загальні стилі */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
+:root {
+  --primary-blue: #0076b6;
+  /*--primary-green: #076B20;*/
+  --primary-green: #076B20; /*--#1B5E20 #;  #2E7D32;--0B5E2A*/
+  --light-blue: #cce9f4;
+  --dark-gray: #333333;
+  --light-gray: #f7f7f7;
+  --accent-red: #d0021b;
 }
 
-/* Шапка */
+body {
+  margin: 0;
+  font-family: "Rubik", sans-serif;
+  font-size:15px;
+}
+
+a {
+  color: var(--primary-green);
+  text-decoration: none;
+  -webkit-transition: all .3s ease;
+  -o-transition: all .3s ease;
+  transition: all .3s ease;
+}
+
+h1 a:hover, h2 a:hover, h3 a:hover, h4 a:hover, h5 a:hover, h6 a:hover {
+  color: #54595f;
+}
+
+/* Основний стиль для шапки */
 .header {
-  background: #0073e6;
-  color: white;
-  padding: 20px;
+  width: 100%;
+  background-color: #fff;
+  padding: 0;
   text-align: center;
 }
+
+/* Стилі для верхнього рядка */
+
 
 .logo-container {
   display: flex;
@@ -29,12 +55,8 @@ body {
 
 /* Навігація */
 .navbar {
-  position: sticky;
-  top: 0;
-  background: #004a99;
   padding: 10px 0;
   text-align: center;
-  z-index: 1000;
 }
 
 .nav-list {
@@ -99,6 +121,15 @@ body {
 
 /* Адаптація під мобільні пристрої */
 @media (max-width: 768px) {
+  .top-bar {
+    flex-direction: column;
+    text-align: center;
+}
+
+.contact-info {
+    margin: 10px 0 0 0 ;
+}
+
   .menu-icon {
     display: block;
   }
@@ -121,4 +152,78 @@ body {
   .nav-list li {
     margin: 10px 0;
   }
+}
+
+.section-back-image {
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+}
+
+.section-back-image-2 {
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+
+.overlay,
+.overlay-2 {
+  position: relative;
+}
+
+
+/*START SECTION TITLE DESIGN*/
+
+.section-title {
+  margin-bottom: 80px
+}
+
+.section-title h2 {
+  position: relative;
+  margin-bottom: 30px;
+}
+
+.section-title h2:after {
+  position: absolute;
+  content: "";
+  left: 0;
+  right: 0;
+  background-color: var(--primary-green);
+  height: 2px;
+  width: 70px;
+  margin: 15px auto 0;
+  display: block;
+}
+
+.section-title.section-title-left h2:after {
+  left: 0;
+  right: auto;
+}
+
+.section-title.section-title-right h2:after {
+  left: auto;
+  right: 0;
+}
+
+.section-title.white-title h2 {
+  color: #fff;
+}
+
+.section-title.white-title h2:after {
+  background-color: #fff;
+}
+
+
+/*END SECTION TITLE DESIGN*/
+
+.slick-prev:before, .slick-next:before {
+  color: #222;
+}
+
+.modal {
+  z-index: 1060 !important;
+}
+
+.modal-backdrop {
+  z-index: 1050 !important;
 }

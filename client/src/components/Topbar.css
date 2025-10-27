@@ -1,0 +1,47 @@
+.top-bar{
+  background-color: var(--primary-green);
+}
+
+.contact-info p {
+  margin: 0;
+  color: rgb(164, 235, 169);
+}
+
+.contact-info a {
+    color: #fff;
+}
+
+.contact-info a {
+    color: #fff; 
+    font-size: 1rem;
+    transition: color 0.3s ease-in-out;
+  }
+  .contact-info a:hover {
+    color: #0d6efd; 
+  }
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.social-icons a {
+    transition: transform 0.2s ease-in-out;
+  }
+
+.social-icons a:hover {
+    transform: scale(1.2);
+    color: #0d6efd; /* змінює колір на синій */
+  }
+  
+  @media (max-width: 768px) {
+    .contact-info a {
+      font-size: 0.9rem !important;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .contact-info a {
+      font-size: 0.8rem !important;
+    }
+  }

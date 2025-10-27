@@ -1,0 +1,33 @@
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.news-submit-button {
+    background-color: #1976d2;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.news-submit-button:hover {
+    background-color: #1565c0;
+}
+
+.cancel-button {
+    background-color: #333;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cancel-button:hover {
+    background-color: #b71c1c;
+}

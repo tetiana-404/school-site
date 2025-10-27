@@ -1,96 +1,136 @@
 /* Контейнер для редактора */
-.container {
+/*.container {
   display: flex;
   justify-content: space-between;
   gap: 20px;
-}
+}*/
 
 .editor-section {
-  width: 60%;
-  background: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  width: 100%;
 }
 
-.output-section {
-  width: 35%;
-  background: #ffffff;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+.editor-content {
+  margin-top: 20px;
 }
 
-.output-content img {
-  max-width: 100%;  /* Обмежує максимальний розмір зображення до 100% від батьківського контейнера */
-  height: auto;     /* Зберігає пропорції зображення */
-  display: block;   /* Відображає зображення як блочний елемент */
-  margin: 0 auto;   /* Центрує зображення */
-}
+
 
 .editor-container {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
-    background: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Панель інструментів */
-  .editor-controls {
-    display: flex;
-    justify-content: space-between; /* Рівномірний розподіл кнопок */
-    align-items: center;
-    flex-wrap: wrap; /* Щоб кнопки переносилися, якщо мало місця */
-    gap: 8px; /* Відступи між кнопками */
-    padding: 10px;
-    background: #f9f9f9; /* Легкий фон */
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Стилі для кнопок */
-  .editor-button {
-    background: #fff;
-    border: 1px solid #ddd;
-    padding: 8px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px; /* Фіксований розмір кнопок */
-    height: 40px;
-
-    &:hover {
-        background: #e0e0e0;
-    }
-
-    &:active {
-        background: #d6d6d6;
-    }
-  }
-  
-  /* Ефект при наведенні */
-  .editor-button:hover {
-    background-color: #0056b3;
-  }
-  
-  .tiptap {
-    min-height: 200px; /* Мінімальна висота */
-    max-height: 500px; /* Максимальна висота */
-    overflow-y: auto;  /* Прокрутка, якщо багато тексту */
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 8px;
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-  .tiptap img {
-    max-width: 100%; /* Автоматично підлаштовуємо ширину */
-    height: auto; /* Зберігаємо пропорції */
-    display: block; /* Центруємо зображення */
-    margin: 10px 0; /* Додаємо відступи */
+
+
+/* Кнопки */
+button, .editor-button, .add-table-button, .table-button {
+  border: none;
+  padding: 8px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.2s;
+  text-align: center;
+}
+
+.editor-button {
+  background: #fff;
+  border: 1px solid #ddd;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.editor-button:hover { background: #e0e0e0; }
+.editor-button:active { background: #d6d6d6; }
+
+.news-form-container .add-table-button {
+  background: #4caf50;
+  color: white;
+}
+
+.news-form-container .add-table-button:hover { background: #45a049; }
+
+.news-form-container .table-button {
+  background: #4caf50;
+}
+
+.news-form-container .table-button:hover { background: #ddd; }
+.news-form-container .table-button:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Панель інструментів */
+ .editor-toolbar, .table-toolbar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+}
+
+.table-toolbar {
+  margin: 20px 0;
+}
+
+.table-controls,.editor-controls {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 6px;
+  justify-content: flex-start;
+  margin-top: 10px;
+  flex: 1;           
+  overflow-x: auto; 
+}
+.table-controls button, .editor-toolbar button {
+  flex: 0 0 auto;
+}
+
+@media (max-width: 768px) {
+   .table-toolbar {
+    justify-content: flex-start;
+  }
+  .add-table-button span { 
+    display: none; 
+  }
+  .table-controls button {
+    font-size: 12px;
+    padding: 4px 6px;
+  }
+}
+
+
+/* Область редактора */
+.tiptap {
+  min-height: 200px;
+  height: auto; 
+  max-height: none; 
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+  background: white;
+  overflow: hidden; 
+    resize: none; 
+}
+
+.tiptap img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 10px 0;
 }
 
 .removable-image {
@@ -99,7 +139,7 @@
 }
 
 .removable-image::after {
-  content: '✖'; /* Символ хрестика */
+  content: '✖';
   position: absolute;
   top: 5px;
   right: 5px;
@@ -109,244 +149,43 @@
   z-index: 10;
 }
 
-.removable-image:hover::after {
-  color: darkred;
-}
+.removable-image:hover::after { color: darkred; }
 
-  /* Стилі для випадаючого списку */
-  select {
-    padding: 5px;
-    font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-  }
-.tiptap table {
-    border: 1px solid black;
-    border-collapse: collapse;
-    width:100% ;
-  }
-  
-  .tiptap th, .tiptap td {
-    border: 1px solid black;
-    padding: 8px;
-  }
-  
-  /* Загальний контейнер редактора */
-.editor-container {
-    max-width: 800px;
-    margin: auto;
-    padding: 20px;
-    background: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .table-toolbar {
-    display: flex;
-    justify-content: space-between; /* Рівномірний розподіл кнопок */
-    align-items: center;
-    flex-wrap: wrap; /* Щоб кнопки переносилися, якщо мало місця */
-    gap: 8px; /* Відступи між кнопками */
-    padding: 10px;
-    margin: 20px 0;
-    background: #f9f9f9; /* Легкий фон */
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-   
-}
-
-.add-table-button {
-    background: #4caf50;
-    color: white;
-    border: none;
-    padding: 8px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.2s;
-    line-height: 1.5;
-}
-
-.add-table-button:hover {
-    background: #45a049;
-}
-
-.table-controls {
-    display: flex;
-    gap: 6px;
-}
-
-.table-button {
-    background: #f1f1f1;
-    border: none;
-    padding: 5px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-.table-button:hover {
-    background: #ddd;
-}
-
-  /* Контейнери для кнопок */
-  .table-controls {
-    margin-top: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px;
-  }
-  
-  /* Стилі для таблиці */
-.add-table {
-  border-collapse: collapse; /* Забезпечує, що межі клітинок будуть об'єднуватися */
+/* Таблиці */
+table {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
   width: 100%;
 }
 
-/* Стилі для таблиці */
-.add-table th, .add-table td {
-  border: 1px solid #000; /* Чорний бордер для всіх клітинок */
-  padding: 8px; /* Відступи всередині клітинок */
-  text-align: center; /* Вирівнювання тексту по центру */
+th, td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
 }
 
-/* Стилі для заголовка таблиці */
-.add-table th {
-  background-color: #f0f0f0; /* Світло-сірий фон для заголовка таблиці */
+th { background: #f0f0f0; }
+
+/* Випадаючий список */
+select, input {
+  padding: 5px;
+  font-size: 14px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-  /* Стилі для кнопок */
-  .news-form-container .table-button {
-    background: #28a745;
-    border: none;
-    padding: 8px 12px;
-    font-size: 14px;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: 0.2s;
-  }
-  
-  /* При наведенні */
-  .news-form-container .table-button:hover {
-    background: #0056b3;
-  }
-  
-  /* Відключені кнопки (disabled) */
-  .table-button:disabled {
-    background: #ccc;
-    color: #666;
-    cursor: not-allowed;
-    opacity: 0.6;
-  }
-  
-  /* Сама область редактора */
-  .tiptap-editor {
-    background: white;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    min-height: 200px;
-  }
-  
-  /* Контейнер для кнопки "Додати таблицю" */
-.add-table-container {
-    text-align: center;
-    margin-bottom: 15px;
-  }
-  
-  /* Кнопка "Додати таблицю" */
-  .news-form-container .add-table-button {
-    background: #28a745; /* Зелений колір */
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-  }
-  
-  /* Ефект при наведенні */
-  .add-table-button:hover {
-    background: #218838;
-  }
-  
-  /* Ефект при натисканні */
-  .add-table-button:active {
-    transform: scale(0.95);
-  }
-  
-  /* Контейнер для кнопок управління таблицею */
-  .table-controls {
-    margin-top: 10px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-  }
-  
-  /* Модальне вікно */
-.modal {
+/* Модальне вікно */
+
+.fixed-bottom-toolbar {
   position: fixed;
-  top: 0;
+  bottom: 60px;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: #fff; /* або інший фон, щоб було видно */
+  border-top: 1px solid #ddd;
   z-index: 1000;
+  padding: 10px 20px;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
 }
-
-/* Контейнер для контенту модального вікна */
-.modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 400px; /* Задаємо фіксовану ширину */
-  max-width: 90%; /* Максимальна ширина — 90% від ширини вікна */
-  box-sizing: border-box;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
-/* Стиль для інпута */
-input {
-  width: 100%;
-  padding: 10px;
-  margin: 10px 0; /* Відступи зверху та знизу */
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-  box-sizing: border-box; /* Це допоможе правильно враховувати відступи */
-}
-
-/* Кнопки */
-button {
-  padding: 5px 5px;
-  margin: 0px;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  transition: background-color 0.2s ease;
-}
-
-button:hover {
-  background-color: #0056b3;
-}
-
-/* Кнопка закриття */
-button.close {
-  background-color: #dc3545;
-}
-
-button.close:hover {
-  background-color: #c82333;
-}
-
-  

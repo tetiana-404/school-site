@@ -20,16 +20,12 @@ const LoginForm = ({ setUser }) => {
         { headers: { "Content-Type": "application/json" } }
       );
 
-      console.log(response.data.token)
-
       if (response.data.token) {
-        //setAuthToken(response.data.token);
         localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", username); 
-        setUser(username);
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+        setUser(response.data.user);
         navigate("/"); // Redirect after successful login
 
-        console.log("✅ Токен збережено:", response.data.token);
       } else {
         console.error("❌ Токен не отримано з сервера.");
       }
