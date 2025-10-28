@@ -12,7 +12,7 @@ import {
     ListItemButton,
     ListItemText
 } from "@mui/material";
-import { FaEdit, FaSave, FaTimes } from "react-icons/fa";
+import { FaEdit } from "react-icons/fa";
 import TextEditor from "../TextEditor";
 
 const AdmissionPage = ({ user }) => {

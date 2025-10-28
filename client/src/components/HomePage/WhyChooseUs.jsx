@@ -49,7 +49,7 @@ const WhyChooseUs = () => {
                 <div className="service-item-text-holder">
                   <h5 className="fw-bold mb-2">{item.title}</h5>
                   <p className="text-muted mb-3">{item.text}</p>
-                  <a href="#" className="btn btn-outline-warning btn-sm">
+                  <a href="/about" className="btn btn-outline-warning btn-sm">
                     ДЕТАЛЬНІШЕ
                   </a>
                 </div>

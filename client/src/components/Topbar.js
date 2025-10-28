@@ -20,7 +20,7 @@ const Topbar = ({ user, setUser }) => {
                     <div className="d-flex align-items-center justify-content-between flex-nowrap">
                         <div className="contact-info d-flex mb-2 justify-content-center">
                             <p className="mb-0 d-flex align-items-center text-nowrap">
-                                <a href="#" className="text-light text-decoration-none fs-6 fs-sm-5 fs-md-4">
+                                <a href="/contact" className="text-light text-decoration-none fs-6 fs-sm-5 fs-md-4">
                                     <i className="fas fa-map-marker-alt me-2 d-none d-lg-inline"></i>
                                     вул. Любінська, 93-А м. Львів
                                 </a>

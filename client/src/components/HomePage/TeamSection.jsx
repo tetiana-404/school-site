@@ -50,10 +50,6 @@ const TeamSection = ({ user }) => {
     }
   };
 
-  const addNewMember_old = () => {
-    setTeamMembers([...teamMembers, { id: Date.now(), name: '', position: '', img: '' }]);
-  };
-
   const addNewMember = () => {
   const maxId = teamMembers.length > 0
     ? Math.max(...teamMembers.map(member => Number(member.id) || 0))
@@ -70,13 +66,6 @@ const TeamSection = ({ user }) => {
     },
   ]);
 };
-
-
-  const deleteMember_old = (index) => {
-    const updated = [...teamMembers];
-    updated.splice(index, 1);
-    setTeamMembers(updated);
-  };
 
   const deleteMember = async (index) => {
   const memberToDelete = teamMembers[index];

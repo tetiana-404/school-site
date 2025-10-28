@@ -2,8 +2,6 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Footer.css"; 
 
-
-
 const Footer = () => {
   return (
     <footer className="footer-section">
@@ -68,17 +66,17 @@ const Footer = () => {
               <div className="footer-social mt-3">
                   <ul>
                     <li>
-                      <a href="#">
+                      <a href="facebook.com" target="blank">
                        <i className="bi bi-facebook"></i>
                       </a>
                     </li>
                     <li>
-                      <a href="#">
+                      <a href="instagram.com" target="blank">
                         <i className="bi bi-instagram"></i>
                       </a>
                     </li>
                     <li>
-                      <a href="#">
+                      <a href="youtube.com" target="blank">
                         <i className="bi bi-youtube"></i>
                       </a>
                     </li>

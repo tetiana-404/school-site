@@ -2,7 +2,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import TextEditor from "./TextEditor";
 import DatePicker from "react-datepicker";
-import { TextField, Button, Container, Stack } from "@mui/material";
 import axios from "axios";
 import './EditPost.css'
 
@@ -19,7 +18,6 @@ function EditPost({ onSave, onClose } ) {
     const [editTitle, setEditTitle] = useState("");
     const [editContent, setEditContent] = useState("");
     const [editDate, setEditDate] = useState("");
-    const [postData, setPostData] = useState(null);
 
     const contentRef = useRef("");
     const titleRef = useRef("");
@@ -137,25 +135,6 @@ function EditPost({ onSave, onClose } ) {
         }
         setNewPost({ title: "", content: "" }); // Очищаємо стейт
     };
-
-    const handleEditPost = (post) => {
-        setEditingPost(post);
-        setEditTitle(post.title);
-        setEditContent(post.content);
-        setEditDate(new Date(post.updatedAt));
-        setSelectedDate(new Date(post.updatedAt));
-
-        if (titleRef.current) {
-            titleRef.current.value = post.title; // Заповнюємо поле заголовка
-        }
-        setTimeout(() => {
-            if (editor) {
-                editor.commands.setContent(post.content);
-            }
-        }, 100);
-        setSelectedDate(new Date(post.updatedAt)); // Встановлюємо вибрану дату
-    };
-
 
     const handleUpdatePost = async (e) => {
         e.preventDefault();

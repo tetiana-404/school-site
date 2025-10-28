@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Accordion, Card, Button, Form, Row, Col } from 'react-bootstrap';
+import { Accordion, Button, Form, Row, Col } from 'react-bootstrap';
 
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/school-medals`;
 

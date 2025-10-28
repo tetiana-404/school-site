@@ -5,11 +5,6 @@ const FamilyEducationEditor = ({ user }) => {
     const [documents, setDocuments] = useState([]);
     const [editing, setEditing] = useState(null);
     const [newDoc, setNewDoc] = useState({ title: '', file: null, isActive: true });
-    const [openId, setOpenId] = useState(null);
-
-    const toggleAccordion = (id) => {
-        setOpenId((prev) => (prev === id ? null : id));
-    };
 
     const fetchFamilyEducation = async () => {
         try {

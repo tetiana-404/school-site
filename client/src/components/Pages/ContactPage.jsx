@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useForm, ValidationError } from '@formspree/react';
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const ContactPage = ({ user }) => {
@@ -304,7 +304,11 @@ const ContactPage = ({ user }) => {
         
       </div>
 <div className="row mt-5">
-          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2574.2075568483856!2d23.972468362130574!3d49.81976407135968!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x473ae771e4d90b33%3A0x75cfa84a200a7726!2z0LLRg9C70LjRhtGPINCb0Y7QsdGW0L3RgdGM0LrQsCwgOTPQkCwg0JvRjNCy0ZbQsiwg0JvRjNCy0ZbQstGB0YzQutCwINC-0LHQu9Cw0YHRgtGMLCA3OTAwMA!5e0!3m2!1suk!2sua!4v1755876958681!5m2!1suk!2sua" width="100%" height="450" style={{border:0}} allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2574.2075568483856!2d23.972468362130574!3d49.81976407135968!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x473ae771e4d90b33%3A0x75cfa84a200a7726!2z0LLRg9C70LjRhtGPINCb0Y7QsdGW0L3RgdGM0LrQsCwgOTPQkCwg0JvRjNCy0ZbQsiwg0JvRjNCy0ZbQstGB0YzQutCwINC-0LHQu9Cw0YHRgtGMLCA3OTAwMA!5e0!3m2!1suk!2sua!4v1755876958681!5m2!1suk!2sua" width="100%" height="450" style={{border:0}} 
+            title="Google Maps location of our school"
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
     </section>
   );

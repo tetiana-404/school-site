@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Accordion, Card, Button, Form, Row, Col } from 'react-bootstrap';
+import { Accordion, Button, Form } from 'react-bootstrap';
 import TextEditor from "../../TextEditor";
 const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/olympiads`;
 
@@ -8,8 +8,8 @@ const SchoolWinners = ({ user }) => {
     const [editYear, setEditYear] = useState(null);
     const [editMode, setEditMode] = useState(false);
     const [formData, setFormData] = useState({ year: '', content: '' });
-    const [newEntry, setNewEntry] = useState({ year: '', gold: '', silver: '' });
     const [errorMsg, setErrorMsg] = useState('');
+    // eslint-disable-next-line no-unused-vars
     const [showToast, setShowToast] = useState(false);
 
     const fetchData = async () => {
