@@ -3,7 +3,7 @@ import { FaArrowUp } from "react-icons/fa";
 import "./ScrollToTop.css";
 
 const ScrollToTop = () => {
-  const [visible, setVisible] = useState(false);
+  const [, setVisible] = useState(false);
 
   const toggleVisible = () => {
     const scrolled = document.documentElement.scrollTop;

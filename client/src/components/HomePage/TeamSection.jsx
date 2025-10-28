@@ -186,7 +186,7 @@ const TeamSection = ({ user }) => {
                           ) : (
                             <>
                               <div className="single-team-member-social list-inline mb-2">
-                                <p className='text-center'><a>{member.position}</a></p>
+                                <p className='text-center'><a  href="javascript:void(0)">{member.position}</a></p>
                               </div>
                               <div className="single-team-member-text">
                                 <h4>{member.name}</h4>

@@ -131,6 +131,7 @@ const HomeImgSlider = ({ user }) => {
         }
       })
       .catch((err) => console.error('❌ Fetching slides failed:', err));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isLocalhost = window.location.hostname === "localhost";

@@ -11,7 +11,7 @@ const ContactPage = ({ user }) => {
     phone: "+38(032)262-20-36",
   });
 
-  const [state, handleSubmit] = useForm("mpwlvlwr");
+  const [state] = useForm("mpwlvlwr");
   const [formData, setFormData] = useState({
     Name: "",
     Email: "",

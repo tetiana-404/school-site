@@ -15,7 +15,7 @@ function EditPost({ onSave, onClose } ) {
     //const [content, setContent] = useState("");
 
     const [editingPost, setEditingPost] = useState(null);
-    const [editTitle, setEditTitle] = useState("");
+    const [, setEditTitle] = useState("");
     const [editContent, setEditContent] = useState("");
     const [editDate, setEditDate] = useState("");
 

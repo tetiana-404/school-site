@@ -5,7 +5,6 @@ import "./Header.css"
 
 
 const Header = () => {
-  const [user, setUser] = useState(localStorage.getItem("user") || null);
 
   const menuRef = useRef(null);
   const [stickyOffset, setStickyOffset] = useState(0);
@@ -93,6 +92,7 @@ const Header = () => {
                   <li className="nav-item dropdown">
                     <a
                       className="nav-link dropdown-toggle"
+                      href="javascript:void(0)"
                       id="dropdownAbout"
                       role="button"
                       data-bs-toggle="dropdown"
@@ -115,7 +115,7 @@ const Header = () => {
                   </li>
 
                   <li className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle" id="dropdownParents" role="button" data-bs-toggle="dropdown" aria-expanded="false" onClick={(e) => e.preventDefault()} >
+                    <a className="nav-link dropdown-toggle" href="javascript:void(0)" id="dropdownParents" role="button" data-bs-toggle="dropdown" aria-expanded="false" onClick={(e) => e.preventDefault()} >
                       Інформація
                       
                     </a>
@@ -136,7 +136,7 @@ const Header = () => {
                   </li>
 
                   <li className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle" id="dropdownTeachers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a className="nav-link dropdown-toggle" href="javascript:void(0)" id="dropdownTeachers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Досягнення
                       
                     </a>
@@ -148,7 +148,7 @@ const Header = () => {
                   </li>
 
                   <li className="nav-item dropdown">
-                    <a className="nav-link dropdown-toggle" id="dropdownTeachers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a className="nav-link dropdown-toggle" href="javascript:void(0)" id="dropdownTeachers" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                       Учні / Батьки
                       
                     </a>
