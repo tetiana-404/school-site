@@ -381,9 +381,26 @@ app.delete("/api/home_sliders/:id", async (req, res) => {
 
 // GET all counters
 app.get('/api/counters', async (req, res) => {
-  const counters = await HomeCounter.findAll();
-  res.json(counters);
+  try {
+    const counters = await HomeCounter.findAll({
+      raw: true
+    });
+
+    return res.json({
+      success: true,
+      data: counters
+    });
+  } catch (error) {
+    console.error("Error fetching counters:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to load counters",
+      // message: error.message // (enable for debugging)
+    });
+  }
 });
+
 
 // PUT all counters
 app.put('/api/counters/:id', async (req, res) => {
