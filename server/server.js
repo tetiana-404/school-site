@@ -541,7 +541,8 @@ app.get('/api/home_counter', async (req, res) => {
     const counters = await HomeAboutCounter.findAll();
     res.json(counters);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch counters' });
+    console.error("HomeAboutCounter error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 
