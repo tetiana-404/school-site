@@ -2325,6 +2325,8 @@ sequelize.sync().then(() => {
   app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
 });*/
 
-sequelize.sync();
+sequelize.sync({ alter: true })
+  .then(() => console.log("PostgreSQL synced!"))
+  .catch(err => console.error(err));
 
 module.exports = app;
