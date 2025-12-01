@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Modal } from 'react-bootstrap';
 import { Button } from "@mui/material";
 import { motion } from "framer-motion";
-import { red } from '@mui/material/colors';
 
 const emptyRating = {
     year: '',

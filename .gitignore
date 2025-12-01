@@ -12,7 +12,7 @@ yarn-error.log*
 .env.local
 .env.*.local
 
-server/database.sqlite
+#server/database.sqlite
 node_modules
 server/uploads
 

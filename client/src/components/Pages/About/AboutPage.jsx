@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import "../../Styles/global.css";
 import TeamSection from "../../HomePage/TeamSection";
 import RichTextEditor from "../../RichTextEditor";
-import { Container, Box, Grid, Card, CardContent, Button, Typography } from "@mui/material";
+import { Box, Button } from "@mui/material";
 
 const AboutPage = ({ user }) => {
   const [editMode, setEditMode] = useState(false);

@@ -117,6 +117,7 @@ const HomeImgSlider = ({ user }) => {
     ],
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     fetch(`${process.env.REACT_APP_BACKEND_URL}/api/home_sliders`)
       .then((res) => res.json())
@@ -130,6 +131,7 @@ const HomeImgSlider = ({ user }) => {
         }
       })
       .catch((err) => console.error('❌ Fetching slides failed:', err));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isLocalhost = window.location.hostname === "localhost";

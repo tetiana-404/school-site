@@ -103,7 +103,7 @@ app.use(
 
 
 // 🟢 User Registration
-app.post("/register", async (req, res) => {
+app.post("/api/register", async (req, res) => {
   const { username, password, role } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -115,7 +115,7 @@ app.post("/register", async (req, res) => {
 });
 
 // 🟢 User Login (JWT Auth)
-app.post("/login", async (req, res) => {
+app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
   try {
     // ✅ Find user by username
@@ -158,7 +158,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // 🟢 CRUD Operations for Posts
-app.get("/posts", async (req, res) => {
+app.get("/api/posts", async (req, res) => {
   try {
     const { search } = req.query;
 
@@ -185,7 +185,7 @@ app.get("/posts", async (req, res) => {
   }
 });
 
-app.get('/posts/:id', (req, res) => {
+app.get('/api/posts/:id', (req, res) => {
   const postId = req.params.id;
   // Отримання поста за id з бази даних
   Post.findByPk(postId)
@@ -198,14 +198,14 @@ app.get('/posts/:id', (req, res) => {
     .catch(err => res.status(500).json({ error: err.message }));
 });
 
-app.post("/posts", authenticateToken, async (req, res) => {
+app.post("/api/posts", authenticateToken, async (req, res) => {
   const { title, content, updatedAt } = req.body;
 
   const post = await Post.create({ title, content, userId: req.user.id, updatedAt: updatedAt || new Date(), });
   res.status(201).json(post);
 });
 
-app.put("/posts/:id", authenticateToken, async (req, res) => {
+app.put("/api/posts/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
   const { title, content, updatedAt } = req.body;
 
@@ -234,7 +234,7 @@ app.put("/posts/:id", authenticateToken, async (req, res) => {
   }
 });
 
-app.delete("/posts/:id", authenticateToken, async (req, res) => {
+app.delete("/api/posts/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -260,7 +260,7 @@ app.delete("/posts/:id", authenticateToken, async (req, res) => {
   }
 });
 
-app.get("/posts/:year", async (req, res) => {
+app.get("/api/posts/:year", async (req, res) => {
   const { year } = req.params;
   const { page = 1, limit = 15 } = req.query;
 
@@ -285,19 +285,19 @@ app.get("/posts/:year", async (req, res) => {
 });
 
 // 🟢 CRUD Operations for Documents
-app.get("/documents", async (req, res) => {
+app.get("/api/documents", async (req, res) => {
   const documents = await Document.findAll({ include: User });
   res.json(documents);
 });
 
-app.post("/documents", authenticateToken, async (req, res) => {
+app.post("/api/documents", authenticateToken, async (req, res) => {
   const { name, url } = req.body;
   const document = await Document.create({ name, url, userId: req.user.userId });
   res.status(201).json(document);
 });
 
 // 🟢 CRUD Operations for Comments
-app.post("/comments", authenticateToken, async (req, res) => {
+app.post("/api/comments", authenticateToken, async (req, res) => {
   const { content, postId } = req.body;
   const comment = await Comment.create({ content, userId: req.user.userId, postId });
   res.status(201).json(comment);
@@ -381,9 +381,26 @@ app.delete("/api/home_sliders/:id", async (req, res) => {
 
 // GET all counters
 app.get('/api/counters', async (req, res) => {
-  const counters = await HomeCounter.findAll();
-  res.json(counters);
+  try {
+    const counters = await HomeCounter.findAll({
+      raw: true
+    });
+
+    return res.json({
+      success: true,
+      data: counters
+    });
+  } catch (error) {
+    console.error("Error fetching counters:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to load counters",
+      // message: error.message // (enable for debugging)
+    });
+  }
 });
+
 
 // PUT all counters
 app.put('/api/counters/:id', async (req, res) => {
@@ -513,7 +530,7 @@ app.put('/api/home_about_page', async (req, res) => {
 });
 
 // GET
-app.get("/contact", async (req, res) => {
+app.get("/api/contact", async (req, res) => {
   const info = await AboutInfo.findOne({ where: { id: 1 } });
   if (!info) {
     return res.status(404).json({ message: "No info found" });
@@ -522,7 +539,7 @@ app.get("/contact", async (req, res) => {
 });
 
 // PUT (update)
-app.put("/contact", async (req, res) => {
+app.put("/api/contact", async (req, res) => {
   const { fullName, address, phone, email, schedule, image } = req.body;
   let info = await AboutInfo.findOne({ where: { id: 1 } });
   
@@ -541,7 +558,8 @@ app.get('/api/home_counter', async (req, res) => {
     const counters = await HomeAboutCounter.findAll();
     res.json(counters);
   } catch (err) {
-    res.status(500).json({ error: 'Failed to fetch counters' });
+    console.error("HomeAboutCounter error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -613,7 +631,6 @@ app.get('/api/documents/all', async (req, res) => {
   }
 });
 
-// POST – додати новий документ
 // POST – додати новий документ
 app.post('/api/documents', upload.single('file'), async (req, res) => {
   try {
@@ -2303,7 +2320,13 @@ app.put("/api/contact", async (req, res) => {
 });
 
 // Start the server
-const PORT = process.env.PORT || 5000;
+/*const PORT = process.env.PORT || 5000;
 sequelize.sync().then(() => {
   app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
-});
+});*/
+
+sequelize.sync({ alter: true })
+  .then(() => console.log("PostgreSQL synced!"))
+  .catch(err => console.error(err));
+
+module.exports = app;

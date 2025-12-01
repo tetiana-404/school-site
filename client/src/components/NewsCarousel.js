@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { Card, CardMedia, CardContent, Typography, Box } from "@mui/material";
 import "./NewsCarousel.css"; 
 
 const NewsCarousel = () => {

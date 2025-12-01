@@ -15,9 +15,9 @@ import './Posts.css';
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
-  const [postsArray, setPostsArray] = useState([]);
+  const [, setPostsArray] = useState([]);
   const [groupedPosts, setGroupedPosts] = useState({});
-  const [user, setUser] = useState(() => {
+  const [user] = useState(() => {
     const storedUser = localStorage.getItem("user");
     return storedUser ? JSON.parse(storedUser) : null;
   });

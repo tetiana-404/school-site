@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import Topbar from "./components/Topbar";
 import Header from "./components/Header"
@@ -58,7 +58,7 @@ const App = () => {
   });
 
   return (
-    <Router basename="/school-site">
+    <Router basename="/">
       <Topbar user={user} setUser={setUser} />
       <Header />
       

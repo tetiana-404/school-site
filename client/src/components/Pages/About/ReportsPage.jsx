@@ -6,7 +6,6 @@ const ReportsPage = ({ user }) => {
     const [editing, setEditing] = useState(null);
     const [newReport, setNewReport] = useState({ year: '', title: '', url: '' });
     const [openYear, setOpenYear] = useState(null);
-    const [activePdf, setActivePdf] = useState(null);
 
     // Toggle акордеон по року
     const toggleAccordion = (year) => {

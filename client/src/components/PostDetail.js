@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { List, ListItemButton, ListItemText } from "@mui/material";
 import { Box, Tooltip, IconButton } from "@mui/material";
@@ -50,12 +49,6 @@ const PostDetail = () => {
     fetchPost();
     fetchAllPosts();
   }, [id]);
-
-  const decodeHTML = (html) => {
-    const txt = document.createElement("textarea");
-    txt.innerHTML = html;
-    return txt.value;
-  };
 
   const handleDeletePost = async (postId) => {
     try {

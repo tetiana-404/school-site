@@ -3400,7 +3400,6 @@ h2.page-banner-title {
   height: 110px;
   bottom: -2px;
   left: 0;
-  background-image: url("");
   background-size: 100%;
   background-repeat: no-repeat;
   background-position: left bottom;
@@ -4386,7 +4385,6 @@ h2.page-banner-title {
   bottom: -15px;
   width: 70px;
   height: 4px;
-  background: url();
 }
 
 .sidebar-widget-inner {

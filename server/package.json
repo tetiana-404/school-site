@@ -6,8 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "predeploy": "npm run build"
   },
   "keywords": [],
   "author": "",
@@ -25,12 +24,13 @@
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
+    "pg": "^8.16.3",
+    "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.7",
     "sharp": "^0.33.5",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "sequelize-cli": "^6.6.2"
-  },
-  "homepage": "https://tetiana-404.github.io/school-site"
+  }
 }

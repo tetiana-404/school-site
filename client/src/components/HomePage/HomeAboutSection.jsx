@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const HomeAboutSection = ({ user }) => {
   const [title, setTitle] = useState('');
