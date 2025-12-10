@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Accordion, Card, Button, Form, Row, Col } from 'react-bootstrap';
 import TextEditor from "../../TextEditor";
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/olympiads`;
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/olympiads`;
 
 const SchoolWinners = ({ user }) => {
     const [data, setData] = useState([]);

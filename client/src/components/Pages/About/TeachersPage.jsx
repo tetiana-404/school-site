@@ -8,7 +8,7 @@ const TeachersPage = ({ user }) => {
     useEffect(() => {
         const fetchTeachers = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/teachers`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/teachers`);
                 const data = await res.json();
                 setTeachers(data);
             } catch (error) {
@@ -21,7 +21,7 @@ const TeachersPage = ({ user }) => {
 
     const handleSave = async (endpoint, method, body, callback) => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/teachers`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/teachers`, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -77,7 +77,7 @@ const TeachersPage = ({ user }) => {
                                     <button
                                         className="btn btn-outline-success btn-lg w-50"
                                         onClick={() =>
-                                            handleSave('/api/teachers', 'PUT', { content: teachers?.content }, () => setEditMode(false))
+                                            handleSave('teachers', 'PUT', { content: teachers?.content }, () => setEditMode(false))
                                         }
                                     >
                                         💾 Зберегти

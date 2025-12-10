@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Accordion, Card, Button, Form, Row, Col } from 'react-bootstrap';
 
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/school-medals`;
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/school-medals`;
 
 const SchoolMedalists = ({ user }) => {
   const [medalistsData, setMedalistsData] = useState([]);

@@ -19,11 +19,11 @@ const app = express();
 app.use(express.json({ limit: "10mb" })); // Default is 100kb, now increased to 50MB
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 const upload = multer({ dest: "uploads/" });
-
-
+const router = express.Router();
 
 // Enable CORS for all origins (you can specify specific origins if needed)
 app.use(cors());
+app.use("/api", router);
 
 // Створення відповідних директорій для медіа
 const createFolderIfNotExist = (folder) => {
@@ -49,7 +49,7 @@ const cyrillicToLatin = (str) => {
 
 
 // Налаштування роута для завантаження файлів
-app.post("/api/upload", upload.single("file"), (req, res) => {
+router.post("/upload", upload.single("file"), (req, res) => {
   const { type, postId } = req.body;  // Отримуємо тип файлу та постId (якщо є)
   const file = req.file;
 
@@ -89,7 +89,7 @@ app.post("/api/upload", upload.single("file"), (req, res) => {
 });
 
 // Статична роздача папки uploads
-app.use(
+router.use(
   "/uploads",
   express.static(path.join(__dirname, "uploads"), {
     setHeaders: (res, filePath) => {
@@ -103,7 +103,7 @@ app.use(
 
 
 // 🟢 User Registration
-app.post("/register", async (req, res) => {
+router.post("/register", async (req, res) => {
   const { username, password, role } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -115,7 +115,7 @@ app.post("/register", async (req, res) => {
 });
 
 // 🟢 User Login (JWT Auth)
-app.post("/login", async (req, res) => {
+router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   try {
     // ✅ Find user by username
@@ -158,7 +158,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // 🟢 CRUD Operations for Posts
-app.get("/posts", async (req, res) => {
+router.get("/posts", async (req, res) => {
   try {
     const { search } = req.query;
 
@@ -185,7 +185,7 @@ app.get("/posts", async (req, res) => {
   }
 });
 
-app.get('/posts/:id', (req, res) => {
+router.get('/posts/:id', (req, res) => {
   const postId = req.params.id;
   // Отримання поста за id з бази даних
   Post.findByPk(postId)
@@ -198,14 +198,14 @@ app.get('/posts/:id', (req, res) => {
     .catch(err => res.status(500).json({ error: err.message }));
 });
 
-app.post("/posts", authenticateToken, async (req, res) => {
+router.post("/posts", authenticateToken, async (req, res) => {
   const { title, content, updatedAt } = req.body;
 
   const post = await Post.create({ title, content, userId: req.user.id, updatedAt: updatedAt || new Date(), });
   res.status(201).json(post);
 });
 
-app.put("/posts/:id", authenticateToken, async (req, res) => {
+router.put("/posts/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
   const { title, content, updatedAt } = req.body;
 
@@ -234,7 +234,7 @@ app.put("/posts/:id", authenticateToken, async (req, res) => {
   }
 });
 
-app.delete("/posts/:id", authenticateToken, async (req, res) => {
+router.delete("/posts/:id", authenticateToken, async (req, res) => {
   const { id } = req.params;
 
   try {
@@ -260,7 +260,7 @@ app.delete("/posts/:id", authenticateToken, async (req, res) => {
   }
 });
 
-app.get("/posts/:year", async (req, res) => {
+router.get("/posts/:year", async (req, res) => {
   const { year } = req.params;
   const { page = 1, limit = 15 } = req.query;
 
@@ -285,26 +285,26 @@ app.get("/posts/:year", async (req, res) => {
 });
 
 // 🟢 CRUD Operations for Documents
-app.get("/documents", async (req, res) => {
+router.get("/documents", async (req, res) => {
   const documents = await Document.findAll({ include: User });
   res.json(documents);
 });
 
-app.post("/documents", authenticateToken, async (req, res) => {
+router.post("/documents", authenticateToken, async (req, res) => {
   const { name, url } = req.body;
   const document = await Document.create({ name, url, userId: req.user.userId });
   res.status(201).json(document);
 });
 
 // 🟢 CRUD Operations for Comments
-app.post("/comments", authenticateToken, async (req, res) => {
+router.post("/comments", authenticateToken, async (req, res) => {
   const { content, postId } = req.body;
   const comment = await Comment.create({ content, userId: req.user.userId, postId });
   res.status(201).json(comment);
 });
 
 // 🏫 GET /api/home_about — Отримати дані
-app.get('/api/home_about', async (req, res) => {
+router.get('/home_about', async (req, res) => {
   try {
     let about = await HomeAbout.findOne();
     if (!about) {
@@ -323,7 +323,7 @@ app.get('/api/home_about', async (req, res) => {
 });
 
 // ✏️ PUT /api/home_about — Оновити дані
-app.put('/api/home_about', async (req, res) => {
+router.put('/home_about', async (req, res) => {
   const { title, content, subText, image } = req.body;
   try {
     let about = await HomeAbout.findOne();
@@ -342,20 +342,20 @@ app.put('/api/home_about', async (req, res) => {
   }
 });
 
-app.get("/api/home_sliders", async (req, res) => {
+router.get("/home_sliders", async (req, res) => {
   const sliders = await HomeSlider.findAll({ order: [["createdAt", "ASC"]] });
   res.json(sliders);
 });
 
 // Додати слайд
-app.post("/api/home_sliders", async (req, res) => {
+router.post("/home_sliders", async (req, res) => {
   const { image, title, subtitle, text } = req.body;
   const slider = await HomeSlider.create({ image, title, subtitle, text });
   res.status(201).json(slider);
 });
 
 // Оновити слайд
-app.put("/api/home_sliders/:id", async (req, res) => {
+router.put("/home_sliders/:id", async (req, res) => {
   const { id } = req.params;
   const { image, title, subtitle, text } = req.body;
   const slider = await HomeSlider.findByPk(id);
@@ -370,7 +370,7 @@ app.put("/api/home_sliders/:id", async (req, res) => {
 });
 
 // Видалити слайд
-app.delete("/api/home_sliders/:id", async (req, res) => {
+router.delete("/home_sliders/:id", async (req, res) => {
   const { id } = req.params;
   const slider = await HomeSlider.findByPk(id);
   if (!slider) return res.status(404).json({ error: "Слайд не знайдено" });
@@ -380,13 +380,13 @@ app.delete("/api/home_sliders/:id", async (req, res) => {
 });
 
 // GET all counters
-app.get('/api/counters', async (req, res) => {
+router.get('/counters', async (req, res) => {
   const counters = await HomeCounter.findAll();
   res.json(counters);
 });
 
 // PUT all counters
-app.put('/api/counters/:id', async (req, res) => {
+router.put('/counters/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const counter = await HomeCounter.findByPk(id);
@@ -403,7 +403,7 @@ app.put('/api/counters/:id', async (req, res) => {
 });
 
 // GET subtitle
-app.get('/api/home-meta', async (req, res) => {
+router.get('/home-meta', async (req, res) => {
   let meta = await HomeMeta.findOne();
 
   if (!meta) {
@@ -416,7 +416,7 @@ app.get('/api/home-meta', async (req, res) => {
 });
 
 // PUT subtitle
-app.put('/api/home-meta', async (req, res) => {
+router.put('/home-meta', async (req, res) => {
   try {
     const { subtitle } = req.body;
 
@@ -435,7 +435,7 @@ app.put('/api/home-meta', async (req, res) => {
 });
 
 // GET all team members
-app.get('/api/team-members', async (req, res) => {
+router.get('/team-members', async (req, res) => {
   try {
     const members = await TeamMember.findAll({
       where: { isActive: true },
@@ -448,7 +448,7 @@ app.get('/api/team-members', async (req, res) => {
 });
 
 // PUT update or create team member
-app.put('/api/team-members/:id', async (req, res) => {
+router.put('/team-members/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = req.body;
@@ -467,7 +467,7 @@ app.put('/api/team-members/:id', async (req, res) => {
 });
 
 // DELETE team member
-app.delete('/api/team-members/:id', async (req, res) => {
+router.delete('/team-members/:id', async (req, res) => {
   try {
     await TeamMember.destroy({ where: { id: req.params.id } });
     res.json({ message: 'Team member deleted' });
@@ -478,7 +478,7 @@ app.delete('/api/team-members/:id', async (req, res) => {
 });
 
 // GET — отримати контент "Про школу"
-app.get('/api/home_about_page', async (req, res) => {
+router.get('/home_about_page', async (req, res) => {
   try {
     const about = await HomeAboutPage.findOne({ where: { id: 1 } });
     res.json(about);
@@ -492,7 +492,7 @@ app.get('/api/home_about_page', async (req, res) => {
 });
 
 // PUT — зберегти / оновити контент
-app.put('/api/home_about_page', async (req, res) => {
+router.put('/home_about_page', async (req, res) => {
   try {
     const { content } = req.body;
     let about = await HomeAboutPage.findByPk(1);
@@ -513,7 +513,7 @@ app.put('/api/home_about_page', async (req, res) => {
 });
 
 // GET
-app.get("/contact", async (req, res) => {
+router.get("/contact", async (req, res) => {
   const info = await AboutInfo.findOne({ where: { id: 1 } });
   if (!info) {
     return res.status(404).json({ message: "No info found" });
@@ -522,7 +522,7 @@ app.get("/contact", async (req, res) => {
 });
 
 // PUT (update)
-app.put("/contact", async (req, res) => {
+router.put("/contact", async (req, res) => {
   const { fullName, address, phone, email, schedule, image } = req.body;
   let info = await AboutInfo.findOne({ where: { id: 1 } });
   
@@ -536,7 +536,7 @@ app.put("/contact", async (req, res) => {
 });
 
 
-app.get('/api/home_counter', async (req, res) => {
+router.get('/home_counter', async (req, res) => {
   try {
     const counters = await HomeAboutCounter.findAll();
     res.json(counters);
@@ -546,7 +546,7 @@ app.get('/api/home_counter', async (req, res) => {
 });
 
 // PUT — оновити всі лічильники
-app.put('/api/home_counter', async (req, res) => {
+router.put('/home_counter', async (req, res) => {
   const updates = req.body;
   try {
     const updated = [];
@@ -569,7 +569,7 @@ app.put('/api/home_counter', async (req, res) => {
   }
 });
 
-app.get('/api/history', async (req, res) => {
+router.get('/history', async (req, res) => {
   try {
     const history = await HomeHistory.findOne();
     res.json(history);
@@ -578,7 +578,7 @@ app.get('/api/history', async (req, res) => {
   }
 });
 
-app.put('/api/history', async (req, res) => {
+router.put('/history', async (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -594,7 +594,7 @@ app.put('/api/history', async (req, res) => {
   }
 });
 
-app.get('/api/documents', async (req, res) => {
+router.get('/documents', async (req, res) => {
   try {
     const docs = await HomeDocuments.findOne({ where: { isActive: 'true' } });
     res.json(docs);
@@ -603,7 +603,7 @@ app.get('/api/documents', async (req, res) => {
   }
 });
 
-app.get('/api/documents/all', async (req, res) => {
+router.get('/documents/all', async (req, res) => {
   try {
     const documents = await HomeDocuments.findAll();
     res.json(documents);
@@ -615,7 +615,7 @@ app.get('/api/documents/all', async (req, res) => {
 
 // POST – додати новий документ
 // POST – додати новий документ
-app.post('/api/documents', upload.single('file'), async (req, res) => {
+router.post('/documents', upload.single('file'), async (req, res) => {
   try {
     const { title, type } = req.body;
     const isActive = req.body.isActive === 'true';
@@ -657,7 +657,7 @@ app.post('/api/documents', upload.single('file'), async (req, res) => {
 
 
 // PUT – оновити документ
-app.put('/api/documents/:id', upload.single('file'), async (req, res) => {
+router.put('/documents/:id', upload.single('file'), async (req, res) => {
   try {
     const { title, isActive } = req.body;
     const doc = await HomeDocuments.findByPk(req.params.id);
@@ -699,7 +699,7 @@ app.put('/api/documents/:id', upload.single('file'), async (req, res) => {
 
 
 // PUT – оновити документ
-app.put('/api/documents/:id', upload.single('file'), async (req, res) => {
+router.put('/documents/:id', upload.single('file'), async (req, res) => {
   try {
     const { title, isActive } = req.body;
     const doc = await HomeDocuments.findByPk(req.params.id);
@@ -740,7 +740,7 @@ app.put('/api/documents/:id', upload.single('file'), async (req, res) => {
 });
 
 // DELETE – видалити
-app.delete('/api/documents/:id', async (req, res) => {
+router.delete('/documents/:id', async (req, res) => {
   const doc = await HomeDocuments.findByPk(req.params.id);
   if (!doc) return res.status(404).json({ error: 'Not found' });
 
@@ -748,7 +748,7 @@ app.delete('/api/documents/:id', async (req, res) => {
   res.json({ message: 'Deleted' });
 });
 
-app.get('/api/anthem', async (req, res) => {
+router.get('/anthem', async (req, res) => {
   try {
     const anthem = await HomeAnthem.findOne();
     res.json(anthem);
@@ -758,7 +758,7 @@ app.get('/api/anthem', async (req, res) => {
   }
 });
 
-app.put('/api/anthem', async (req, res) => {
+router.put('/anthem', async (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -774,7 +774,7 @@ app.put('/api/anthem', async (req, res) => {
   }
 });
 
-app.get('/api/strategy', async (req, res) => {
+router.get('/strategy', async (req, res) => {
   try {
     const strategy = await HomeStrategy.findOne();
     res.json(strategy);
@@ -784,7 +784,7 @@ app.get('/api/strategy', async (req, res) => {
   }
 });
 
-app.put('/api/strategy', async (req, res) => {
+router.put('/strategy', async (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -800,7 +800,7 @@ app.put('/api/strategy', async (req, res) => {
   }
 });
 
-app.get('/api/work-plan', async (req, res) => {
+router.get('/work-plan', async (req, res) => {
   try {
     const workPlan = await HomeWorkPlan.findOne();
     res.json(workPlan);
@@ -810,7 +810,7 @@ app.get('/api/work-plan', async (req, res) => {
   }
 });
 
-app.put('/api/work-plan', async (req, res) => {
+router.put('/work-plan', async (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -829,7 +829,7 @@ app.put('/api/work-plan', async (req, res) => {
 // ==================== REPORTS API ====================
 
 // Отримати один активний звіт (якщо треба)
-app.get('/api/reports', async (req, res) => {
+router.get('/reports', async (req, res) => {
   try {
     const report = await HomeReports.findOne({ where: { isActive: true } });
     res.json(report);
@@ -839,7 +839,7 @@ app.get('/api/reports', async (req, res) => {
 });
 
 // Отримати всі звіти
-app.get('/api/reports/all', async (req, res) => {
+router.get('/reports/all', async (req, res) => {
   try {
     const reports = await HomeReports.findAll({ order: [['year', 'DESC']] });
     res.json(reports);
@@ -849,7 +849,7 @@ app.get('/api/reports/all', async (req, res) => {
   }
 });
 
-app.post('/api/reports', async (req, res) => {
+router.post('/reports', async (req, res) => {
   try {
     const { year, title, url } = req.body;
     const report = await HomeReports.create({ year, title, url });
@@ -860,7 +860,7 @@ app.post('/api/reports', async (req, res) => {
   }
 });
 
-app.put('/api/reports/:id', async (req, res) => {
+router.put('/reports/:id', async (req, res) => {
   try {
     const { year, title, url } = req.body;
     const report = await HomeReports.findByPk(req.params.id);
@@ -878,7 +878,7 @@ app.put('/api/reports/:id', async (req, res) => {
   }
 });
 
-app.delete('/api/reports/:id', async (req, res) => {
+router.delete('/reports/:id', async (req, res) => {
   try {
     const report = await HomeReports.findByPk(req.params.id);
     if (!report) return res.status(404).json({ error: 'Not found' });
@@ -892,7 +892,7 @@ app.delete('/api/reports/:id', async (req, res) => {
 });
 
 
-app.get('/api/teachers', async (req, res) => {
+router.get('/teachers', async (req, res) => {
   try {
     const teachers = await HomeTeachers.findOne();
     res.json(teachers);
@@ -902,7 +902,7 @@ app.get('/api/teachers', async (req, res) => {
   }
 });
 
-app.put('/api/teachers', async (req, res) => {
+router.put('/teachers', async (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -918,7 +918,7 @@ app.put('/api/teachers', async (req, res) => {
   }
 });
 
-app.get('/api/reg-documents', async (req, res) => {
+router.get('/reg-documents', async (req, res) => {
   try {
     const regdocuments = await RegDocuments.findOne();
     res.json(regdocuments);
@@ -928,7 +928,7 @@ app.get('/api/reg-documents', async (req, res) => {
   }
 });
 
-app.put('/api/reg-documents', async (req, res) => {
+router.put('/reg-documents', async (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -945,12 +945,12 @@ app.put('/api/reg-documents', async (req, res) => {
 });
 
 // GET – тільки активні для користувача
-app.get('/api/internal-documents', async (req, res) => {
+router.get('/internal-documents', async (req, res) => {
   const docs = await InternalDocument.findAll({ where: { isActive: 'true' } });
   res.json(docs);
 });
 
-app.get('/api/internal-documents/all', async (req, res) => {
+router.get('/internal-documents/all', async (req, res) => {
   try {
     const documents = await InternalDocument.findAll();
     res.json(documents);
@@ -961,7 +961,7 @@ app.get('/api/internal-documents/all', async (req, res) => {
 });
 
 // POST – додати новий документ
-app.post('/api/internal-documents', upload.single('file'), async (req, res) => {
+router.post('/internal-documents', upload.single('file'), async (req, res) => {
   try {
     const { title, type, isActive } = req.body;
     const file = req.file;
@@ -990,7 +990,7 @@ app.post('/api/internal-documents', upload.single('file'), async (req, res) => {
 });
 
 // PUT – оновити документ
-app.put('/api/internal-documents/:id', upload.single('file'), async (req, res) => {
+router.put('/internal-documents/:id', upload.single('file'), async (req, res) => {
   try {
     const { title, isActive } = req.body;
     const doc = await InternalDocument.findByPk(req.params.id);
@@ -1020,7 +1020,7 @@ app.put('/api/internal-documents/:id', upload.single('file'), async (req, res) =
 });
 
 // DELETE – видалити
-app.delete('/api/internal-documents/:id', async (req, res) => {
+router.delete('/internal-documents/:id', async (req, res) => {
   const doc = await InternalDocument.findByPk(req.params.id);
   if (!doc) return res.status(404).json({ error: 'Not found' });
 
@@ -1028,7 +1028,7 @@ app.delete('/api/internal-documents/:id', async (req, res) => {
   res.json({ message: 'Deleted' });
 });
 
-app.get('/api/area', async (req, res) => {
+router.get('/area', async (req, res) => {
   try {
     const area = await Area.findOne();
     res.json(area);
@@ -1038,7 +1038,7 @@ app.get('/api/area', async (req, res) => {
   }
 });
 
-app.put('/api/area', async (req, res) => {
+router.put('/area', async (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -1054,7 +1054,7 @@ app.put('/api/area', async (req, res) => {
   }
 });
 
-app.get('/api/language', async (req, res) => {
+router.get('/language', async (req, res) => {
   try {
     const language = await Language.findOne();
     res.json(language);
@@ -1064,7 +1064,7 @@ app.get('/api/language', async (req, res) => {
   }
 });
 
-app.put('/api/language', async (req, res) => {
+router.put('/language', async (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -1080,7 +1080,7 @@ app.put('/api/language', async (req, res) => {
   }
 });
 
-app.get('/api/facilities', async (req, res) => {
+router.get('/facilities', async (req, res) => {
   try {
     const facilities = await Facilities.findOne();
     res.json(facilities);
@@ -1090,7 +1090,7 @@ app.get('/api/facilities', async (req, res) => {
   }
 });
 
-app.put('/api/facilities', async (req, res) => {
+router.put('/facilities', async (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -1106,7 +1106,7 @@ app.put('/api/facilities', async (req, res) => {
   }
 });
 
-app.get('/api/family-education', async (req, res) => {
+router.get('/family-education', async (req, res) => {
   try {
     const familyEducation = await FamilyEducation.findAll();
     res.json(familyEducation);
@@ -1118,7 +1118,7 @@ app.get('/api/family-education', async (req, res) => {
 
 // POST – додати новий документ
 // POST – додати новий документ
-app.post('/api/family-education', upload.single('file'), async (req, res) => {
+router.post('/family-education', upload.single('file'), async (req, res) => {
   try {
     const { title, type } = req.body;
     const isActive = req.body.isActive === 'true';
@@ -1152,7 +1152,7 @@ app.post('/api/family-education', upload.single('file'), async (req, res) => {
 });
 
 // PUT – оновити документ
-app.put('/api/family-education/:id', upload.single('file'), async (req, res) => {
+router.put('/family-education/:id', upload.single('file'), async (req, res) => {
   try {
     const { title, isActive } = req.body;
     const doc = await FamilyEducation.findByPk(req.params.id);
@@ -1186,7 +1186,7 @@ app.put('/api/family-education/:id', upload.single('file'), async (req, res) => 
 });
 
 // DELETE – видалити
-app.delete('/api/family-education/:id', async (req, res) => {
+router.delete('/family-education/:id', async (req, res) => {
   const doc = await FamilyEducation.findByPk(req.params.id);
   if (!doc) return res.status(404).json({ error: 'Not found' });
 
@@ -1194,7 +1194,7 @@ app.delete('/api/family-education/:id', async (req, res) => {
   res.json({ message: 'Deleted' });
 });
 
-app.get('/api/services', async (req, res) => {
+router.get('/services', async (req, res) => {
   try {
     const services = await Services.findAll();
     res.json(services);
@@ -1205,7 +1205,7 @@ app.get('/api/services', async (req, res) => {
 });
 
 // POST – додати новий документ
-app.post('/api/services', upload.single('file'), async (req, res) => {
+router.post('/services', upload.single('file'), async (req, res) => {
   const { title } = req.body;
   const { type } = req.body;
   let folder = "uploads/documents";
@@ -1233,7 +1233,7 @@ app.post('/api/services', upload.single('file'), async (req, res) => {
 });
 
 // PUT – оновити документ
-app.put('/api/services/:id', upload.single('file'), async (req, res) => {
+router.put('/services/:id', upload.single('file'), async (req, res) => {
   const { title, isActive } = req.body;
   const file = req.file?.filename;
   const doc = await Services.findByPk(req.params.id);
@@ -1248,7 +1248,7 @@ app.put('/api/services/:id', upload.single('file'), async (req, res) => {
 });
 
 // DELETE – видалити
-app.delete('/api/services/:id', async (req, res) => {
+router.delete('/services/:id', async (req, res) => {
   const doc = await Services.findByPk(req.params.id);
   if (!doc) return res.status(404).json({ error: 'Not found' });
 
@@ -1258,7 +1258,7 @@ app.delete('/api/services/:id', async (req, res) => {
 
 
 // GET – отримати всі правила
-app.get('/api/rules', async (req, res) => {
+router.get('/rules', async (req, res) => {
   try {
     const rules = await Rules.findAll();
     res.json(rules);
@@ -1269,7 +1269,7 @@ app.get('/api/rules', async (req, res) => {
 });
 
 // POST – додати новий документ
-app.post('/api/rules', upload.single('file'), async (req, res) => {
+router.post('/rules', upload.single('file'), async (req, res) => {
   try {
     const { title } = req.body;
     const isActive = req.body.isActive === 'true';
@@ -1303,7 +1303,7 @@ app.post('/api/rules', upload.single('file'), async (req, res) => {
 });
 
 // PUT – оновити документ
-app.put('/api/rules/:id', upload.single('file'), async (req, res) => {
+router.put('/rules/:id', upload.single('file'), async (req, res) => {
   try {
     const { title, isActive } = req.body;
     const doc = await Rules.findByPk(req.params.id);
@@ -1337,7 +1337,7 @@ app.put('/api/rules/:id', upload.single('file'), async (req, res) => {
 });
 
 // DELETE – видалити
-app.delete('/api/rules/:id', async (req, res) => {
+router.delete('/rules/:id', async (req, res) => {
   try {
     const doc = await Rules.findByPk(req.params.id);
     if (!doc) return res.status(404).json({ error: 'Not found' });
@@ -1351,7 +1351,7 @@ app.delete('/api/rules/:id', async (req, res) => {
 });
 
 // GET – отримати всі інструкції
-app.get('/api/instructions', async (req, res) => {
+router.get('/instructions', async (req, res) => {
   try {
     const instructions = await Instructions.findAll();
     res.json(instructions);
@@ -1362,7 +1362,7 @@ app.get('/api/instructions', async (req, res) => {
 });
 
 // POST – додати новий документ
-app.post('/api/instructions', upload.single('file'), async (req, res) => {
+router.post('/instructions', upload.single('file'), async (req, res) => {
   try {
     const { title } = req.body;
     const isActive = req.body.isActive === 'true';
@@ -1396,7 +1396,7 @@ app.post('/api/instructions', upload.single('file'), async (req, res) => {
 });
 
 // PUT – оновити документ
-app.put('/api/instructions/:id', upload.single('file'), async (req, res) => {
+router.put('/instructions/:id', upload.single('file'), async (req, res) => {
   try {
     const { title, isActive } = req.body;
     const doc = await Instructions.findByPk(req.params.id);
@@ -1430,7 +1430,7 @@ app.put('/api/instructions/:id', upload.single('file'), async (req, res) => {
 });
 
 // DELETE – видалити
-app.delete('/api/instructions/:id', async (req, res) => {
+router.delete('/instructions/:id', async (req, res) => {
   try {
     const doc = await Instructions.findByPk(req.params.id);
     if (!doc) return res.status(404).json({ error: 'Not found' });
@@ -1445,7 +1445,7 @@ app.delete('/api/instructions/:id', async (req, res) => {
 
 
 // GET – отримати всі документи
-app.get('/api/bullying', async (req, res) => {
+router.get('/bullying', async (req, res) => {
   try {
     const bullying = await Bullying.findAll();
     res.json(bullying);
@@ -1456,7 +1456,7 @@ app.get('/api/bullying', async (req, res) => {
 });
 
 // POST – додати новий документ
-app.post('/api/bullying', upload.single('file'), async (req, res) => {
+router.post('/bullying', upload.single('file'), async (req, res) => {
   try {
     const { title } = req.body;
     const isActive = req.body.isActive === 'true';
@@ -1490,7 +1490,7 @@ app.post('/api/bullying', upload.single('file'), async (req, res) => {
 });
 
 // PUT – оновити документ
-app.put('/api/bullying/:id', upload.single('file'), async (req, res) => {
+router.put('/bullying/:id', upload.single('file'), async (req, res) => {
   try {
     const { title, isActive } = req.body;
     const doc = await Bullying.findByPk(req.params.id);
@@ -1524,7 +1524,7 @@ app.put('/api/bullying/:id', upload.single('file'), async (req, res) => {
 });
 
 // DELETE – видалити
-app.delete('/api/bullying/:id', async (req, res) => {
+router.delete('/bullying/:id', async (req, res) => {
   try {
     const doc = await Bullying.findByPk(req.params.id);
     if (!doc) return res.status(404).json({ error: 'Not found' });
@@ -1538,7 +1538,7 @@ app.delete('/api/bullying/:id', async (req, res) => {
 });
 
 
-app.get('/api/programs', async (req, res) => {
+router.get('/programs', async (req, res) => {
   try {
     const programs = await Programs.findAll();
     res.json(programs);
@@ -1550,7 +1550,7 @@ app.get('/api/programs', async (req, res) => {
 
 // POST – додати новий документ
 // POST – додати новий документ
-app.post('/api/programs', upload.single('file'), async (req, res) => {
+router.post('/programs', upload.single('file'), async (req, res) => {
   try {
     const { title, type } = req.body;
     const isActive = req.body.isActive === 'true';
@@ -1583,7 +1583,7 @@ app.post('/api/programs', upload.single('file'), async (req, res) => {
 });
 
 // PUT – оновити документ
-app.put('/api/programs/:id', upload.single('file'), async (req, res) => {
+router.put('/programs/:id', upload.single('file'), async (req, res) => {
   try {
     const { title, isActive } = req.body;
     const doc = await Programs.findByPk(req.params.id);
@@ -1621,7 +1621,7 @@ app.put('/api/programs/:id', upload.single('file'), async (req, res) => {
 
 
 // DELETE – видалити
-app.delete('/api/programs/:id', async (req, res) => {
+router.delete('/programs/:id', async (req, res) => {
   const doc = await Programs.findByPk(req.params.id);
   if (!doc) return res.status(404).json({ error: 'Not found' });
 
@@ -1630,7 +1630,7 @@ app.delete('/api/programs/:id', async (req, res) => {
 });
 
 // GET – всі сертифікації
-app.get('/api/certifications', async (req, res) => {
+router.get('/certifications', async (req, res) => {
   try {
     const certifications = await Certifications.findAll();
     res.json(certifications);
@@ -1641,7 +1641,7 @@ app.get('/api/certifications', async (req, res) => {
 });
 
 // POST – додати
-app.post('/api/certifications', upload.single('file'), async (req, res) => {
+router.post('/certifications', upload.single('file'), async (req, res) => {
   try {
     const { title } = req.body;
     const isActive = req.body.isActive === 'true';
@@ -1670,7 +1670,7 @@ app.post('/api/certifications', upload.single('file'), async (req, res) => {
 });
 
 // PUT – оновити
-app.put('/api/certifications/:id', upload.single('file'), async (req, res) => {
+router.put('/certifications/:id', upload.single('file'), async (req, res) => {
   try {
     const { title, isActive } = req.body;
     const doc = await Certifications.findByPk(req.params.id);
@@ -1706,7 +1706,7 @@ app.put('/api/certifications/:id', upload.single('file'), async (req, res) => {
 });
 
 // DELETE – видалити
-app.delete('/api/certifications/:id', async (req, res) => {
+router.delete('/certifications/:id', async (req, res) => {
   try {
     const doc = await Certifications.findByPk(req.params.id);
     if (!doc) return res.status(404).json({ error: 'Not found' });
@@ -1724,7 +1724,7 @@ app.delete('/api/certifications/:id', async (req, res) => {
 
 
 // GET – отримати всі документи
-app.get('/api/criteria', async (req, res) => {
+router.get('/criteria', async (req, res) => {
   try {
     const criteria = await Criteria.findAll();
     res.json(criteria);
@@ -1735,7 +1735,7 @@ app.get('/api/criteria', async (req, res) => {
 });
 
 // POST – додати новий документ
-app.post('/api/criteria', upload.single('file'), async (req, res) => {
+router.post('/criteria', upload.single('file'), async (req, res) => {
   try {
     const { title } = req.body;
     const isActive = req.body.isActive === 'true';
@@ -1764,7 +1764,7 @@ app.post('/api/criteria', upload.single('file'), async (req, res) => {
 });
 
 // PUT – оновити документ
-app.put('/api/criteria/:id', upload.single('file'), async (req, res) => {
+router.put('/criteria/:id', upload.single('file'), async (req, res) => {
   try {
     const { title, isActive } = req.body;
     const doc = await Criteria.findByPk(req.params.id);
@@ -1800,7 +1800,7 @@ app.put('/api/criteria/:id', upload.single('file'), async (req, res) => {
 });
 
 // DELETE – видалити документ
-app.delete('/api/criteria/:id', async (req, res) => {
+router.delete('/criteria/:id', async (req, res) => {
   try {
     const doc = await Criteria.findByPk(req.params.id);
     if (!doc) return res.status(404).json({ error: 'Not found' });
@@ -1818,13 +1818,13 @@ app.delete('/api/criteria/:id', async (req, res) => {
 
 
 // GET all ratings
-app.get('/api/school-ratings', async (req, res) => {
+router.get('/school-ratings', async (req, res) => {
   const ratings = await SchoolRating.findAll({ order: [['year', 'DESC']] });
   res.json(ratings);
 });
 
 // POST new rating
-app.post('/api/school-ratings', async (req, res) => {
+router.post('/school-ratings', async (req, res) => {
   try {
     const newRating = await SchoolRating.create(req.body);
     res.status(201).json(newRating);
@@ -1835,7 +1835,7 @@ app.post('/api/school-ratings', async (req, res) => {
 });
 
 // PUT update
-app.put('/api/school-ratings/:id', async (req, res) => {
+router.put('/school-ratings/:id', async (req, res) => {
   try {
     const rating = await SchoolRating.findByPk(req.params.id);
     if (!rating) return res.status(404).json({ error: 'Not found' });
@@ -1847,7 +1847,7 @@ app.put('/api/school-ratings/:id', async (req, res) => {
   }
 });
 
-app.delete('/api/school-ratings/:id', async (req, res) => {
+router.delete('/school-ratings/:id', async (req, res) => {
   try {
     const rating = await SchoolRating.findByPk(req.params.id);
     if (!rating) return res.status(404).json({ error: 'Not found' });
@@ -1860,7 +1860,7 @@ app.delete('/api/school-ratings/:id', async (req, res) => {
 });
 
 // Отримати всі роки в порядку спадання
-app.get('/api/school-medals', async (req, res) => {
+router.get('/school-medals', async (req, res) => {
   try {
     const medals = await SchoolMedals.findAll({
       order: [['year', 'DESC']],
@@ -1872,7 +1872,7 @@ app.get('/api/school-medals', async (req, res) => {
 });
 
 // Додати новий запис
-app.post('/api/school-medals', async (req, res) => {
+router.post('/school-medals', async (req, res) => {
   try {
     const { year, gold, silver } = req.body;
     const newEntry = await SchoolMedals.create({ year, gold, silver });
@@ -1883,7 +1883,7 @@ app.post('/api/school-medals', async (req, res) => {
 });
 
 // Оновити запис
-app.put('/api/school-medals/:id', async (req, res) => {
+router.put('/school-medals/:id', async (req, res) => {
   try {
     const { gold, silver } = req.body;
     const updated = await SchoolMedals.update(
@@ -1896,7 +1896,7 @@ app.put('/api/school-medals/:id', async (req, res) => {
   }
 });
 
-app.put('/api/school-medals/:year', async (req, res) => {
+router.put('/school-medals/:year', async (req, res) => {
   const { year } = req.params;
   const { newYear, gold, silver } = req.body;
 
@@ -1913,7 +1913,7 @@ app.put('/api/school-medals/:year', async (req, res) => {
 });
 
 // Видалити запис
-app.delete('/api/school-medals/:id', async (req, res) => {
+router.delete('/school-medals/:id', async (req, res) => {
   try {
     await SchoolMedals.destroy({ where: { id: req.params.id } });
     res.json({ message: 'Deleted successfully' });
@@ -1923,7 +1923,7 @@ app.delete('/api/school-medals/:id', async (req, res) => {
 });
 
 // Отримати всі роки в порядку спадання
-app.get('/api/olympiads', async (req, res) => {
+router.get('/olympiads', async (req, res) => {
   try {
     const winner = await Olympiads.findAll({
       order: [['year', 'DESC']],
@@ -1936,7 +1936,7 @@ app.get('/api/olympiads', async (req, res) => {
 });
 
 // Додати новий запис
-app.post('/api/olympiads', async (req, res) => {
+router.post('/olympiads', async (req, res) => {
   try {
     const { year, content } = req.body;
     const newEntry = await Olympiads.create({ year, content });
@@ -1947,7 +1947,7 @@ app.post('/api/olympiads', async (req, res) => {
 });
 
 // Оновити запис
-app.put('/api/olympiads/:id', async (req, res) => {
+router.put('/olympiads/:id', async (req, res) => {
   try {
     const { content } = req.body;
     const updated = await Olympiads.update(
@@ -1961,7 +1961,7 @@ app.put('/api/olympiads/:id', async (req, res) => {
 });
 
 // Видалити запис
-app.delete('/api/olympiads/:id', async (req, res) => {
+router.delete('/olympiads/:id', async (req, res) => {
   try {
     await Olympiads.destroy({ where: { id: req.params.id } });
     res.json({ message: 'Deleted successfully' });
@@ -1971,7 +1971,7 @@ app.delete('/api/olympiads/:id', async (req, res) => {
 });
 
 // Отримати розклад дзвінків
-app.get("/api/school-bells", async (req, res) => {
+router.get("/school-bells", async (req, res) => {
   try {
     const bells = await SchoolBells.findOne();
     res.json(bells);
@@ -1982,7 +1982,7 @@ app.get("/api/school-bells", async (req, res) => {
 });
 
 // Оновити розклад дзвінків
-app.put("/api/school-bells", async (req, res) => {
+router.put("/school-bells", async (req, res) => {
   try {
     const { content } = req.body;
     let bells = await SchoolBells.findOne();
@@ -2001,7 +2001,7 @@ app.put("/api/school-bells", async (req, res) => {
   }
 });
 
-app.get('/api/school-timetable', async (req, res) => {
+router.get('/school-timetable', async (req, res) => {
   try {
     const schoolTimetable = await SchoolTimetable.findAll();
     res.json(schoolTimetable);
@@ -2012,7 +2012,7 @@ app.get('/api/school-timetable', async (req, res) => {
 });
 
 // POST – додати новий документ
-app.post('/api/school-timetable', upload.single('file'), async (req, res) => {
+router.post('/school-timetable', upload.single('file'), async (req, res) => {
   const { title } = req.body;
   const { type } = req.body;
   let folder = "uploads/documents";
@@ -2040,7 +2040,7 @@ app.post('/api/school-timetable', upload.single('file'), async (req, res) => {
 });
 
 // PUT – оновити документ
-app.put('/api/school-timetable/:id', upload.single('file'), async (req, res) => {
+router.put('/school-timetable/:id', upload.single('file'), async (req, res) => {
   const { title, isActive } = req.body;
   const file = req.file?.filename;
   const doc = await SchoolTimetable.findByPk(req.params.id);
@@ -2055,7 +2055,7 @@ app.put('/api/school-timetable/:id', upload.single('file'), async (req, res) => 
 });
 
 // DELETE – видалити
-app.delete('/api/school-timetable/:id', async (req, res) => {
+router.delete('/school-timetable/:id', async (req, res) => {
   const doc = await SchoolTimetable.findByPk(req.params.id);
   if (!doc) return res.status(404).json({ error: 'Not found' });
 
@@ -2063,7 +2063,7 @@ app.delete('/api/school-timetable/:id', async (req, res) => {
   res.json({ message: 'Deleted' });
 });
 
-app.get('/api/school-clubs-timetable', async (req, res) => {
+router.get('/school-clubs-timetable', async (req, res) => {
   try {
     const schoolClubsTimetable = await SchoolClubsTimetable.findAll();
     res.json(schoolClubsTimetable);
@@ -2074,7 +2074,7 @@ app.get('/api/school-clubs-timetable', async (req, res) => {
 });
 
 // POST – додати новий документ
-app.post('/api/school-clubs-timetable', upload.single('file'), async (req, res) => {
+router.post('/school-clubs-timetable', upload.single('file'), async (req, res) => {
   const { title } = req.body;
   const { type } = req.body;
   let folder = "uploads/documents";
@@ -2102,7 +2102,7 @@ app.post('/api/school-clubs-timetable', upload.single('file'), async (req, res) 
 });
 
 // PUT – оновити документ
-app.put('/api/school-clubs-timetable/:id', upload.single('file'), async (req, res) => {
+router.put('/school-clubs-timetable/:id', upload.single('file'), async (req, res) => {
   const { title, isActive } = req.body;
   const file = req.file?.filename;
   const doc = await SchoolClubsTimetable.findByPk(req.params.id);
@@ -2117,7 +2117,7 @@ app.put('/api/school-clubs-timetable/:id', upload.single('file'), async (req, re
 });
 
 // DELETE – видалити
-app.delete('/api/school-clubs-timetable/:id', async (req, res) => {
+router.delete('/school-clubs-timetable/:id', async (req, res) => {
   const doc = await SchoolClubsTimetable.findByPk(req.params.id);
   if (!doc) return res.status(404).json({ error: 'Not found' });
 
@@ -2125,7 +2125,7 @@ app.delete('/api/school-clubs-timetable/:id', async (req, res) => {
   res.json({ message: 'Deleted' });
 });
 
-app.get('/api/donations', async (req, res) => {
+router.get('/donations', async (req, res) => {
   try {
     const donations = await Donations.findOne();
     res.json(donations);
@@ -2135,7 +2135,7 @@ app.get('/api/donations', async (req, res) => {
   }
 });
 
-app.put('/api/donations', async (req, res) => {
+router.put('/donations', async (req, res) => {
   try {
     const { title, content } = req.body;
 
@@ -2151,7 +2151,7 @@ app.put('/api/donations', async (req, res) => {
   }
 });
 
-app.get("/api/admission", async (req, res) => {
+router.get("/admission", async (req, res) => {
   try {
     const data = await Admission.findAll();
     res.json(data);
@@ -2160,7 +2160,7 @@ app.get("/api/admission", async (req, res) => {
   }
 });
 
-app.put("/api/admission/:section", async (req, res) => {
+router.put("/admission/:section", async (req, res) => {
   try {
     const { section } = req.params;
     const { content } = req.body;
@@ -2186,7 +2186,7 @@ app.put("/api/admission/:section", async (req, res) => {
 
 
 // Отримати всі секції у порядку спадання років
-app.get("/api/finance", async (req, res) => {
+router.get("/finance", async (req, res) => {
   try {
     const data = await Finance.findAll({
       order: [["year", "DESC"]],
@@ -2198,7 +2198,7 @@ app.get("/api/finance", async (req, res) => {
 });
 
 // Додати нову секцію
-app.post("/api/finance", async (req, res) => {
+router.post("/finance", async (req, res) => {
   try {
     const { year, title, content } = req.body;
     if (!year) {
@@ -2220,7 +2220,7 @@ app.post("/api/finance", async (req, res) => {
 });
 
 // Оновити секцію
-app.put("/api/finance/:id", async (req, res) => {
+router.put("/finance/:id", async (req, res) => {
   try {
     const finance = await Finance.findByPk(req.params.id);
     if (!finance) return res.status(404).json({ error: "Section not found" });
@@ -2241,7 +2241,7 @@ app.put("/api/finance/:id", async (req, res) => {
 });
 
 // Видалити секцію
-app.delete("/api/finance/:id", async (req, res) => {
+router.delete("/finance/:id", async (req, res) => {
   try {
     const finance = await Finance.findByPk(req.params.id);
     if (!finance) return res.status(404).json({ error: "Section not found" });
@@ -2255,13 +2255,13 @@ app.delete("/api/finance/:id", async (req, res) => {
 });
 
 // GET всі контакти
-app.get('/api/contact333', async (req, res) => {
+router.get('/contact333', async (req, res) => {
   const contacts = await Contact.findAll();
   res.json(contacts);
 });
 
 // GET контактів
-app.get("/api/contact", async (req, res) => {
+router.get("/contact", async (req, res) => {
   try {
     let contact = await Contact.findOne();
     if (!contact) {
@@ -2283,7 +2283,7 @@ app.get("/api/contact", async (req, res) => {
 });
 
 // PUT оновлення контакту
-app.put("/api/contact", async (req, res) => {
+router.put("/contact", async (req, res) => {
   try {
     const { name, address, email, phone, director } = req.body;
 

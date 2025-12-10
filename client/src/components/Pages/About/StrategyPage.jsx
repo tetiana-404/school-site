@@ -8,7 +8,7 @@ const StrategyPage = ({ user }) => {
     useEffect(() => {
         const fetchStrategy = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/strategy`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/strategy`);
                 const data = await res.json();
                 setStrategy(data);
             } catch (error) {
@@ -21,7 +21,7 @@ const StrategyPage = ({ user }) => {
 
     const handleSave = async (endpoint, method, body, callback) => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/strategy`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/strategy`, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -75,7 +75,7 @@ const StrategyPage = ({ user }) => {
                                     <button
                                         className="btn btn-outline-success btn-lg"
                                         onClick={() =>
-                                            handleSave('/api/strategy', 'PUT', { content: strategy?.content }, () => setEditMode(false))
+                                            handleSave('strategy', 'PUT', { content: strategy?.content }, () => setEditMode(false))
                                         }
                                     >
                                         💾 Зберегти

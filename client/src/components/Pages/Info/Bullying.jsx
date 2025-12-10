@@ -13,7 +13,7 @@ const BullingEditor = ({ user }) => {
 
   const fetchBullyingDocuments = async () => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/bullying`);
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/bullying`);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       setDocuments(data);
@@ -38,8 +38,8 @@ const BullingEditor = ({ user }) => {
     if (newDoc.file) formData.append('file', newDoc.file);
 
     const endpoint = editing
-      ? `${process.env.REACT_APP_BACKEND_URL}/api/bullying/${editing.id}`
-      : `${process.env.REACT_APP_BACKEND_URL}/api/bullying`;
+      ? `${process.env.REACT_APP_BACKEND_URL}/bullying/${editing.id}`
+      : `${process.env.REACT_APP_BACKEND_URL}/bullying`;
 
     const method = editing ? 'PUT' : 'POST';
 
@@ -73,7 +73,7 @@ const BullingEditor = ({ user }) => {
   const handleDelete = async (id) => {
     if (window.confirm('Видалити документ?')) {
       try {
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/bullying/${id}`, {
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/bullying/${id}`, {
           method: 'DELETE',
         });
         await fetchBullyingDocuments();

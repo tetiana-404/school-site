@@ -14,7 +14,7 @@ const DocumentsPage = ({ user }) => {
 
     const fetchHomeDocuments = async () => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/documents/all`);
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/documents/all`);
             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
             const data = await res.json();
             setDocuments(data);
@@ -39,8 +39,8 @@ const DocumentsPage = ({ user }) => {
         if (newDoc.file) formData.append('file', newDoc.file);
 
         const endpoint = editing
-            ? `${process.env.REACT_APP_BACKEND_URL}/api/documents/${editing.id}`
-            : `${process.env.REACT_APP_BACKEND_URL}/api/documents`;
+            ? `${process.env.REACT_APP_BACKEND_URL}/documents/${editing.id}`
+            : `${process.env.REACT_APP_BACKEND_URL}/documents`;
 
         const method = editing ? 'PUT' : 'POST';
 
@@ -74,7 +74,7 @@ const DocumentsPage = ({ user }) => {
     const handleDelete = async (id) => {
         if (window.confirm('Видалити документ?')) {
             try {
-                await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/documents/${id}`, {
+                await fetch(`${process.env.REACT_APP_BACKEND_URL}/documents/${id}`, {
                     method: 'DELETE',
                 });
                 await fetchHomeDocuments();

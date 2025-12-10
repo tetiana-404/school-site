@@ -16,7 +16,7 @@ const ReportsPage = ({ user }) => {
     // Завантаження звітів з API
     const fetchReports = async () => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/reports/all`);
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/reports/all`);
             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
             const data = await res.json();
             setReports(data);
@@ -39,8 +39,8 @@ const ReportsPage = ({ user }) => {
         };
 
         const endpoint = editing
-            ? `${process.env.REACT_APP_BACKEND_URL}/api/reports/${editing.id}`
-            : `${process.env.REACT_APP_BACKEND_URL}/api/reports`;
+            ? `${process.env.REACT_APP_BACKEND_URL}/reports/${editing.id}`
+            : `${process.env.REACT_APP_BACKEND_URL}/reports`;
 
         const method = editing ? 'PUT' : 'POST';
 
@@ -80,7 +80,7 @@ const ReportsPage = ({ user }) => {
     const handleDelete = async (id) => {
         if (window.confirm('Видалити звіт?')) {
             try {
-                await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/reports/${id}`, { method: 'DELETE' });
+                await fetch(`${process.env.REACT_APP_BACKEND_URL}/reports/${id}`, { method: 'DELETE' });
                 await fetchReports();
             } catch (error) {
                 console.error('Не вдалося видалити звіт:', error);

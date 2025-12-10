@@ -52,7 +52,7 @@ const HomeImgSlider = ({ user }) => {
   const saveChanges = async () => {
     try {
       for (let slide of editedSlides) {
-        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/home_sliders/${slide.id}`, {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/home_sliders/${slide.id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(slide),
@@ -83,7 +83,7 @@ const HomeImgSlider = ({ user }) => {
     formData.append('type', 'image');
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/upload`, {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -118,7 +118,7 @@ const HomeImgSlider = ({ user }) => {
   };
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/home_sliders`)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/home_sliders`)
       .then((res) => res.json())
       .then((data) => {
         if (data.length === 0) {

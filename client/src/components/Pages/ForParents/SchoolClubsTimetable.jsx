@@ -9,7 +9,7 @@ const SchoolClubsTimetable = ({ user }) => {
 
     const fetchSchedule = async () => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/school-clubs-timetable`);
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/school-clubs-timetable`);
             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
             const data = await res.json();
             setDocuments(data);
@@ -38,8 +38,8 @@ const SchoolClubsTimetable = ({ user }) => {
         if (newDoc.file) formData.append('file', newDoc.file);
 
         const endpoint = editing
-            ? `${process.env.REACT_APP_BACKEND_URL}/api/school-clubs-timetable/${editing.id}`
-            : `${process.env.REACT_APP_BACKEND_URL}/api/school-clubs-timetable`;
+            ? `${process.env.REACT_APP_BACKEND_URL}/school-clubs-timetable/${editing.id}`
+            : `${process.env.REACT_APP_BACKEND_URL}/school-clubs-timetable`;
 
         const method = editing ? 'PUT' : 'POST';
 
@@ -75,7 +75,7 @@ const SchoolClubsTimetable = ({ user }) => {
     const handleDelete = async (id) => {
         if (window.confirm('Видалити розклад гуртків?')) {
             try {
-                await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/school-clubs-timetable/${id}`, {
+                await fetch(`${process.env.REACT_APP_BACKEND_URL}/school-clubs-timetable/${id}`, {
                     method: 'DELETE',
                 });
                 await fetchSchedule();

@@ -24,7 +24,7 @@ const ContactPage = ({ user }) => {
   useEffect(() => {
     const fetchContact = async () => {
       try {
-        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/contact`);
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/contact`);
         const data = await res.json();
         setData(prev => ({
           address: data.address || prev.address,
@@ -56,7 +56,7 @@ const ContactPage = ({ user }) => {
 
   const handleSaveData = async () => {
     try {
-      await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/contact`, {
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/contact`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

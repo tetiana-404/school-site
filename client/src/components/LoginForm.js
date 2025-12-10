@@ -14,7 +14,8 @@ const LoginForm = ({ setUser }) => {
     e.preventDefault();
     try {
       const API_BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-
+      console.log('API_BACKEND_URL:', API_BACKEND_URL)
+      
       const response = await axios.post(`${API_BACKEND_URL}/login`, 
         { username, password  },
         { headers: { "Content-Type": "application/json" } }

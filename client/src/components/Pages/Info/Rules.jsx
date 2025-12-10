@@ -13,7 +13,7 @@ const RulesPage = ({ user }) => {
 
   const fetchRulesDocuments = async () => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/rules`);
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/rules`);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       setDocuments(data);
@@ -38,8 +38,8 @@ const RulesPage = ({ user }) => {
     if (newDoc.file) formData.append('file', newDoc.file);
 
     const endpoint = editing
-      ? `${process.env.REACT_APP_BACKEND_URL}/api/rules/${editing.id}`
-      : `${process.env.REACT_APP_BACKEND_URL}/api/rules`;
+      ? `${process.env.REACT_APP_BACKEND_URL}/rules/${editing.id}`
+      : `${process.env.REACT_APP_BACKEND_URL}/rules`;
 
     const method = editing ? 'PUT' : 'POST';
 
@@ -73,7 +73,7 @@ const RulesPage = ({ user }) => {
   const handleDelete = async (id) => {
     if (window.confirm('Видалити документ?')) {
       try {
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/rules/${id}`, {
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/rules/${id}`, {
           method: 'DELETE',
         });
         await fetchRulesDocuments();

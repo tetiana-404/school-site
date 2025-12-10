@@ -8,7 +8,7 @@ const AnthemPage = ({ user }) => {
     useEffect(() => {
         const fetchAnthem = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/anthem`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/anthem`);
                 const data = await res.json();
                 setAnthem(data);
             } catch (error) {
@@ -21,7 +21,7 @@ const AnthemPage = ({ user }) => {
 
     const handleSave = async (endpoint, method, body, callback) => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/anthem`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/anthem`, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -110,7 +110,7 @@ const AnthemPage = ({ user }) => {
                                         <button
                                             className="btn btn-outline-success btn-lg"
                                             onClick={() =>
-                                                handleSave('/api/anthem', 'PUT', { content: anthem?.content }, () => setEditMode(false))
+                                                handleSave('anthem', 'PUT', { content: anthem?.content }, () => setEditMode(false))
                                             }
                                         >
                                             <span>💾 Зберегти</span>

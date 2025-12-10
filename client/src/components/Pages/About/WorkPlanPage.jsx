@@ -8,7 +8,7 @@ const WorkPlanPage = ({ user }) => {
     useEffect(() => {
         const fetchWorkPlan = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/work-plan`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/work-plan`);
                 const data = await res.json();
                 setWorkPlan(data);
             } catch (error) {
@@ -21,7 +21,7 @@ const WorkPlanPage = ({ user }) => {
 
     const handleSave = async (endpoint, method, body, callback) => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/work-plan`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/work-plan`, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -77,7 +77,7 @@ const WorkPlanPage = ({ user }) => {
                                     <button
                                         className="btn btn-outline-success btn-lg"
                                         onClick={() =>
-                                            handleSave('/api/work-plan', 'PUT', { content: workPlan?.content }, () => setEditMode(false))
+                                            handleSave('work-plan', 'PUT', { content: workPlan?.content }, () => setEditMode(false))
                                         }
                                     >
                                         💾 Зберегти

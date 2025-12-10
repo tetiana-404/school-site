@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
 import TextEditor from "../../TextEditor";
 
-const API_URL = `${process.env.REACT_APP_BACKEND_URL}/api/school-bells`;
+const API_URL = `${process.env.REACT_APP_BACKEND_URL}/school-bells`;
 
 const SchoolBells = ({ user }) => {
   const [bells, setBells] = useState(null);

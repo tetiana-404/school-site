@@ -8,7 +8,7 @@ const AreaPage = ({ user }) => {
     useEffect(() => {
         const fetchArea = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/area`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/area`);
                 const data = await res.json();
                 setArea(data);
             } catch (error) {
@@ -21,7 +21,7 @@ const AreaPage = ({ user }) => {
 
     const handleSave = async (endpoint, method, body, callback) => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/area`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/area`, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -84,7 +84,7 @@ const AreaPage = ({ user }) => {
                                     <button
                                         className="btn btn-outline-success btn-lg w-50"
                                         onClick={() =>
-                                            handleSave('/api/area', 'PUT', { content: area?.content }, () => setEditMode(false))
+                                            handleSave('area', 'PUT', { content: area?.content }, () => setEditMode(false))
                                         }
                                     >
                                         💾 Зберегти

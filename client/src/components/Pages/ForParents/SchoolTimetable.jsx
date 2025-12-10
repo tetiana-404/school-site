@@ -9,7 +9,7 @@ const SchoolTimetable = ({ user }) => {
 
     const fetchSchedule = async () => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/school-timetable`);
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/school-timetable`);
             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
             const data = await res.json();
             setDocuments(data);
@@ -38,8 +38,8 @@ const SchoolTimetable = ({ user }) => {
         if (newDoc.file) formData.append('file', newDoc.file);
 
         const endpoint = editing
-            ? `${process.env.REACT_APP_BACKEND_URL}/api/school-timetable/${editing.id}`
-            : `${process.env.REACT_APP_BACKEND_URL}/api/school-timetable`;
+            ? `${process.env.REACT_APP_BACKEND_URL}/school-timetable/${editing.id}`
+            : `${process.env.REACT_APP_BACKEND_URL}/school-timetable`;
 
         const method = editing ? 'PUT' : 'POST';
 
@@ -75,7 +75,7 @@ const SchoolTimetable = ({ user }) => {
     const handleDelete = async (id) => {
         if (window.confirm('Видалити розклад?')) {
             try {
-                await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/school-timetable/${id}`, {
+                await fetch(`${process.env.REACT_APP_BACKEND_URL}/school-timetable/${id}`, {
                     method: 'DELETE',
                 });
                 await fetchSchedule();

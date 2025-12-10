@@ -8,7 +8,7 @@ const HistoryPage = ({ user }) => {
     useEffect(() => {
         const fetchHistory = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/history`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/history`);
                 const data = await res.json();
                 setHistory(data);
             } catch (error) {
@@ -21,7 +21,7 @@ const HistoryPage = ({ user }) => {
 
     const handleSave = async (endpoint, method, body, callback) => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/history`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/history`, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -77,7 +77,7 @@ const HistoryPage = ({ user }) => {
                                     <button
                                         className="btn btn-outline-success btn-lg"
                                         onClick={() =>
-                                            handleSave('/api/history', 'PUT', { content: history?.content }, () => setEditMode(false))
+                                            handleSave('history', 'PUT', { content: history?.content }, () => setEditMode(false))
                                         }
                                     >
                                         <span>💾 Зберегти</span>

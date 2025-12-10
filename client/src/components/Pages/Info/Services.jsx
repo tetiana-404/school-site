@@ -13,7 +13,7 @@ const ServicesEditor = ({ user }) => {
 
   const fetchServices = async () => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/services`);
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/services`);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       setDocuments(data);
@@ -38,8 +38,8 @@ const ServicesEditor = ({ user }) => {
     if (newDoc.file) formData.append('file', newDoc.file);
 
     const endpoint = editing
-      ? `${process.env.REACT_APP_BACKEND_URL}/api/services/${editing.id}`
-      : `${process.env.REACT_APP_BACKEND_URL}/api/services`;
+      ? `${process.env.REACT_APP_BACKEND_URL}/services/${editing.id}`
+      : `${process.env.REACT_APP_BACKEND_URL}/services`;
 
     const method = editing ? 'PUT' : 'POST';
 
@@ -73,7 +73,7 @@ const ServicesEditor = ({ user }) => {
   const handleDelete = async (id) => {
     if (window.confirm('Видалити документ?')) {
       try {
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/services/${id}`, {
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/services/${id}`, {
           method: 'DELETE',
         });
         await fetchServices();

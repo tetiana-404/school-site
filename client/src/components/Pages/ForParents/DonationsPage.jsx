@@ -8,7 +8,7 @@ const DonationsPage = ({ user }) => {
     useEffect(() => {
         const fetchDonations = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/donations`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/donations`);
                 const data = await res.json();
                 setDonations(data);
             } catch (error) {
@@ -21,7 +21,7 @@ const DonationsPage = ({ user }) => {
 
     const handleSave = async (body, callback) => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/donations`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/donations`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -31,7 +31,7 @@ const DonationsPage = ({ user }) => {
             });
             callback();
         } catch (err) {
-            console.error("Помилка при збереженні /api/donations", err);
+            console.error("Помилка при збереженні donations", err);
         }
     };
 

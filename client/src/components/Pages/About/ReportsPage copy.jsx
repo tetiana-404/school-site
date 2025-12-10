@@ -8,7 +8,7 @@ const ReportsPage = ({ user }) => {
     useEffect(() => {
         const fetchReports = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/reports`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/reports`);
                 const data = await res.json();
                 if (!data) {
                     setReports({ title: 'Звіти директора', content: '' });
@@ -25,7 +25,7 @@ const ReportsPage = ({ user }) => {
 
     const handleSave = async (endpoint, method, body, callback) => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/reports`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/reports`, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -81,7 +81,7 @@ const ReportsPage = ({ user }) => {
                                     <button
                                         className="btn btn-outline-success btn-lg w-50"
                                         onClick={() =>
-                                            handleSave('/api/reports', 'PUT', { content: reports?.content }, () => setEditMode(false))
+                                            handleSave('reports', 'PUT', { content: reports?.content }, () => setEditMode(false))
                                         }
                                     >
                                         💾 Зберегти

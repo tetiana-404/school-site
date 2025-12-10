@@ -32,7 +32,7 @@ const RegDocumentsPage = ({ user }) => {
     useEffect(() => {
         const fetchRegDocuments = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/reg-documents`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/reg-documents`);
                 const data = await res.json();
                 setRegdocuments(data);
             } catch (error) {
@@ -45,7 +45,7 @@ const RegDocumentsPage = ({ user }) => {
 
     const handleSave = async (endpoint, method, body, callback) => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/reg-documents`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/reg-documents`, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -85,7 +85,7 @@ const RegDocumentsPage = ({ user }) => {
                                     <button
                                         className="btn btn-outline-success btn-lg w-50"
                                         onClick={() =>
-                                            handleSave('/api/regdocuments', 'PUT', { content: regdocuments?.content }, () => setEditMode(false))
+                                            handleSave('regdocuments', 'PUT', { content: regdocuments?.content }, () => setEditMode(false))
                                         }
                                     >
                                         💾 Зберегти

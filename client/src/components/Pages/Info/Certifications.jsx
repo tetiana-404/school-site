@@ -13,7 +13,7 @@ const CertificationsEditor = ({ user }) => {
 
   const fetchCertificationsDocuments = async () => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/certifications`);
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/certifications`);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       setDocuments(data);
@@ -38,8 +38,8 @@ const CertificationsEditor = ({ user }) => {
     if (newDoc.file) formData.append('file', newDoc.file);
 
     const endpoint = editing
-      ? `${process.env.REACT_APP_BACKEND_URL}/api/certifications/${editing.id}`
-      : `${process.env.REACT_APP_BACKEND_URL}/api/certifications`;
+      ? `${process.env.REACT_APP_BACKEND_URL}/certifications/${editing.id}`
+      : `${process.env.REACT_APP_BACKEND_URL}/certifications`;
 
     const method = editing ? 'PUT' : 'POST';
 
@@ -73,7 +73,7 @@ const CertificationsEditor = ({ user }) => {
   const handleDelete = async (id) => {
     if (window.confirm('Видалити документ?')) {
       try {
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/certifications/${id}`, {
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/certifications/${id}`, {
           method: 'DELETE',
         });
         await fetchCertificationsDocuments();

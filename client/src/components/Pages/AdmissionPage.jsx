@@ -31,7 +31,7 @@ const AdmissionPage = ({ user }) => {
     useEffect(() => {
         const fetchSections = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admission`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/admission`);
                 const data = await res.json();
                 setSections(Array.isArray(data) ? data : []);
             } catch (err) {
@@ -47,7 +47,7 @@ const AdmissionPage = ({ user }) => {
 
     const handleSave = async () => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/admission/${currentSection.section}`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/admission/${currentSection.section}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ content: currentSection.content }),
@@ -112,7 +112,7 @@ const AdmissionPage = ({ user }) => {
                                                     className="btn btn-outline-success btn-lg"
                                                     onClick={() =>
                                                         handleSave(
-                                                            `${process.env.REACT_APP_BACKEND_URL}/api/admission/${currentSection.section}`,
+                                                            `${process.env.REACT_APP_BACKEND_URL}/admission/${currentSection.section}`,
                                                             "PUT",
                                                             { content: currentSection.content },
                                                             () => setEditMode(false)

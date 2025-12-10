@@ -9,7 +9,7 @@ const FacilitiesPage = ({ user }) => {
     useEffect(() => {
         const fetchFacilities = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/facilities`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/facilities`);
                 const data = await res.json();
                 setFacilities(data);
             } catch (error) {
@@ -22,7 +22,7 @@ const FacilitiesPage = ({ user }) => {
 
     const handleSave = async (endpoint, method, body, callback) => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/facilities`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/facilities`, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -78,7 +78,7 @@ const FacilitiesPage = ({ user }) => {
                                     <button
                                         className="btn btn-outline-success btn-lg w-50"
                                         onClick={() =>
-                                            handleSave('/api/facilities', 'PUT', { content: facilities?.content }, () => setEditMode(false))
+                                            handleSave('facilities', 'PUT', { content: facilities?.content }, () => setEditMode(false))
                                         }
                                     >
                                         💾 Зберегти

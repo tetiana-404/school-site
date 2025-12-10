@@ -22,7 +22,7 @@ const SchoolRating = ({ user }) => {
 
     const fetchSchoolRating = async () => {
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/school-ratings`);
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/school-ratings`);
             if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
             const data = await res.json();
             setRatings(data);
@@ -45,8 +45,8 @@ const SchoolRating = ({ user }) => {
         try {
             const method = editingId ? 'PUT' : 'POST';
             const url = editingId
-                ? `${process.env.REACT_APP_BACKEND_URL}/api/school-ratings/${editingId}`
-                : `${process.env.REACT_APP_BACKEND_URL}/api/school-ratings`;
+                ? `${process.env.REACT_APP_BACKEND_URL}/school-ratings/${editingId}`
+                : `${process.env.REACT_APP_BACKEND_URL}/school-ratings`;
 
             const res = await fetch(url, {
                 method,
@@ -80,7 +80,7 @@ const SchoolRating = ({ user }) => {
     const handleDelete = async (id) => {
         if (!window.confirm('Видалити цей рейтинг?')) return;
         try {
-            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/school-ratings/${id}`, {
+            const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/school-ratings/${id}`, {
                 method: 'DELETE'
             });
             if (!res.ok) throw new Error('Failed to delete rating');

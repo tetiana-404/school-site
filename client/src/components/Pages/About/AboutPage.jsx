@@ -23,13 +23,13 @@ const AboutPage = ({ user }) => {
     const fetchData = async () => {
       const endpoints = [
         ['/contact', setInfo],
-        ['/api/home_about_page', (data) => setTeamContent(data.content)],
-        ['/api/home_counter', setCounters],
+        ['home_about_page', (data) => setTeamContent(data.content)],
+        ['home_counter', setCounters],
       ];
 
       for (const [endpoint, setter] of endpoints) {
         try {
-          const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}${endpoint}`);
+          const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`);
           const data = await res.json();
           setter(data);
         } catch (err) {
@@ -43,7 +43,7 @@ const AboutPage = ({ user }) => {
 
   const handleSave = async (endpoint, method, body, callback) => {
     try {
-      await fetch(`${process.env.REACT_APP_BACKEND_URL}${endpoint}`, {
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/${endpoint}`, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
@@ -251,7 +251,7 @@ const AboutPage = ({ user }) => {
             <div className='row text-center'>
               <div className='col-12 mb-4'>
                 <div className="d-flex justify-content-center gap-3 mt-3">
-                  <button className="btn btn-outline-success btn-lg z-3" onClick={() => handleSave('/api/home_counter', 'PUT', counters, () => setEditCounters(false))}>💾 Зберегти</button>
+                  <button className="btn btn-outline-success btn-lg z-3" onClick={() => handleSave('home_counter', 'PUT', counters, () => setEditCounters(false))}>💾 Зберегти</button>
                   <button className="btn btn-outline-warning btn-lg z-3" onClick={() => setEditCounters(false)}>❌ Скасувати</button>
                 </div>
               </div>
@@ -283,7 +283,7 @@ const AboutPage = ({ user }) => {
                       color="success"
                       onClick={() =>
                         handleSave(
-                          "/api/home_about_page",
+                          "home_about_page",
                           "PUT",
                           { content: teamContent },
                           () => setEditTeam(false)

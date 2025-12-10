@@ -13,7 +13,7 @@ const InternalDocumentsEditor = ({ user }) => {
 
   const fetchInternalDocuments = async () => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/internal-documents/all`);
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/internal-documents/all`);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       setDocuments(data);
@@ -38,8 +38,8 @@ const InternalDocumentsEditor = ({ user }) => {
     if (newDoc.file) formData.append('file', newDoc.file);
 
     const endpoint = editing
-      ? `${process.env.REACT_APP_BACKEND_URL}/api/internal-documents/${editing.id}`
-      : `${process.env.REACT_APP_BACKEND_URL}/api/internal-documents`;
+      ? `${process.env.REACT_APP_BACKEND_URL}/internal-documents/${editing.id}`
+      : `${process.env.REACT_APP_BACKEND_URL}/internal-documents`;
 
     const method = editing ? 'PUT' : 'POST';
 
@@ -73,7 +73,7 @@ const InternalDocumentsEditor = ({ user }) => {
   const handleDelete = async (id) => {
     if (window.confirm('Видалити документ?')) {
       try {
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/internal-documents/${id}`, {
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/internal-documents/${id}`, {
           method: 'DELETE',
         });
         await fetchInternalDocuments();

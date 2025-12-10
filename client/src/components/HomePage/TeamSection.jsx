@@ -6,7 +6,7 @@ const TeamSection = ({ user }) => {
   const [editMode, setEditMode] = useState(false);
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/team-members`)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/team-members`)
       .then(res => res.json())
       .then(data => setTeamMembers(data));
   }, []);
@@ -26,7 +26,7 @@ const TeamSection = ({ user }) => {
     formData.append('type', 'image');
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/upload`, {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -40,7 +40,7 @@ const TeamSection = ({ user }) => {
       updated[index].img = newUrl;
       setTeamMembers(updated);
 
-      await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/team-members/${updated[index].id}`, {
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/team-members/${updated[index].id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updated[index]),
@@ -81,7 +81,7 @@ const TeamSection = ({ user }) => {
   const deleteMember = async (index) => {
   const memberToDelete = teamMembers[index];
   try {
-    await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/team-members/${memberToDelete.id}`, {
+    await fetch(`${process.env.REACT_APP_BACKEND_URL}/team-members/${memberToDelete.id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...memberToDelete, isActive: false }),
@@ -100,7 +100,7 @@ const TeamSection = ({ user }) => {
     try {
       await Promise.all(
         teamMembers.map(member =>
-          fetch(`${process.env.REACT_APP_BACKEND_URL}/api/team-members/${member.id}`, {
+          fetch(`${process.env.REACT_APP_BACKEND_URL}/team-members/${member.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

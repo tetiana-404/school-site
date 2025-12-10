@@ -88,7 +88,7 @@ const TextEditor = ({ content, setContent }) => {
 
         try {
             const response = await axios.post(
-                `${process.env.REACT_APP_BACKEND_URL}/api/upload`,
+                `${process.env.REACT_APP_BACKEND_URL}/upload`,
                 formData,
                 { headers: { "Content-Type": "multipart/form-data" } }
             );
@@ -147,7 +147,7 @@ const TextEditor = ({ content, setContent }) => {
 
             try {
                 const response = await axios.post(
-                    `${process.env.REACT_APP_BACKEND_URL}/api/upload`,
+                    `${process.env.REACT_APP_BACKEND_URL}/upload`,
                     formData,
                     { headers: { "Content-Type": "multipart/form-data" } }
                 );

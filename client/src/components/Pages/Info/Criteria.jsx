@@ -13,7 +13,7 @@ const CriteriaEditor = ({ user }) => {
 
   const fetchCriteria = async () => {
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/criteria`);
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/criteria`);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       setDocuments(data);
@@ -38,8 +38,8 @@ const CriteriaEditor = ({ user }) => {
     if (newDoc.file) formData.append('file', newDoc.file);
 
     const endpoint = editing
-      ? `${process.env.REACT_APP_BACKEND_URL}/api/criteria/${editing.id}`
-      : `${process.env.REACT_APP_BACKEND_URL}/api/criteria`;
+      ? `${process.env.REACT_APP_BACKEND_URL}/criteria/${editing.id}`
+      : `${process.env.REACT_APP_BACKEND_URL}/criteria`;
 
     const method = editing ? 'PUT' : 'POST';
 
@@ -73,7 +73,7 @@ const CriteriaEditor = ({ user }) => {
   const handleDelete = async (id) => {
     if (window.confirm('Видалити документ?')) {
       try {
-        await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/criteria/${id}`, {
+        await fetch(`${process.env.REACT_APP_BACKEND_URL}/criteria/${id}`, {
           method: 'DELETE',
         });
         await fetchCriteria();

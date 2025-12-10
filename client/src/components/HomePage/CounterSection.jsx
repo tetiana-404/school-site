@@ -7,7 +7,7 @@ const CounterSection = ({ user }) => {
   const [subtitle, setSubtitle] = useState('');
 
   useEffect(() => {
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/counters`)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/counters`)
       .then(res => res.json())
       .then(data => {
         setItems(data);
@@ -15,7 +15,7 @@ const CounterSection = ({ user }) => {
       })
       .catch(err => console.error('❌ Failed to fetch counters:', err));
 
-    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/home-meta`)
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/home-meta`)
       .then(res => res.json())
       .then(data => {
         if (data.subtitle) setSubtitle(data.subtitle);
@@ -40,7 +40,7 @@ const CounterSection = ({ user }) => {
     try {
       await Promise.all(
         editedItems.map(item =>
-          fetch(`${process.env.REACT_APP_BACKEND_URL}/api/counters/${item.id}`, {
+          fetch(`${process.env.REACT_APP_BACKEND_URL}/counters/${item.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(item),
@@ -51,7 +51,7 @@ const CounterSection = ({ user }) => {
         )
       );
 
-      const resMeta = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/home-meta`, {
+      const resMeta = await fetch(`${process.env.REACT_APP_BACKEND_URL}/home-meta`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ subtitle }),

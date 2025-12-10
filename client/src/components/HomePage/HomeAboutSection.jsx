@@ -10,7 +10,7 @@ const HomeAboutSection = ({ user }) => {
   const [originalData, setOriginalData] = useState(null);
 
   useEffect(() => {
-      fetch(`${process.env.REACT_APP_BACKEND_URL}/api/home_about`)
+      fetch(`${process.env.REACT_APP_BACKEND_URL}/home_about`)
       .then(res => res.json())
       .then(data => {
         setTitle(data.title || '');
@@ -26,7 +26,7 @@ const HomeAboutSection = ({ user }) => {
   }, []);
 
   const saveData = async () => {
-     await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/home_about`, {
+     await fetch(`${process.env.REACT_APP_BACKEND_URL}/home_about`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ title, content, subText }),

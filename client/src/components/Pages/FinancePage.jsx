@@ -27,7 +27,7 @@ const FinancePage = ({ user }) => {
   useEffect(() => {
     const fetchSections = async () => {
       try {
-        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/finance`);
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/finance`);
         const data = await res.json();
         const sorted = Array.isArray(data) ? data.sort((a, b) => b.year - a.year) : [];
         setSections(sorted);
@@ -52,7 +52,7 @@ const FinancePage = ({ user }) => {
       if (currentSection.id) {
         // Оновлення існуючої секції
         const res = await fetch(
-          `${process.env.REACT_APP_BACKEND_URL}/api/finance/${currentSection.id}`,
+          `${process.env.REACT_APP_BACKEND_URL}/finance/${currentSection.id}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -62,7 +62,7 @@ const FinancePage = ({ user }) => {
         updatedSection = await res.json();
       } else {
         // Створення нової секції
-        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/finance`, {
+        const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/finance`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(currentSection),
@@ -87,7 +87,7 @@ const FinancePage = ({ user }) => {
   const handleDelete = async (id) => {
     if (!window.confirm("Видалити цей рік?")) return;
     try {
-      await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/finance/${id}`, { method: "DELETE" });
+      await fetch(`${process.env.REACT_APP_BACKEND_URL}/finance/${id}`, { method: "DELETE" });
       const updated = sections.filter((s) => s.id !== id);
       setSections(updated);
       if (activeSection === id) setActiveSection(updated[0]?.id || null);
@@ -116,7 +116,7 @@ const FinancePage = ({ user }) => {
     setNewYear("");
 
     try {
-      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/finance`, {
+      const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/finance`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newSection),

@@ -8,7 +8,7 @@ const LanguagePage = ({ user }) => {
     useEffect(() => {
         const fetchLanguage = async () => {
             try {
-                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/language`);
+                const res = await fetch(`${process.env.REACT_APP_BACKEND_URL}/language`);
                 const data = await res.json();
                 setLanguage(data);
             } catch (error) {
@@ -21,7 +21,7 @@ const LanguagePage = ({ user }) => {
 
     const handleSave = async (endpoint, method, body, callback) => {
         try {
-            await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/language`, {
+            await fetch(`${process.env.REACT_APP_BACKEND_URL}/language`, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -61,7 +61,7 @@ const LanguagePage = ({ user }) => {
                                     <button
                                         className="btn btn-outline-success btn-lg w-50"
                                         onClick={() =>
-                                            handleSave('/api/language', 'PUT', { content: language?.content }, () => setEditMode(false))
+                                            handleSave('language', 'PUT', { content: language?.content }, () => setEditMode(false))
                                         }
                                     >
                                         💾 Зберегти

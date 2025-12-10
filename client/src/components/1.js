@@ -71,7 +71,7 @@ const TextEditor = ({ content, setContent, clearEditor }) => {
         formData.append("type", "document");
 
         try {
-            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/upload`, formData, { headers: { "Content-Type": "multipart/form-data" } });
+            const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/upload`, formData, { headers: { "Content-Type": "multipart/form-data" } });
             const fileURL = response.data.url;
             editor.chain().focus().insertContent(`<a href="${fileURL}" target="_blank">${file.name}</a>`).run();
         } catch (error) {
@@ -102,7 +102,7 @@ const TextEditor = ({ content, setContent, clearEditor }) => {
             formData.append("type", "image");
 
             try {
-                const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/upload`, formData, { headers: { "Content-Type": "multipart/form-data" } });
+                const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/upload`, formData, { headers: { "Content-Type": "multipart/form-data" } });
                 if (response.data.url) {
                     imageBlocks.push({ type: "image", attrs: { src: response.data.url } });
                     imageBlocks.push({ type: "paragraph", content: [] });
