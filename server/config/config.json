@@ -1,4 +1,12 @@
 {
+  "development": {
+    "username": "postgres",
+    "password": "VCSXqpxXitqkTeKQRlKZPqSbYYMjUtKM",
+    "database": "railway",
+    "host": "crossover.proxy.rlwy.net",
+    "port": 58094,
+    "dialect": "postgres"
+  },
   "production": {
     "use_env_variable": "DATABASE_URL",
     "dialect": "postgres",
@@ -8,10 +16,5 @@
         "rejectUnauthorized": false
       }
     }
-  },
-  "development": {
-    "dialect": "sqlite",
-    "storage": "database.sqlite"
   }
 }
-
