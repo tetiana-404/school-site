@@ -1,4 +1,4 @@
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config();
 const express = require("express");
 const { Op } = require("sequelize");
 const multer = require("multer");

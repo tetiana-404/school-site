@@ -1,0 +1,8 @@
+LOAD DATABASE
+     FROM sqlite://./database.sqlite
+     INTO postgresql://postgres:VCSXqpxXitqkTeKQRlKZPqSbYYMjUtKM@crossover.proxy.rlwy.net:58094/schoolsite
+
+ WITH include no drop, create tables, create indexes, reset sequences
+
+ CAST type datetime to timestamptz
+;
