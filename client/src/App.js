@@ -57,8 +57,14 @@ const App = () => {
     return storedUser ? JSON.parse(storedUser) : null;
   });
 
+  const basename =
+    process.env.REACT_APP_BASENAME ||
+    (typeof window !== "undefined" && window.location.hostname.includes("github.io")
+      ? "/school-site"
+      : "/");
+
   return (
-    <Router basename="/school-site">
+    <Router basename={basename}>
       <Topbar user={user} setUser={setUser} />
       <Header />
       
