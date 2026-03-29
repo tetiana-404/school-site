@@ -1,6 +1,7 @@
 {
   "private": true,
   "scripts": {
+    "postinstall": "npm install --prefix client",
     "build": "npm run build --prefix client",
     "vercel-build": "npm run build --prefix client"
   },
