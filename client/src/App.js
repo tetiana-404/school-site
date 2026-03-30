@@ -58,7 +58,7 @@ const App = () => {
   });
 
   return (
-    <Router basename="/school-site">
+    <Router>
       <Topbar user={user} setUser={setUser} />
       <Header />
       
