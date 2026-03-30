@@ -1,12 +1,16 @@
 const path = require("path"); 
 const { Sequelize, DataTypes } = require("sequelize");
-const config = require("../config/config.json")["development"];
+const allConfigs = require("../config/config.json");
+const env = process.env.NODE_ENV || "development";
+const config = allConfigs[env] || allConfigs.development;
 
 if (config.dialect === "sqlite") {
   config.storage = path.join(__dirname, "../database.sqlite"); 
 }
 
-const sequelize = new Sequelize(config);
+const sequelize = config.use_env_variable
+  ? new Sequelize(process.env[config.use_env_variable], config)
+  : new Sequelize(config);
 
 const db = {};
 db.sequelize = sequelize;
